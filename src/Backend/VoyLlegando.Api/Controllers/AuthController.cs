@@ -9,11 +9,13 @@ using UsuarioRepositoryInterface =
 
 namespace VoyLlegando.Api.Controllers;
 
+
 [ApiController]
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private readonly IAuthService
+        _authService;
 
     private readonly UsuarioRepositoryInterface
         _usuarioRepository;
@@ -21,11 +23,19 @@ public class AuthController : ControllerBase
     private readonly ILogisticaRepository
         _logisticaRepository;
 
+    private readonly IPasswordService
+        _passwordService;
+
+
+    // -------------------------------------------------------
+    // CONSTRUCTOR
+    // -------------------------------------------------------
 
     public AuthController(
         IAuthService authService,
         UsuarioRepositoryInterface usuarioRepository,
-        ILogisticaRepository logisticaRepository)
+        ILogisticaRepository logisticaRepository,
+        IPasswordService passwordService)
     {
         _authService =
             authService;
@@ -35,6 +45,9 @@ public class AuthController : ControllerBase
 
         _logisticaRepository =
             logisticaRepository;
+
+        _passwordService =
+            passwordService;
     }
 
 
@@ -42,6 +55,7 @@ public class AuthController : ControllerBase
     // POST /api/auth/login
     // -------------------------------------------------------
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(
         LoginRequest request)
@@ -49,10 +63,250 @@ public class AuthController : ControllerBase
         var response =
             await _authService.Login(request);
 
+
         if (!response.Success)
             return Unauthorized(response);
 
+
         return Ok(response);
+    }
+
+
+    // -------------------------------------------------------
+    // POST /api/auth/registro
+    // -------------------------------------------------------
+
+    [AllowAnonymous]
+    [HttpPost("registro")]
+    public async Task<IActionResult> Registro(
+        RegistroEmpresaRequest request)
+    {
+        // ---------------------------------------------------
+        // CELULAR
+        // ---------------------------------------------------
+
+        var celular =
+            new string(
+                (request.Celular ?? "")
+                    .Where(char.IsDigit)
+                    .ToArray()
+            );
+
+
+        if (
+            string.IsNullOrWhiteSpace(
+                celular
+            )
+        )
+        {
+            return BadRequest(new
+            {
+                mensaje =
+                    "Ingrese el celular."
+            });
+        }
+
+
+        // ---------------------------------------------------
+        // CLAVE
+        // ---------------------------------------------------
+
+        if (
+            string.IsNullOrWhiteSpace(
+                request.Clave
+            )
+        )
+        {
+            return BadRequest(new
+            {
+                mensaje =
+                    "Ingrese la clave."
+            });
+        }
+
+
+        // ---------------------------------------------------
+        // NOMBRE
+        // ---------------------------------------------------
+
+        if (
+            string.IsNullOrWhiteSpace(
+                request.Nombre
+            )
+        )
+        {
+            return BadRequest(new
+            {
+                mensaje =
+                    "Ingrese el nombre."
+            });
+        }
+
+
+        // ---------------------------------------------------
+        // CUIT
+        // ---------------------------------------------------
+
+        var cuit =
+            new string(
+                (request.Cuit ?? "")
+                    .Where(char.IsDigit)
+                    .ToArray()
+            );
+
+
+        if (
+            cuit.Length != 11
+        )
+        {
+            return BadRequest(new
+            {
+                mensaje =
+                    "El CUIT debe contener 11 dígitos."
+            });
+        }
+
+
+        // ---------------------------------------------------
+        // CELULAR REPETIDO
+        // ---------------------------------------------------
+
+        var existe =
+            await _usuarioRepository
+                .ExisteCelularAsync(
+                    celular
+                );
+
+
+        if (existe)
+        {
+            return BadRequest(new
+            {
+                mensaje =
+                    "Ya existe un usuario con ese celular."
+            });
+        }
+
+
+        // ---------------------------------------------------
+        // CREAR USUARIO
+        // ---------------------------------------------------
+
+        var usuario =
+            new VoyLlegando.Domain.Entities.Usuario
+            {
+                Celular =
+                    celular,
+
+                Clave =
+                    _passwordService
+                        .GenerarHash(
+                            request.Clave
+                        ),
+
+                Nombre =
+                    request.Nombre.Trim(),
+
+                Domicilio =
+                    string.IsNullOrWhiteSpace(
+                        request.Domicilio
+                    )
+                        ? null
+                        : request.Domicilio.Trim(),
+
+                Iva =
+                    request.Iva,
+
+                Cuit =
+                    cuit,
+
+                Email =
+                    request.Email?.Trim()
+                    ?? "",
+
+
+                // -------------------------------------------
+                // EL REGISTRO PUBLICO SIEMPRE ES E
+                // -------------------------------------------
+
+                Rol =
+                    "E",
+
+                Habilitado =
+                    true,
+
+                IdTranspor =
+                    null,
+
+                IdPlanta =
+                    null,
+
+                IdProduc =
+                    null,
+
+
+                // -------------------------------------------
+                // DATOS DE TRANSPORTE
+                // -------------------------------------------
+
+                PatChasis =
+                    string.IsNullOrWhiteSpace(
+                        request.PatChasis
+                    )
+                        ? null
+                        : request.PatChasis
+                            .Trim()
+                            .ToUpperInvariant(),
+
+                PatAcopla =
+                    string.IsNullOrWhiteSpace(
+                        request.PatAcopla
+                    )
+                        ? null
+                        : request.PatAcopla
+                            .Trim()
+                            .ToUpperInvariant(),
+
+                Batea =
+                    request.Batea,
+
+                Corta =
+                    request.Corta,
+
+                Larga =
+                    request.Larga,
+
+                Escala =
+                    request.Escala,
+
+
+                // -------------------------------------------
+                // NUEVA EMPRESA DISPONIBLE
+                // -------------------------------------------
+
+                Estado =
+                    "D"
+            };
+
+
+        var id =
+            await _usuarioRepository
+                .CrearAsync(
+                    usuario
+                );
+
+
+        return Ok(new
+        {
+            ok =
+                true,
+
+            idUsuario =
+                id,
+
+            mensaje =
+                "Registro realizado correctamente."
+        });
     }
 
 
@@ -70,9 +324,12 @@ public class AuthController : ControllerBase
             ?.Value;
 
 
-        if (!int.TryParse(
-            idUsuario,
-            out var id))
+        if (
+            !int.TryParse(
+                idUsuario,
+                out var id
+            )
+        )
         {
             return Unauthorized();
         }
@@ -80,7 +337,9 @@ public class AuthController : ControllerBase
 
         var usuario =
             await _usuarioRepository
-                .ObtenerPorIdAsync(id);
+                .ObtenerPorIdAsync(
+                    id
+                );
 
 
         if (usuario == null)
@@ -103,7 +362,8 @@ public class AuthController : ControllerBase
             var logistica =
                 await _logisticaRepository
                     .ObtenerPorIdAsync(
-                        usuario.IdTranspor.Value);
+                        usuario.IdTranspor.Value
+                    );
 
 
             if (logistica != null)

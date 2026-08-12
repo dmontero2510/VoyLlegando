@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        VoyLlegando - Registro
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f6f8;
+            color: #202334;
+        }
+
+
+        /* =====================================================
+           CABECERA
+        ===================================================== */
+
+        .header {
+            background: #0d0d27;
+            color: white;
+
+            padding: 16px 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0,0,0,.15);
+        }
+
+
+        .marca {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+
+        .subtitulo {
+            margin-top: 4px;
+
+            color: #cbd2dc;
+
+            font-size: 13px;
+        }
+
+
+        /* =====================================================
+           CONTENIDO
+        ===================================================== */
+
+        .contenido {
+            width: 100%;
+            max-width: 700px;
+
+            margin: 0 auto;
+
+            padding: 20px;
+        }
+
+
+        .card {
+            background: white;
+
+            border: 1px solid #dce2e8;
+            border-radius: 14px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 4px 14px
+                rgba(13,13,39,.07);
+        }
+
+
+        .titulo {
+            margin:
+                0
+                0
+                5px
+                0;
+
+            color: #0d0d27;
+
+            font-size: 24px;
+        }
+
+
+        .descripcion {
+            margin:
+                0
+                0
+                22px
+                0;
+
+            color: #6c7280;
+
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+
+        /* =====================================================
+           FORMULARIO
+        ===================================================== */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0,1fr)
+                );
+
+            gap: 15px;
+        }
+
+
+        .form-grupo {
+            display: flex;
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+
+        .form-grupo label {
+            color: #41475a;
+
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+
+        .form-control {
+            width: 100%;
+
+            padding: 11px;
+
+            border:
+                1px solid
+                #ccd4dc;
+
+            border-radius: 8px;
+
+            background: white;
+
+            color: #202334;
+
+            font-size: 16px;
+        }
+
+
+        .form-control:focus {
+            outline: none;
+
+            border-color: #28b5e5;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(40,181,229,.12);
+        }
+
+
+        .ancho-completo {
+            grid-column: 1 / -1;
+        }
+
+
+        /* =====================================================
+           TRANSPORTE
+        ===================================================== */
+
+        .seccion-transporte {
+            grid-column: 1 / -1;
+
+            margin-top: 5px;
+
+            padding: 15px;
+
+            background: #f7fafc;
+
+            border:
+                1px solid
+                #dce2e8;
+
+            border-radius: 10px;
+        }
+
+
+        .seccion-titulo {
+            margin:
+                0
+                0
+                14px
+                0;
+
+            color: #0d0d27;
+
+            font-size: 16px;
+        }
+
+
+        .vehiculos-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0,1fr)
+                );
+
+            gap: 14px;
+        }
+
+
+        .checks {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 20px;
+
+            margin-top: 16px;
+        }
+
+
+        .checks label {
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+        }
+
+
+        .checks input {
+            width: 18px;
+            height: 18px;
+        }
+
+
+        .estado {
+            margin-top: 16px;
+
+            padding: 10px 12px;
+
+            background: #eef2f5;
+
+            border:
+                1px solid
+                #dce2e8;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+        }
+
+
+        .estado strong {
+            color: #0d0d27;
+        }
+
+
+        /* =====================================================
+           MENSAJES
+        ===================================================== */
+
+        .mensaje {
+            display: none;
+
+            margin-bottom: 15px;
+
+            padding: 11px 13px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+
+        .mensaje.error {
+            display: block;
+
+            background: #ffebee;
+            color: #b71c1c;
+
+            border:
+                1px solid
+                #ffcdd2;
+        }
+
+
+        .mensaje.ok {
+            display: block;
+
+            background: #e8f5e9;
+            color: #1b5e20;
+
+            border:
+                1px solid
+                #c8e6c9;
+        }
+
+
+        /* =====================================================
+           BOTONES
+        ===================================================== */
+
+        .acciones {
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 22px;
+        }
+
+
+        .btn {
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 12px 18px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+
+        .btn-principal {
+            flex: 1;
+
+            background: #28b5e5;
+            color: white;
+        }
+
+
+        .btn-principal:hover {
+            opacity: .9;
+        }
+
+
+        .btn-principal:disabled {
+            opacity: .55;
+            cursor: default;
+        }
+
+
+        .btn-secundario {
+            background: #e9edf1;
+            color: #34384a;
+        }
+
+
+        /* =====================================================
+           PIE
+        ===================================================== */
+
+        .pie {
+            margin-top: 18px;
+
+            text-align: center;
+
+            color: #6c7280;
+
+            font-size: 13px;
+        }
+
+
+        .pie a {
+            color: #168eb8;
+
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 13px;
+            }
+
+
+            .marca {
+                font-size: 21px;
+            }
+
+
+            .contenido {
+                padding: 12px;
+            }
+
+
+            .card {
+                padding: 17px;
+            }
+
+
+            .titulo {
+                font-size: 21px;
+            }
+
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .ancho-completo,
+            .seccion-transporte {
+                grid-column: auto;
+            }
+
+
+            .vehiculos-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .acciones {
+                flex-direction: column;
+            }
+
+
+            .btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         CABECERA
+    ===================================================== -->
+
+    <header class="header">
+
+        <div class="marca">
+            VoyLlegando
+        </div>
+
+        <div class="subtitulo">
+            Registro de Empresa de Transporte
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         CONTENIDO
+    ===================================================== -->
+
+    <main class="contenido">
+
+        <section class="card">
+
+            <h1 class="titulo">
+                Crear cuenta
+            </h1>
+
+            <p class="descripcion">
+                Complete sus datos para registrarse como
+                Empresa de Transporte.
+            </p>
+
+
+            <div
+                id="mensaje"
+                class="mensaje">
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- =================================================
+                     DATOS PRINCIPALES
+                ================================================== -->
+
+                <div class="form-grupo">
+
+                    <label for="nombre">
+                        Nombre / Razón Social
+                    </label>
+
+                    <input
+                        id="nombre"
+                        class="form-control"
+                        maxlength="100"
+                        autocomplete="organization">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="celular">
+                        Celular
+                    </label>
+
+                    <input
+                        id="celular"
+                        class="form-control"
+                        inputmode="numeric"
+                        autocomplete="tel">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="clave">
+                        Clave
+                    </label>
+
+                    <input
+                        id="clave"
+                        class="form-control"
+                        type="password"
+                        autocomplete="new-password">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="repetirClave">
+                        Repetir clave
+                    </label>
+
+                    <input
+                        id="repetirClave"
+                        class="form-control"
+                        type="password"
+                        autocomplete="new-password">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="domicilio">
+                        Domicilio
+                    </label>
+
+                    <input
+                        id="domicilio"
+                        class="form-control"
+                        maxlength="100"
+                        autocomplete="street-address">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="iva">
+                        Condición de IVA
+                    </label>
+
+                    <select
+                        id="iva"
+                        class="form-control">
+
+                        <option value="">
+                            Cargando...
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="cuit">
+                        CUIT
+                    </label>
+
+                    <input
+                        id="cuit"
+                        class="form-control"
+                        maxlength="11"
+                        inputmode="numeric"
+                        autocomplete="off">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        id="email"
+                        class="form-control"
+                        type="email"
+                        maxlength="100"
+                        autocomplete="email">
+
+                </div>
+
+
+                <!-- =================================================
+                     EMPRESA DE TRANSPORTE
+                ================================================== -->
+
+                <div class="seccion-transporte">
+
+                    <h2 class="seccion-titulo">
+                        Datos del vehículo
+                    </h2>
+
+
+                    <div class="vehiculos-grid">
+
+
+                        <div class="form-grupo">
+
+                            <label for="patChasis">
+                                Patente Chasis
+                            </label>
+
+                            <input
+                                id="patChasis"
+                                class="form-control"
+                                maxlength="10"
+                                autocomplete="off">
+
+                        </div>
+
+
+                        <div class="form-grupo">
+
+                            <label for="patAcopla">
+                                Patente Acoplado
+                            </label>
+
+                            <input
+                                id="patAcopla"
+                                class="form-control"
+                                maxlength="10"
+                                autocomplete="off">
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="checks">
+
+                        <label>
+                            <input
+                                id="batea"
+                                type="checkbox">
+
+                            Batea
+                        </label>
+
+
+                        <label>
+                            <input
+                                id="corta"
+                                type="checkbox">
+
+                            Corta
+                        </label>
+
+
+                        <label>
+                            <input
+                                id="larga"
+                                type="checkbox">
+
+                            Larga
+                        </label>
+
+
+                        <label>
+                            <input
+                                id="escala"
+                                type="checkbox">
+
+                            Escala
+                        </label>
+
+                    </div>
+
+
+                    <div class="estado">
+
+                        Estado inicial:
+                        <strong>
+                            Disponible
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 BOTONES
+            ================================================== -->
+
+            <div class="acciones">
+
+                <button
+                    type="button"
+                    id="btnRegistrar"
+                    class="btn btn-principal"
+                    onclick="registrar()">
+
+                    Registrarme
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn-secundario"
+                    onclick="volverLogin()">
+
+                    Volver
+
+                </button>
+
+            </div>
+
+
+            <div class="pie">
+
+                ¿Ya tiene una cuenta?
+
+                <a href="/">
+                    Ingresar
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        // =======================================================
+        // MENSAJE
+        // =======================================================
+
+        function mostrarMensaje(
+            texto,
+            esError = false
+        )
+        {
+            const elemento =
+                document.getElementById(
+                    "mensaje"
+                );
+
+
+            elemento.textContent =
+                texto || "";
+
+
+            elemento.className =
+                "mensaje";
+
+
+            if (!texto)
+                return;
+
+
+            elemento.classList.add(
+                esError
+                    ? "error"
+                    : "ok"
+            );
+
+
+            elemento.scrollIntoView(
+                {
+                    behavior: "smooth",
+                    block: "center"
+                }
+            );
+        }
+
+
+        // =======================================================
+        // SOLO NUMEROS
+        // =======================================================
+
+        function soloNumeros(
+            valor
+        )
+        {
+            return String(
+                valor || ""
+            )
+                .replace(
+                    /\D/g,
+                    ""
+                );
+        }
+
+
+        // =======================================================
+        // CARGAR TIPOS DE IVA
+        // =======================================================
+
+        async function cargarTiposIva()
+        {
+            const combo =
+                document.getElementById(
+                    "iva"
+                );
+
+
+            try
+            {
+                const response =
+                    await fetch(
+                        "/api/TiposIva"
+                    );
+
+
+                if (!response.ok)
+                {
+                    throw new Error(
+                        "No se pudieron cargar las condiciones de IVA."
+                    );
+                }
+
+
+                const datos =
+                    await response.json();
+
+
+                combo.innerHTML =
+                    '<option value="">Seleccione...</option>';
+
+
+                for (
+                    const item
+                    of datos
+                )
+                {
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+option.value =
+    String(
+        item.idIva
+    );
+
+option.textContent =
+    item.descripcion;
+
+
+                    combo.appendChild(
+                        option
+                    );
+                }
+
+            }
+            catch (error)
+            {
+                combo.innerHTML =
+                    '<option value="">Seleccione...</option>';
+
+
+                mostrarMensaje(
+                    error.message,
+                    true
+                );
+            }
+        }
+
+
+        // =======================================================
+        // VALIDAR
+        // =======================================================
+
+        function validar()
+        {
+            const nombre =
+                document.getElementById(
+                    "nombre"
+                )
+                .value
+                .trim();
+
+
+            const celular =
+                soloNumeros(
+                    document.getElementById(
+                        "celular"
+                    ).value
+                );
+
+
+            const clave =
+                document.getElementById(
+                    "clave"
+                ).value;
+
+
+            const repetirClave =
+                document.getElementById(
+                    "repetirClave"
+                ).value;
+
+
+            const iva =
+                document.getElementById(
+                    "iva"
+                ).value;
+
+
+            const cuit =
+                soloNumeros(
+                    document.getElementById(
+                        "cuit"
+                    ).value
+                );
+
+
+            if (!nombre)
+            {
+                mostrarMensaje(
+                    "Ingrese el nombre o razón social.",
+                    true
+                );
+
+                return false;
+            }
+
+
+            if (!celular)
+            {
+                mostrarMensaje(
+                    "Ingrese el celular.",
+                    true
+                );
+
+                return false;
+            }
+
+
+            if (!clave)
+            {
+                mostrarMensaje(
+                    "Ingrese la clave.",
+                    true
+                );
+
+                return false;
+            }
+
+
+            if (
+                clave !==
+                repetirClave
+            )
+            {
+                mostrarMensaje(
+                    "Las claves ingresadas no coinciden.",
+                    true
+                );
+
+                return false;
+            }
+
+
+            if (!iva)
+            {
+                mostrarMensaje(
+                    "Seleccione la condición de IVA.",
+                    true
+                );
+
+                return false;
+            }
+
+
+            if (
+                cuit.length !== 11
+            )
+            {
+                mostrarMensaje(
+                    "El CUIT debe contener 11 dígitos.",
+                    true
+                );
+
+                return false;
+            }
+
+
+            return true;
+        }
+
+
+        // =======================================================
+        // REGISTRAR
+        // =======================================================
+
+        async function registrar()
+        {
+            mostrarMensaje("");
+
+
+            if (!validar())
+                return;
+
+
+            const boton =
+                document.getElementById(
+                    "btnRegistrar"
+                );
+
+
+            boton.disabled =
+                true;
+
+            boton.textContent =
+                "Registrando...";
+
+
+            const datos =
+            {
+                nombre:
+                    document.getElementById(
+                        "nombre"
+                    )
+                    .value
+                    .trim(),
+
+                celular:
+                    soloNumeros(
+                        document.getElementById(
+                            "celular"
+                        ).value
+                    ),
+
+                clave:
+                    document.getElementById(
+                        "clave"
+                    ).value,
+
+                domicilio:
+                    document.getElementById(
+                        "domicilio"
+                    )
+                    .value
+                    .trim(),
+
+                iva:
+                    document.getElementById(
+                        "iva"
+                    ).value,
+
+                cuit:
+                    soloNumeros(
+                        document.getElementById(
+                            "cuit"
+                        ).value
+                    ),
+
+                email:
+                    document.getElementById(
+                        "email"
+                    )
+                    .value
+                    .trim(),
+
+                patChasis:
+                    document.getElementById(
+                        "patChasis"
+                    )
+                    .value
+                    .trim()
+                    .toUpperCase(),
+
+                patAcopla:
+                    document.getElementById(
+                        "patAcopla"
+                    )
+                    .value
+                    .trim()
+                    .toUpperCase(),
+
+                batea:
+                    document.getElementById(
+                        "batea"
+                    ).checked,
+
+                corta:
+                    document.getElementById(
+                        "corta"
+                    ).checked,
+
+                larga:
+                    document.getElementById(
+                        "larga"
+                    ).checked,
+
+                escala:
+                    document.getElementById(
+                        "escala"
+                    ).checked
+            };
+
+
+            try
+            {
+                const response =
+                    await fetch(
+                        "/api/auth/registro",
+                        {
+                            method:
+                                "POST",
+
+                            headers:
+                            {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    datos
+                                )
+                        }
+                    );
+
+
+                let resultado =
+                    null;
+
+
+                try
+                {
+                    resultado =
+                        await response.json();
+                }
+                catch
+                {
+                    resultado =
+                        null;
+                }
+
+
+                if (!response.ok)
+                {
+                    throw new Error(
+                        resultado?.mensaje ??
+                        resultado?.message ??
+                        resultado?.title ??
+                        "No se pudo realizar el registro."
+                    );
+                }
+
+
+                mostrarMensaje(
+                    resultado?.mensaje ??
+                    "Registro realizado correctamente."
+                );
+
+
+                boton.textContent =
+                    "Registro realizado";
+
+
+                setTimeout(
+                    () =>
+                    {
+                        window.location.href =
+                            "/";
+                    },
+                    1500
+                );
+
+            }
+            catch (error)
+            {
+                mostrarMensaje(
+                    error.message ??
+                    "No se pudo realizar el registro.",
+                    true
+                );
+
+
+                boton.disabled =
+                    false;
+
+                boton.textContent =
+                    "Registrarme";
+            }
+        }
+
+
+        // =======================================================
+        // VOLVER
+        // =======================================================
+
+        function volverLogin()
+        {
+            window.location.href =
+                "/";
+        }
+
+
+        // =======================================================
+        // NORMALIZAR CELULAR / CUIT
+        // =======================================================
+
+        document
+            .getElementById(
+                "celular"
+            )
+            .addEventListener(
+                "input",
+                function()
+                {
+                    this.value =
+                        soloNumeros(
+                            this.value
+                        );
+                }
+            );
+
+
+        document
+            .getElementById(
+                "cuit"
+            )
+            .addEventListener(
+                "input",
+                function()
+                {
+                    this.value =
+                        soloNumeros(
+                            this.value
+                        );
+                }
+            );
+
+
+        // =======================================================
+        // INICIO
+        // =======================================================
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async () =>
+            {
+                await cargarTiposIva();
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>

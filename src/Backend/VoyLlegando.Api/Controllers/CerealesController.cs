@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using VoyLlegando.Application.DTOs;
 using VoyLlegando.Application.Interfaces;
 using VoyLlegando.Domain.Entities;
-using VoyLlegando.Application.DTOs;
 
 namespace VoyLlegando.Api.Controllers;
+
 
 [ApiController]
 [Authorize]
@@ -13,37 +13,37 @@ namespace VoyLlegando.Api.Controllers;
 public class CerealesController
     : ControllerBase
 {
-    private readonly ICerealRepository _cerealRepository;
-    private readonly IUsuarioRepository _usuarioRepository;
+    private readonly ICerealRepository
+        _cerealRepository;
+
+
+    // -------------------------------------------------------
+    // CONSTRUCTOR
+    // -------------------------------------------------------
 
     public CerealesController(
-        ICerealRepository cerealRepository,
-        IUsuarioRepository usuarioRepository)
+        ICerealRepository cerealRepository)
     {
-        _cerealRepository = cerealRepository;
-        _usuarioRepository = usuarioRepository;
+        _cerealRepository =
+            cerealRepository;
     }
+
 
     // -------------------------------------------------------
     // GET /api/Cereales
-    // TODOS - ABM
+    //
+    // SOLO S
+    // LISTADO COMPLETO PARA ADMINISTRACION
     // -------------------------------------------------------
 
+    [Authorize(Roles = "S")]
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var usuario =
-            await ObtenerUsuarioActual();
-
-        if (usuario == null)
-            return Unauthorized();
-
-        if (usuario.Rol != "L")
-            return Forbid();
-
         var cereales =
             await _cerealRepository
                 .ObtenerTodosAsync();
+
 
         return Ok(
             cereales.Select(
@@ -62,27 +62,25 @@ public class CerealesController
         );
     }
 
+
     // -------------------------------------------------------
     // GET /api/Cereales/habilitados
-    // PARA COMBO DE VIAJES
+    //
+    // L = LOGISTICA
+    // S = ADMINISTRADOR
+    //
+    // PARA COMBOS
     // -------------------------------------------------------
 
+    [Authorize(Roles = "L,S")]
     [HttpGet("habilitados")]
     public async Task<IActionResult>
         Habilitados()
     {
-        var usuario =
-            await ObtenerUsuarioActual();
-
-        if (usuario == null)
-            return Unauthorized();
-
-        if (usuario.Rol != "L")
-            return Forbid();
-
         var cereales =
             await _cerealRepository
                 .ObtenerHabilitadosAsync();
+
 
         return Ok(
             cereales.Select(
@@ -98,29 +96,28 @@ public class CerealesController
         );
     }
 
+
     // -------------------------------------------------------
     // GET /api/Cereales/{id}
+    //
+    // SOLO S
     // -------------------------------------------------------
 
+    [Authorize(Roles = "S")]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(
         int id)
     {
-        var usuario =
-            await ObtenerUsuarioActual();
-
-        if (usuario == null)
-            return Unauthorized();
-
-        if (usuario.Rol != "L")
-            return Forbid();
-
         var cereal =
             await _cerealRepository
-                .ObtenerPorIdAsync(id);
+                .ObtenerPorIdAsync(
+                    id
+                );
+
 
         if (cereal == null)
             return NotFound();
+
 
         return Ok(new
         {
@@ -135,176 +132,202 @@ public class CerealesController
         });
     }
 
+
     // -------------------------------------------------------
     // POST /api/Cereales
+    //
+    // SOLO S
     // -------------------------------------------------------
 
+    [Authorize(Roles = "S")]
     [HttpPost]
     public async Task<IActionResult> Post(
         CerealRequest request)
     {
-        var usuario =
-            await ObtenerUsuarioActual();
-
-        if (usuario == null)
-            return Unauthorized();
-
-        if (usuario.Rol != "L")
-            return Forbid();
-
-        if (request.IdCereal <= 0)
+        if (
+            request.IdCereal <= 0
+        )
         {
             return BadRequest(
-                "El código del cereal es obligatorio.");
+                "El código del cereal es obligatorio."
+            );
         }
 
-        if (string.IsNullOrWhiteSpace(
-            request.Nombre))
+
+        if (
+            string.IsNullOrWhiteSpace(
+                request.Nombre
+            )
+        )
         {
             return BadRequest(
-                "El nombre del cereal es obligatorio.");
+                "El nombre del cereal es obligatorio."
+            );
         }
+
 
         var existente =
             await _cerealRepository
                 .ObtenerPorIdAsync(
-                    request.IdCereal);
+                    request.IdCereal
+                );
+
 
         if (existente != null)
         {
             return BadRequest(
-                "Ya existe un cereal con ese código.");
+                "Ya existe un cereal con ese código."
+            );
         }
 
-        Cereal cereal = new()
-        {
-            IdCereal =
-                request.IdCereal,
 
-            NombreCereal =
-                request.Nombre.Trim(),
+        Cereal cereal =
+            new()
+            {
+                IdCereal =
+                    request.IdCereal,
 
-            Habilitado =
-                request.Habilitado
-        };
+                NombreCereal =
+                    request.Nombre
+                        .Trim(),
+
+                Habilitado =
+                    true
+            };
+
 
         await _cerealRepository
-            .CrearAsync(cereal);
+            .CrearAsync(
+                cereal
+            );
+
 
         return Ok(new
         {
-            ok = true,
+            ok =
+                true,
+
             mensaje =
                 "Cereal creado correctamente."
         });
     }
 
+
     // -------------------------------------------------------
     // PUT /api/Cereales/{id}
+    //
+    // SOLO S
+    //
+    // PERMITE MODIFICAR Y TAMBIEN REHABILITAR
     // -------------------------------------------------------
 
+    [Authorize(Roles = "S")]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Put(
         int id,
         CerealRequest request)
     {
-        var usuario =
-            await ObtenerUsuarioActual();
-
-        if (usuario == null)
-            return Unauthorized();
-
-        if (usuario.Rol != "L")
-            return Forbid();
-
         var cereal =
             await _cerealRepository
-                .ObtenerPorIdAsync(id);
+                .ObtenerPorIdAsync(
+                    id
+                );
+
 
         if (cereal == null)
             return NotFound();
 
-        if (string.IsNullOrWhiteSpace(
-            request.Nombre))
+
+        if (
+            string.IsNullOrWhiteSpace(
+                request.Nombre
+            )
+        )
         {
             return BadRequest(
-                "El nombre del cereal es obligatorio.");
+                "El nombre del cereal es obligatorio."
+            );
         }
 
+
         cereal.NombreCereal =
-            request.Nombre.Trim();
+            request.Nombre
+                .Trim();
+
 
         cereal.Habilitado =
             request.Habilitado;
 
+
         await _cerealRepository
-            .ActualizarAsync(cereal);
+            .ActualizarAsync(
+                cereal
+            );
+
 
         return Ok(new
         {
-            ok = true,
+            ok =
+                true,
+
             mensaje =
-                "Cereal actualizado correctamente."
+                cereal.Habilitado
+                    ? "Cereal actualizado correctamente."
+                    : "Cereal actualizado y deshabilitado correctamente."
         });
     }
 
+
     // -------------------------------------------------------
     // DELETE /api/Cereales/{id}
+    //
+    // SOLO S
+    //
     // BAJA LOGICA
     // -------------------------------------------------------
 
+    [Authorize(Roles = "S")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(
         int id)
     {
-        var usuario =
-            await ObtenerUsuarioActual();
-
-        if (usuario == null)
-            return Unauthorized();
-
-        if (usuario.Rol != "L")
-            return Forbid();
-
         var cereal =
             await _cerealRepository
-                .ObtenerPorIdAsync(id);
+                .ObtenerPorIdAsync(
+                    id
+                );
+
 
         if (cereal == null)
             return NotFound();
 
+
+        if (!cereal.Habilitado)
+        {
+            return Ok(new
+            {
+                ok =
+                    true,
+
+                mensaje =
+                    "El cereal ya se encuentra deshabilitado."
+            });
+        }
+
+
         await _cerealRepository
-            .BajaAsync(id);
+            .BajaAsync(
+                id
+            );
+
 
         return Ok(new
         {
-            ok = true,
+            ok =
+                true,
+
             mensaje =
                 "Cereal deshabilitado correctamente."
         });
-    }
-
-    // -------------------------------------------------------
-    // USUARIO ACTUAL
-    // -------------------------------------------------------
-
-    private async Task<Usuario?>
-        ObtenerUsuarioActual()
-    {
-        var claimId =
-            User.FindFirst(
-                ClaimTypes.NameIdentifier)
-            ?.Value;
-
-        if (!int.TryParse(
-            claimId,
-            out var idUsuario))
-        {
-            return null;
-        }
-
-        return await _usuarioRepository
-            .ObtenerPorIdAsync(
-                idUsuario);
     }
 }

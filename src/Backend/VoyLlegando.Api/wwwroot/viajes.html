@@ -776,27 +776,15 @@
                         Cereal
                     </label>
 
-                    <div class="combo-con-alta">
+                    <select
+                        id="idCereal"
+                        class="form-control">
 
-                        <select
-                            id="idCereal"
-                            class="form-control">
+                        <option value="">
+                            Seleccione...
+                        </option>
 
-                            <option value="">
-                                Seleccione...
-                            </option>
-
-                        </select>
-
-                        <button
-                            type="button"
-                            class="btn-mas"
-                            onclick="abrirAltaCereal()"
-                            title="Nuevo cereal">
-                            +
-                        </button>
-
-                    </div>
+                    </select>
 
                 </div>
 
@@ -1025,82 +1013,6 @@
     </div>
 
 </main>
-
-
-<!-- =====================================================
-     MODAL NUEVO CEREAL
-===================================================== -->
-
-<div
-    id="modalCereal"
-    class="modal-fondo oculto">
-
-    <div class="modal">
-
-        <div class="modal-cabecera">
-
-            <h2 class="modal-titulo">
-                Nuevo Cereal
-            </h2>
-
-            <button
-                type="button"
-                class="modal-cerrar"
-                onclick="cerrarAltaCereal()">
-                ×
-            </button>
-
-        </div>
-
-        <div class="form-grupo">
-
-            <label for="nuevoCerealId">
-                Código
-            </label>
-
-            <input
-                id="nuevoCerealId"
-                class="form-control"
-                type="number"
-                readonly>
-
-        </div>
-
-        <div class="form-grupo">
-
-            <label for="nuevoCerealNombre">
-                Nombre
-            </label>
-
-            <input
-                id="nuevoCerealNombre"
-                class="form-control"
-                maxlength="100"
-                autocomplete="off">
-
-        </div>
-
-        <div class="modal-acciones">
-
-            <button
-                type="button"
-                class="btn btn-secundario"
-                onclick="cerrarAltaCereal()">
-                Cancelar
-            </button>
-
-            <button
-                type="button"
-                class="btn btn-principal"
-                onclick="guardarNuevoCereal()">
-                Guardar
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
 
 
 <!-- =====================================================

@@ -15,16 +15,16 @@
 
     <link
         rel="stylesheet"
-        href="/css/app.css">
+        href="/css/app.css?v=4">
 
 
     <style>
 
         /* =====================================================
-           HEADER LOGISTICA
+           HEADER ADMINISTRADOR
         ===================================================== */
 
-        .header-logistica {
+        .header-admin {
             background: #0d0d27;
 
             border-bottom:
@@ -49,7 +49,8 @@
                 20px;
 
             box-shadow:
-                0 2px 10px rgba(13, 13, 39, .20);
+                0 2px 10px
+                rgba(13, 13, 39, .20);
         }
 
 
@@ -75,8 +76,7 @@
 
 
         .header-marca::before {
-            content:
-                "■";
+            content: "■";
 
             color:
                 #28b5e5;
@@ -86,7 +86,7 @@
         }
 
 
-        .header-empresa {
+        .header-titulo {
             justify-self:
                 center;
 
@@ -139,7 +139,8 @@
 
         .btn-salir {
             border:
-                1px solid rgba(255,255,255,.45);
+                1px solid
+                rgba(255,255,255,.45);
 
             background:
                 transparent;
@@ -273,6 +274,9 @@
         .estado-habilitado {
             font-weight:
                 bold;
+
+            color:
+                #198754;
         }
 
 
@@ -280,8 +284,8 @@
             font-weight:
                 bold;
 
-            opacity:
-                .65;
+            color:
+                #b42318;
         }
 
 
@@ -347,7 +351,7 @@
 
         @media (max-width: 700px) {
 
-            .header-logistica {
+            .header-admin {
                 grid-template-columns:
                     1fr auto;
 
@@ -389,7 +393,7 @@
             }
 
 
-            .header-empresa {
+            .header-titulo {
                 grid-column:
                     1 / -1;
 
@@ -436,30 +440,21 @@
      HEADER
 ===================================================== -->
 
-<header class="header-logistica">
+<header class="header-admin">
 
-
-    <!-- IZQUIERDA -->
 
     <div class="header-marca">
         VoyLlegando
     </div>
 
 
-    <!-- CENTRO -->
-
-    <div
-        id="nombreLogistica"
-        class="header-empresa">
-
-        Logística
-
+    <div class="header-titulo">
+        System Administrator
     </div>
 
 
-    <!-- DERECHA -->
-
     <div class="header-derecha">
+
 
         <div
             id="nombreUsuario"
@@ -475,6 +470,7 @@
             Salir
 
         </button>
+
 
     </div>
 
@@ -604,10 +600,8 @@
 
 
                     <div class="ayuda">
-
                         El código solamente puede modificarse
                         al crear el cereal.
-
                     </div>
 
                 </div>
@@ -631,7 +625,7 @@
                 </div>
 
 
-                <!-- HABILITADO -->
+                <!-- ESTADO -->
 
                 <div class="form-grupo ancho-completo">
 
@@ -640,11 +634,18 @@
                         <input
                             id="habilitado"
                             type="checkbox"
-                            checked>
+                            checked
+                            disabled>
 
                         Habilitado
 
                     </label>
+
+
+                    <div class="ayuda">
+                        Para cambiar el estado utilice
+                        Habilitar o Deshabilitar.
+                    </div>
 
                 </div>
 
@@ -681,9 +682,9 @@
 
                 <button
                     type="button"
-                    id="btnDeshabilitar"
+                    id="btnEstado"
                     class="btn btn-peligro oculto"
-                    onclick="deshabilitarCereal()">
+                    onclick="cambiarEstadoCereal()">
 
                     Deshabilitar
 
@@ -706,11 +707,11 @@
      JAVASCRIPT
 ===================================================== -->
 
-<script src="/js/api.js"></script>
+<script src="/js/api.js?v=4"></script>
 
-<script src="/js/auth.js"></script>
+<script src="/js/auth.js?v=4"></script>
 
-<script src="/js/cereales.js"></script>
+<script src="/js/cereales.js?v=2"></script>
 
 
 </body>

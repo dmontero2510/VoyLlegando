@@ -9,25 +9,43 @@ namespace VoyLlegando.Api.Controllers;
 [Route("api/[controller]")]
 public class TiposIvaController : ControllerBase
 {
-    private readonly ITipoIvaRepository _repository;
+    private readonly ITipoIvaRepository
+        _repository;
+
 
     public TiposIvaController(
         ITipoIvaRepository repository)
     {
-        _repository = repository;
+        _repository =
+            repository;
     }
 
+
+    // -------------------------------------------------------
+    // GET /api/TiposIva
+    // PUBLICO PARA REGISTRO
+    // -------------------------------------------------------
+
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> Get()
     {
         var tipos =
-            await _repository.ObtenerTodosAsync();
+            await _repository
+                .ObtenerTodosAsync();
+
 
         return Ok(
-            tipos.Select(x => new
-            {
-                idIva = x.IdIva,
-                descripcion = x.DescripIva
-            }));
+            tipos.Select(
+                x => new
+                {
+                    idIva =
+                        x.IdIva,
+
+                    descripcion =
+                        x.DescripIva
+                }
+            )
+        );
     }
 }

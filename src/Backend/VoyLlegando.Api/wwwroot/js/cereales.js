@@ -1,6 +1,7 @@
 // =======================================================
 // VOYLLEGANDO
 // CEREALES
+// SYSTEM ADMINISTRATOR
 // =======================================================
 
 let cereales = [];
@@ -15,10 +16,28 @@ let cerealSeleccionado = null;
 async function iniciar()
 {
     const perfil =
-        await validarSesion("L");
+        await validarSesion(
+            "S"
+        );
+
 
     if (!perfil)
         return;
+
+
+    const nombreUsuario =
+        document.getElementById(
+            "nombreUsuario"
+        );
+
+
+    if (nombreUsuario)
+    {
+        nombreUsuario.textContent =
+            perfil.nombre ||
+            "Administrador";
+    }
+
 
     await cargarCereales();
 }
@@ -34,7 +53,7 @@ iniciar();
 function volver()
 {
     window.location.href =
-        "/logistica.html";
+        "/tablas.html";
 }
 
 
@@ -53,8 +72,12 @@ function mensaje(
         );
 
 
+    if (!elemento)
+        return;
+
+
     elemento.textContent =
-        texto;
+        texto || "";
 
 
     elemento.className =
@@ -92,7 +115,8 @@ async function cargarCereales()
     }
     catch (error)
     {
-        lista.innerHTML = "";
+        lista.innerHTML =
+            "";
 
 
         mensaje(
@@ -115,7 +139,8 @@ function mostrarCereales()
         );
 
 
-    lista.innerHTML = "";
+    lista.innerHTML =
+        "";
 
 
     if (
@@ -215,32 +240,58 @@ function nuevoCereal()
         null;
 
 
-    document
-        .getElementById(
-            "idCereal"
-        )
-        .value = "";
+    let proximoCodigo =
+        1;
 
 
-    document
-        .getElementById(
+    if (
+        cereales &&
+        cereales.length > 0
+    )
+    {
+        const maximo =
+            Math.max(
+                ...cereales.map(
+                    cereal =>
+                        Number(
+                            cereal.idCereal
+                        ) || 0
+                )
+            );
+
+
+        proximoCodigo =
+            maximo + 1;
+    }
+
+
+    const idCereal =
+        document.getElementById(
             "idCereal"
-        )
-        .disabled = false;
+        );
+
+
+    idCereal.value =
+        proximoCodigo;
+
+    idCereal.disabled =
+        false;
 
 
     document
         .getElementById(
             "nombre"
         )
-        .value = "";
+        .value =
+            "";
 
 
     document
         .getElementById(
             "habilitado"
         )
-        .checked = true;
+        .checked =
+            true;
 
 
     document
@@ -251,13 +302,15 @@ function nuevoCereal()
             "Nuevo Cereal";
 
 
-    document
-        .getElementById(
-            "btnDeshabilitar"
-        )
-        .classList.add(
-            "oculto"
+    const botonEstado =
+        document.getElementById(
+            "btnEstado"
         );
+
+
+    botonEstado.classList.add(
+        "oculto"
+    );
 
 
     mostrarCereales();
@@ -265,11 +318,10 @@ function nuevoCereal()
 
     document
         .getElementById(
-            "idCereal"
+            "nombre"
         )
         .focus();
 }
-
 
 // =======================================================
 // SELECCIONAR CEREAL
@@ -291,20 +343,20 @@ async function seleccionarCereal(
             cereal;
 
 
-        document
-            .getElementById(
+        const inputId =
+            document.getElementById(
                 "idCereal"
-            )
-            .value =
-                cereal.idCereal;
+            );
 
 
-        // El ID no puede cambiarse una vez creado.
-        document
-            .getElementById(
-                "idCereal"
-            )
-            .disabled = true;
+        inputId.value =
+            cereal.idCereal;
+
+
+        // El código no puede cambiarse
+        // una vez creado.
+        inputId.disabled =
+            true;
 
 
         document
@@ -331,26 +383,9 @@ async function seleccionarCereal(
                 `Cereal #${cereal.idCereal}`;
 
 
-        // Mostramos Deshabilitar solamente
-        // cuando actualmente está habilitado.
-        const boton =
-            document.getElementById(
-                "btnDeshabilitar"
-            );
-
-
-        if (cereal.habilitado)
-        {
-            boton.classList.remove(
-                "oculto"
-            );
-        }
-        else
-        {
-            boton.classList.add(
-                "oculto"
-            );
-        }
+        actualizarBotonEstado(
+            cereal
+        );
 
 
         mostrarCereales();
@@ -360,6 +395,64 @@ async function seleccionarCereal(
         mensaje(
             error.message,
             true
+        );
+    }
+}
+
+
+// =======================================================
+// ACTUALIZAR BOTON ESTADO
+// =======================================================
+
+function actualizarBotonEstado(
+    cereal
+)
+{
+    const boton =
+        document.getElementById(
+            "btnEstado"
+        );
+
+
+    if (!cereal)
+    {
+        boton.classList.add(
+            "oculto"
+        );
+
+        return;
+    }
+
+
+    boton.classList.remove(
+        "oculto"
+    );
+
+
+    if (cereal.habilitado)
+    {
+        boton.textContent =
+            "Deshabilitar";
+
+        boton.classList.remove(
+            "btn-principal"
+        );
+
+        boton.classList.add(
+            "btn-peligro"
+        );
+    }
+    else
+    {
+        boton.textContent =
+            "Habilitar";
+
+        boton.classList.remove(
+            "btn-peligro"
+        );
+
+        boton.classList.add(
+            "btn-principal"
         );
     }
 }
@@ -388,20 +481,16 @@ async function guardarCereal()
             .trim();
 
 
-    const habilitado =
-        document
-            .getElementById(
-                "habilitado"
-            )
-            .checked;
-
-
     const idCereal =
-        Number(idTexto);
+        Number(
+            idTexto
+        );
 
 
     if (
-        !Number.isInteger(idCereal) ||
+        !Number.isInteger(
+            idCereal
+        ) ||
         idCereal <= 0
     )
     {
@@ -425,7 +514,9 @@ async function guardarCereal()
     }
 
 
-    if (nombre.length > 100)
+    if (
+        nombre.length > 100
+    )
     {
         mensaje(
             "El nombre no puede superar los 100 caracteres.",
@@ -434,6 +525,22 @@ async function guardarCereal()
 
         return;
     }
+
+
+    // ---------------------------------------------------
+    // ESTADO
+    //
+    // Nuevo:
+    // siempre nace habilitado.
+    //
+    // Edición:
+    // conserva el estado actual.
+    // ---------------------------------------------------
+
+    const habilitado =
+        cerealSeleccionado
+            ? cerealSeleccionado.habilitado
+            : true;
 
 
     const datos =
@@ -495,6 +602,27 @@ async function guardarCereal()
 
 
 // =======================================================
+// CAMBIAR ESTADO
+// =======================================================
+
+async function cambiarEstadoCereal()
+{
+    if (!cerealSeleccionado)
+        return;
+
+
+    if (cerealSeleccionado.habilitado)
+    {
+        await deshabilitarCereal();
+    }
+    else
+    {
+        await habilitarCereal();
+    }
+}
+
+
+// =======================================================
 // DESHABILITAR CEREAL
 // =======================================================
 
@@ -549,10 +677,80 @@ async function deshabilitarCereal()
 
 
 // =======================================================
+// HABILITAR CEREAL
+// =======================================================
+
+async function habilitarCereal()
+{
+    if (!cerealSeleccionado)
+        return;
+
+
+    if (
+        !confirm(
+            `¿Habilitar el cereal "${cerealSeleccionado.nombre}"?`
+        )
+    )
+    {
+        return;
+    }
+
+
+    try
+    {
+        const id =
+            cerealSeleccionado.idCereal;
+
+
+        const datos =
+        {
+            idCereal:
+                id,
+
+            nombre:
+                cerealSeleccionado.nombre,
+
+            habilitado:
+                true
+        };
+
+
+        const respuesta =
+            await API.put(
+                `/api/Cereales/${id}`,
+                datos
+            );
+
+
+        mensaje(
+            respuesta.mensaje
+        );
+
+
+        await cargarCereales();
+
+
+        await seleccionarCereal(
+            id
+        );
+    }
+    catch (error)
+    {
+        mensaje(
+            error.message,
+            true
+        );
+    }
+}
+
+
+// =======================================================
 // ESCAPAR HTML
 // =======================================================
 
-function escapar(valor)
+function escapar(
+    valor
+)
 {
     const elemento =
         document.createElement(

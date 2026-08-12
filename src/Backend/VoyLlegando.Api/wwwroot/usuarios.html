@@ -744,7 +744,9 @@
              FORMULARIO
         ============================================== -->
 
-        <section class="card">
+            <section
+                id="formularioUsuario"
+                class="card">
 
             <h2
                 id="tituloFormulario"
@@ -2224,6 +2226,40 @@
     // NUEVO USUARIO
     // =======================================================
 
+// =======================================================
+// MOSTRAR FORMULARIO EN MOBILE
+// =======================================================
+
+function mostrarFormularioMovil()
+{
+    if (
+        window.innerWidth <= 850
+    )
+    {
+        const formulario =
+            document.getElementById(
+                "formularioUsuario"
+            );
+
+
+        if (formulario)
+        {
+            setTimeout(
+                () =>
+                {
+                    formulario.scrollIntoView(
+                        {
+                            behavior: "smooth",
+                            block: "start"
+                        }
+                    );
+                },
+                50
+            );
+        }
+    }
+}
+
     function nuevoUsuario()
     {
         usuarioSeleccionado =
@@ -2421,6 +2457,8 @@ document
         mostrarUsuarios();
 
         mensaje("");
+
+        mostrarFormularioMovil();
     }
 
 
@@ -2703,6 +2741,8 @@ else
             mostrarUsuarios();
 
             mensaje("");
+            mostrarFormularioMovil();
+
         }
         catch (error)
         {

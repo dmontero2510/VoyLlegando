@@ -170,8 +170,21 @@ app.UseHttpsRedirection();
 // -------------------------------------------------------
 
 app.UseDefaultFiles();
-app.UseStaticFiles();
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.CacheControl =
+            "no-store, no-cache, must-revalidate, max-age=0";
+
+        ctx.Context.Response.Headers.Pragma =
+            "no-cache";
+
+        ctx.Context.Response.Headers.Expires =
+            "0";
+    }
+});
 // -------------------------------------------------------
 // AUTENTICACIÓN / AUTORIZACIÓN
 // -------------------------------------------------------
