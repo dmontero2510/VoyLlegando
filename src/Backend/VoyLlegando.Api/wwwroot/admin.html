@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>
+        VoyLlegando - Administración
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css?v=4">
+
+
+    <style>
+
+        /* =============================================
+           HEADER
+        ============================================= */
+
+        .header-admin {
+            background:
+                #0d0d27;
+
+            border-bottom:
+                4px solid #28b5e5;
+
+            min-height:
+                72px;
+
+            padding:
+                12px 24px;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 2fr 1fr;
+
+            align-items:
+                center;
+
+            gap:
+                20px;
+        }
+
+
+        .header-marca {
+            justify-self:
+                start;
+
+            color:
+                white;
+
+            font-size:
+                22px;
+
+            font-weight:
+                bold;
+
+            white-space:
+                nowrap;
+        }
+
+
+        .header-marca::before {
+            content:
+                "■";
+
+            color:
+                #28b5e5;
+
+            margin-right:
+                9px;
+        }
+
+
+        .header-titulo {
+            justify-self:
+                center;
+
+            text-align:
+                center;
+
+            color:
+                #28b5e5;
+
+            font-size:
+                20px;
+
+            font-weight:
+                bold;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .5px;
+        }
+
+
+        .header-derecha {
+            justify-self:
+                end;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                14px;
+        }
+
+
+        .header-usuario {
+            color:
+                white;
+
+            font-size:
+                14px;
+
+            white-space:
+                nowrap;
+        }
+
+
+        .btn-salir {
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .45
+                );
+
+            background:
+                transparent;
+
+            color:
+                white;
+
+            padding:
+                8px 13px;
+
+            border-radius:
+                7px;
+
+            cursor:
+                pointer;
+
+            font-weight:
+                bold;
+        }
+
+
+        .btn-salir:hover {
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .10
+                );
+        }
+
+
+        /* =============================================
+           CONTENIDO
+        ============================================= */
+
+        .contenido {
+            max-width:
+                1200px;
+
+            margin:
+                0 auto;
+
+            padding:
+                28px 24px;
+        }
+
+
+        .titulo-admin {
+            margin:
+                0 0 25px 0;
+
+            font-size:
+                27px;
+
+            color:
+                #0d0d27;
+        }
+
+
+        .titulo-admin::after {
+            content:
+                "";
+
+            display:
+                block;
+
+            width:
+                55px;
+
+            height:
+                4px;
+
+            margin-top:
+                8px;
+
+            border-radius:
+                4px;
+
+            background:
+                #28b5e5;
+        }
+
+
+        /* =============================================
+           MENU
+        ============================================= */
+
+        .menu-admin {
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(
+                        250px,
+                        1fr
+                    )
+                );
+
+            gap:
+                20px;
+        }
+
+
+        .menu-item {
+            position:
+                relative;
+
+            background:
+                white;
+
+            border:
+                1px solid
+                #dce2e8;
+
+            border-radius:
+                12px;
+
+            min-height:
+                170px;
+
+            padding:
+                26px 18px;
+
+            cursor:
+                pointer;
+
+            text-align:
+                center;
+
+            overflow:
+                hidden;
+
+            box-shadow:
+                0 3px 10px
+                rgba(
+                    13,
+                    13,
+                    39,
+                    .06
+                );
+
+            transition:
+                transform .15s,
+                box-shadow .15s;
+        }
+
+
+        .menu-item::before {
+            content:
+                "";
+
+            position:
+                absolute;
+
+            top:
+                0;
+
+            left:
+                0;
+
+            width:
+                100%;
+
+            height:
+                5px;
+
+            background:
+                #28b5e5;
+        }
+
+
+        .menu-item:hover {
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 8px 25px
+                rgba(
+                    13,
+                    13,
+                    39,
+                    .13
+                );
+        }
+
+
+        .menu-icono {
+            font-size:
+                40px;
+
+            margin-bottom:
+                12px;
+        }
+
+
+        .menu-titulo {
+            color:
+                #0d0d27;
+
+            font-size:
+                18px;
+
+            font-weight:
+                bold;
+
+            margin-bottom:
+                7px;
+        }
+
+
+        .menu-descripcion {
+            color:
+                #6c7280;
+
+            font-size:
+                13px;
+
+            line-height:
+                1.45;
+        }
+
+
+        /* =============================================
+           FUTURO / DESHABILITADO
+        ============================================= */
+
+        .menu-item-deshabilitado {
+            opacity:
+                .45;
+
+            cursor:
+                default;
+        }
+
+
+        .menu-item-deshabilitado:hover {
+            transform:
+                none;
+
+            box-shadow:
+                0 3px 10px
+                rgba(
+                    13,
+                    13,
+                    39,
+                    .06
+                );
+        }
+
+
+        /* =============================================
+           MOBILE
+        ============================================= */
+
+        @media (max-width: 700px) {
+
+            .header-admin {
+                grid-template-columns:
+                    1fr auto;
+
+                padding:
+                    8px 12px;
+
+                gap:
+                    5px;
+
+                min-height:
+                    58px;
+            }
+
+
+            .header-marca {
+                grid-column:
+                    1;
+
+                grid-row:
+                    1;
+
+                font-size:
+                    17px;
+            }
+
+
+            .header-derecha {
+                grid-column:
+                    2;
+
+                grid-row:
+                    1;
+
+                gap:
+                    6px;
+            }
+
+
+            .header-usuario {
+                font-size:
+                    11px;
+            }
+
+
+            .btn-salir {
+                padding:
+                    6px 9px;
+
+                font-size:
+                    12px;
+            }
+
+
+            .header-titulo {
+                grid-column:
+                    1 / -1;
+
+                grid-row:
+                    2;
+
+                width:
+                    100%;
+
+                font-size:
+                    14px;
+
+                padding-top:
+                    2px;
+            }
+
+
+            .contenido {
+                padding:
+                    12px;
+            }
+
+
+            .titulo-admin {
+                font-size:
+                    22px;
+
+                margin-bottom:
+                    12px;
+            }
+
+
+            .menu-admin {
+                grid-template-columns:
+                    1fr;
+
+                gap:
+                    8px;
+            }
+
+
+            .menu-item {
+                min-height:
+                    0;
+
+                height:
+                    82px;
+
+                padding:
+                    8px 12px;
+
+                display:
+                    flex;
+
+                align-items:
+                    center;
+
+                gap:
+                    12px;
+
+                text-align:
+                    left;
+            }
+
+
+            .menu-item::before {
+                width:
+                    4px;
+
+                height:
+                    100%;
+            }
+
+
+            .menu-icono {
+                flex:
+                    0 0 42px;
+
+                font-size:
+                    30px;
+
+                margin-bottom:
+                    0;
+
+                text-align:
+                    center;
+            }
+
+
+            .menu-titulo {
+                font-size:
+                    15px;
+
+                margin-bottom:
+                    2px;
+            }
+
+
+            .menu-descripcion {
+                font-size:
+                    11px;
+
+                line-height:
+                    1.2;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header-admin">
+
+
+    <div class="header-marca">
+        VoyLlegando
+    </div>
+
+
+    <div class="header-titulo">
+        System Administrator
+    </div>
+
+
+    <div class="header-derecha">
+
+
+        <div
+            id="nombreUsuario"
+            class="header-usuario">
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-salir"
+            onclick="logout()">
+
+            Salir
+
+        </button>
+
+
+    </div>
+
+
+</header>
+
+
+<!-- =====================================================
+     CONTENIDO
+===================================================== -->
+
+<main class="contenido">
+
+
+    <h1 class="titulo-admin">
+        Administración
+    </h1>
+
+
+    <div class="menu-admin">
+
+
+        <!-- =============================================
+             USUARIOS
+        ============================================== -->
+
+        <div
+            class="menu-item"
+            onclick="
+                window.location.href =
+                '/usuarios.html'
+            ">
+
+
+            <div class="menu-icono">
+                👤
+            </div>
+
+
+            <div>
+
+
+                <div class="menu-titulo">
+                    Usuarios
+                </div>
+
+
+                <div class="menu-descripcion">
+                    Alta, modificación y administración
+                    de usuarios del sistema.
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =============================================
+             FUTURO
+        ============================================== -->
+
+        <div
+            class="
+                menu-item
+                menu-item-deshabilitado
+            ">
+
+
+            <div class="menu-icono">
+                ⚙️
+            </div>
+
+
+            <div>
+
+
+                <div class="menu-titulo">
+                    Tablas del Sistema
+                </div>
+
+
+                <div class="menu-descripcion">
+                    Parámetros y tablas generales.
+                    Disponible próximamente.
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="/js/api.js?v=4"></script>
+
+<script src="/js/auth.js?v=4"></script>
+
+
+<script>
+
+    // ===================================================
+    // INICIO ADMINISTRADOR
+    // ===================================================
+
+    async function iniciar()
+    {
+        const perfil =
+            await validarSesion(
+                "S"
+            );
+
+
+        if (!perfil)
+            return;
+
+
+        const nombreUsuario =
+            document.getElementById(
+                "nombreUsuario"
+            );
+
+
+        if (nombreUsuario)
+        {
+            nombreUsuario.textContent =
+                perfil.nombre ||
+                "Administrador";
+        }
+    }
+
+
+    iniciar();
+
+</script>
+
+
+</body>
+
+</html>

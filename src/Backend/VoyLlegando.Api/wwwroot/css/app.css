@@ -1,0 +1,899 @@
+/* =======================================================
+   VOYLLEGANDO
+   PALETA PRINCIPAL
+======================================================= */
+
+:root {
+    --fondo-oscuro: #0d0d27;
+    --fondo-oscuro-2: #171735;
+
+    --azul-marca: #28b5e5;
+    --azul-hover: #169fd0;
+    --azul-suave: #dff6ff;
+
+    --blanco: #ffffff;
+
+    --fondo-pagina: #f4f7fa;
+
+    --texto: #202334;
+    --texto-suave: #6c7280;
+
+    --borde: #dce2e8;
+
+    --error: #c62828;
+    --exito: #2e7d32;
+
+    --sombra:
+        0 8px 28px rgba(13, 13, 39, .10);
+}
+
+
+/* =======================================================
+   GENERAL
+======================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+body {
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        var(--fondo-pagina);
+
+    color:
+        var(--texto);
+}
+
+
+/* =======================================================
+   LOGIN
+======================================================= */
+
+.login-pagina {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            var(--fondo-oscuro),
+            var(--fondo-oscuro-2)
+        );
+}
+
+.login-card {
+    width: 100%;
+    max-width: 410px;
+
+    background:
+        var(--blanco);
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 14px 45px
+        rgba(0, 0, 0, .28);
+
+    padding:
+        0 30px 30px 30px;
+}
+
+
+/* =======================================================
+   CABECERA LOGIN
+======================================================= */
+
+.logo-bloque {
+    background:
+        var(--fondo-oscuro);
+
+    margin:
+        0 -30px 28px -30px;
+
+    padding:
+        30px 20px 26px 20px;
+
+    text-align:
+        center;
+}
+
+.logo-icono {
+    color:
+        var(--azul-marca);
+
+    font-size:
+        46px;
+
+    margin-bottom:
+        8px;
+}
+
+.login-titulo {
+    margin: 0;
+
+    font-size:
+        30px;
+
+    color:
+        var(--blanco);
+
+    letter-spacing:
+        1px;
+}
+
+.login-subtitulo {
+    color:
+        #c5c7d4;
+
+    margin-top:
+        8px;
+
+    font-size:
+        14px;
+}
+
+
+/* =======================================================
+   FORMULARIOS
+======================================================= */
+
+.form-grupo {
+    margin-bottom:
+        18px;
+}
+
+.form-grupo label {
+    display:
+        block;
+
+    margin-bottom:
+        7px;
+
+    font-size:
+        14px;
+
+    font-weight:
+        bold;
+
+    color:
+        var(--texto);
+}
+
+.form-control {
+    width:
+        100%;
+
+    padding:
+        12px 13px;
+
+    border:
+        1px solid var(--borde);
+
+    border-radius:
+        8px;
+
+    font-size:
+        16px;
+
+    outline:
+        none;
+
+    background:
+        var(--blanco);
+
+    color:
+        var(--texto);
+
+    transition:
+        border-color .15s,
+        box-shadow .15s;
+}
+
+.form-control:focus {
+    border-color:
+        var(--azul-marca);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(40, 181, 229, .14);
+}
+
+.form-control::placeholder {
+    color:
+        #a5a9b5;
+}
+
+
+/* =======================================================
+   BOTONES
+======================================================= */
+
+.btn {
+    border:
+        none;
+
+    border-radius:
+        8px;
+
+    padding:
+        12px 16px;
+
+    font-size:
+        15px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+
+    transition:
+        background .15s,
+        transform .08s,
+        box-shadow .15s;
+}
+
+.btn:hover {
+    transform:
+        translateY(-1px);
+}
+
+.btn:disabled {
+    opacity:
+        .55;
+
+    cursor:
+        default;
+
+    transform:
+        none;
+}
+
+.btn-principal {
+    background:
+        var(--azul-marca);
+
+    color:
+        var(--fondo-oscuro);
+
+    box-shadow:
+        0 4px 12px
+        rgba(40, 181, 229, .24);
+}
+
+.btn-principal:hover {
+    background:
+        var(--azul-hover);
+}
+
+.btn-secundario {
+    background:
+        #eef1f4;
+
+    color:
+        var(--texto);
+}
+
+.btn-secundario:hover {
+    background:
+        #e3e7eb;
+}
+
+.btn-peligro {
+    background:
+        var(--error);
+
+    color:
+        var(--blanco);
+}
+
+.btn-ancho {
+    width:
+        100%;
+}
+
+
+/* =======================================================
+   MENSAJES
+======================================================= */
+
+.mensaje {
+    min-height:
+        20px;
+
+    margin-top:
+        15px;
+
+    font-size:
+        14px;
+
+    text-align:
+        center;
+
+    color:
+        var(--texto-suave);
+}
+
+.mensaje.error {
+    color:
+        var(--error);
+}
+
+.mensaje.exito {
+    color:
+        var(--exito);
+}
+
+
+/* =======================================================
+   HEADER GENERAL
+======================================================= */
+
+.app-header {
+    background:
+        var(--fondo-oscuro);
+
+    color:
+        var(--blanco);
+
+    border-bottom:
+        4px solid var(--azul-marca);
+
+    padding:
+        14px 22px;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    gap:
+        15px;
+
+    box-shadow:
+        0 2px 10px
+        rgba(13, 13, 39, .20);
+}
+
+.app-logo {
+    font-size:
+        22px;
+
+    font-weight:
+        bold;
+
+    letter-spacing:
+        .8px;
+}
+
+.app-logo::before {
+    content:
+        "■";
+
+    color:
+        var(--azul-marca);
+
+    margin-right:
+        9px;
+}
+
+.app-usuario {
+    font-size:
+        14px;
+
+    text-align:
+        right;
+
+    color:
+        #d7d9e3;
+
+    margin-bottom:
+        5px;
+}
+
+
+/* =======================================================
+   HEADER - BOTON SALIR
+======================================================= */
+
+.app-header .btn-secundario {
+    background:
+        transparent;
+
+    color:
+        var(--blanco);
+
+    border:
+        1px solid
+        rgba(255,255,255,.35);
+
+    padding:
+        7px 12px;
+
+    font-size:
+        13px;
+}
+
+.app-header .btn-secundario:hover {
+    background:
+        rgba(255,255,255,.08);
+}
+
+
+/* =======================================================
+   CONTENIDO GENERAL
+======================================================= */
+
+.contenido {
+    max-width:
+        1150px;
+
+    margin:
+        0 auto;
+
+    padding:
+        28px 20px;
+}
+
+.titulo-pagina {
+    margin-top:
+        0;
+
+    margin-bottom:
+        25px;
+
+    font-size:
+        27px;
+
+    color:
+        var(--fondo-oscuro);
+}
+
+.titulo-pagina::after {
+    content:
+        "";
+
+    display:
+        block;
+
+    width:
+        55px;
+
+    height:
+        4px;
+
+    margin-top:
+        8px;
+
+    border-radius:
+        4px;
+
+    background:
+        var(--azul-marca);
+}
+
+
+/* =======================================================
+   MENU DE MODULOS
+======================================================= */
+
+.menu-modulos {
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+
+    gap:
+        20px;
+}
+
+.modulo {
+    position:
+        relative;
+
+    overflow:
+        hidden;
+
+    background:
+        var(--blanco);
+
+    border:
+        1px solid var(--borde);
+
+    border-radius:
+        12px;
+
+    padding:
+        28px 20px;
+
+    text-align:
+        center;
+
+    cursor:
+        pointer;
+
+    transition:
+        transform .15s,
+        box-shadow .15s,
+        border-color .15s;
+
+    box-shadow:
+        0 3px 10px
+        rgba(13, 13, 39, .05);
+}
+
+.modulo::before {
+    content:
+        "";
+
+    position:
+        absolute;
+
+    top:
+        0;
+
+    left:
+        0;
+
+    width:
+        100%;
+
+    height:
+        5px;
+
+    background:
+        var(--azul-marca);
+}
+
+.modulo:hover {
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        var(--sombra);
+
+    border-color:
+        #c8d3dc;
+}
+
+.modulo-icono {
+    font-size:
+        38px;
+
+    margin-bottom:
+        13px;
+}
+
+.modulo-titulo {
+    font-size:
+        17px;
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        7px;
+
+    color:
+        var(--fondo-oscuro);
+}
+
+.modulo-descripcion {
+    font-size:
+        13px;
+
+    line-height:
+        1.45;
+
+    color:
+        var(--texto-suave);
+}
+
+
+/* =======================================================
+   TARJETAS GENERALES
+======================================================= */
+
+.card {
+    background:
+        var(--blanco);
+
+    border:
+        1px solid var(--borde);
+
+    border-radius:
+        12px;
+
+    padding:
+        20px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(13, 13, 39, .05);
+}
+
+.card-titulo {
+    margin:
+        0 0 15px 0;
+
+    font-size:
+        18px;
+
+    color:
+        var(--fondo-oscuro);
+}
+
+
+/* =======================================================
+   TABLAS
+======================================================= */
+
+.tabla-contenedor {
+    overflow-x:
+        auto;
+
+    background:
+        var(--blanco);
+
+    border:
+        1px solid var(--borde);
+
+    border-radius:
+        10px;
+}
+
+.tabla {
+    width:
+        100%;
+
+    border-collapse:
+        collapse;
+}
+
+.tabla th {
+    background:
+        var(--fondo-oscuro);
+
+    color:
+        var(--blanco);
+
+    padding:
+        11px;
+
+    text-align:
+        left;
+
+    font-size:
+        13px;
+}
+
+.tabla td {
+    padding:
+        11px;
+
+    border-bottom:
+        1px solid #edf0f3;
+
+    font-size:
+        14px;
+}
+
+.tabla tr:hover td {
+    background:
+        #f7fbfd;
+}
+
+
+/* =======================================================
+   BADGES
+======================================================= */
+
+.badge {
+    display:
+        inline-block;
+
+    padding:
+        4px 8px;
+
+    border-radius:
+        20px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        bold;
+}
+
+.badge-azul {
+    background:
+        var(--azul-suave);
+
+    color:
+        #087da8;
+}
+
+.badge-oscuro {
+    background:
+        var(--fondo-oscuro);
+
+    color:
+        var(--blanco);
+}
+
+
+/* =======================================================
+   MAPA / LEAFLET
+======================================================= */
+
+.mapa {
+    width:
+        100%;
+
+    min-height:
+        420px;
+
+    border:
+        2px solid var(--fondo-oscuro);
+
+    border-radius:
+        12px;
+
+    overflow:
+        hidden;
+}
+
+.mapa-info {
+    margin-top:
+        10px;
+
+    padding:
+        10px 12px;
+
+    background:
+        var(--azul-suave);
+
+    border-left:
+        4px solid var(--azul-marca);
+
+    border-radius:
+        6px;
+
+    font-size:
+        13px;
+}
+
+
+/* =======================================================
+   BARRA DE ACCIONES
+======================================================= */
+
+.acciones {
+    display:
+        flex;
+
+    gap:
+        10px;
+
+    flex-wrap:
+        wrap;
+
+    margin-bottom:
+        18px;
+}
+
+
+/* =======================================================
+   SECCIONES
+======================================================= */
+
+.seccion {
+    margin-bottom:
+        28px;
+}
+
+.seccion-titulo {
+    margin:
+        0 0 14px 0;
+
+    font-size:
+        19px;
+
+    color:
+        var(--fondo-oscuro);
+}
+
+
+/* =======================================================
+   MOBILE
+======================================================= */
+
+@media (max-width: 700px) {
+
+    .login-card {
+        padding:
+            0 20px 24px 20px;
+    }
+
+    .logo-bloque {
+        margin:
+            0 -20px 24px -20px;
+    }
+
+    .login-titulo {
+        font-size:
+            26px;
+    }
+
+    .app-header {
+        padding:
+            12px 14px;
+    }
+
+    .app-logo {
+        font-size:
+            19px;
+    }
+
+    .contenido {
+        padding:
+            20px 12px;
+    }
+
+    .titulo-pagina {
+        font-size:
+            23px;
+    }
+
+    .menu-modulos {
+        grid-template-columns:
+            1fr;
+    }
+
+    .modulo {
+        padding:
+            22px 16px;
+    }
+
+    .acciones {
+        flex-direction:
+            column;
+    }
+
+    .acciones .btn {
+        width:
+            100%;
+    }
+
+    .mapa {
+        min-height:
+            350px;
+    }
+}

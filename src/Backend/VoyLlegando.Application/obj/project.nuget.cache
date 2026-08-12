@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "OSxFAJ1HfRE=",
+  "dgSpecHash": "ZPZ2VFE2GWA=",
   "success": true,
   "projectFilePath": "C:\\SIE\\VoyLlegando\\Desarrollo\\src\\Backend\\VoyLlegando.Application\\VoyLlegando.Application.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512"
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.18\\microsoft.netcore.app.ref.9.0.18.nupkg.sha512",
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.18\\microsoft.windowsdesktop.app.ref.9.0.18.nupkg.sha512",
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.18\\microsoft.aspnetcore.app.ref.9.0.18.nupkg.sha512"
   ],
   "logs": []
 }

@@ -9,7 +9,6 @@ public class AuthService : IAuthService
     private readonly IPasswordService _passwordService;
     private readonly IJwtService _jwtService;
 
-
     public AuthService(
         IUsuarioRepository usuarioRepository,
         IPasswordService passwordService,
@@ -20,12 +19,18 @@ public class AuthService : IAuthService
         _jwtService = jwtService;
     }
 
+    // -------------------------------------------------------
+    // LOGIN
+    // -------------------------------------------------------
 
     public async Task<LoginResponse> Login(LoginRequest request)
     {
         var usuario = await _usuarioRepository
             .ObtenerPorCelularAsync(request.Celular);
 
+        // ---------------------------------------------------
+        // USUARIO INEXISTENTE
+        // ---------------------------------------------------
 
         if (usuario == null)
         {
@@ -36,6 +41,9 @@ public class AuthService : IAuthService
             };
         }
 
+        // ---------------------------------------------------
+        // USUARIO DESHABILITADO
+        // ---------------------------------------------------
 
         if (!usuario.Habilitado)
         {
@@ -46,6 +54,29 @@ public class AuthService : IAuthService
             };
         }
 
+        // ---------------------------------------------------
+        // ROLES PERMITIDOS PARA LOGIN
+        //
+        // L = LOGISTICA
+        // E = EMPRESA DE TRANSPORTE
+        //
+        // A y P todavía no pueden ingresar.
+        // ---------------------------------------------------
+
+        if (usuario.Rol != "L" &&
+            usuario.Rol != "E" &&
+            usuario.Rol != "S")
+        {
+            return new LoginResponse
+            {
+                Success = false,
+                Mensaje = "Este tipo de usuario todavía no puede ingresar."
+            };
+        }
+
+        // ---------------------------------------------------
+        // VALIDAR CLAVE
+        // ---------------------------------------------------
 
         if (!_passwordService.Verificar(
                 request.Clave,
@@ -58,9 +89,15 @@ public class AuthService : IAuthService
             };
         }
 
+        // ---------------------------------------------------
+        // GENERAR JWT
+        // ---------------------------------------------------
 
         var token = _jwtService.GenerarToken(usuario);
 
+        // ---------------------------------------------------
+        // RESPUESTA
+        // ---------------------------------------------------
 
         return new LoginResponse
         {
@@ -74,12 +111,15 @@ public class AuthService : IAuthService
                 Nombre = usuario.Nombre,
                 Telefono = usuario.Celular,
                 Rol = usuario.Rol,
+
                 PatChasis = usuario.PatChasis,
                 PatAcoplado = usuario.PatAcopla,
+
                 Batea = usuario.Batea ?? false,
                 Corta = usuario.Corta ?? false,
                 Larga = usuario.Larga ?? false,
                 Escala = usuario.Escala ?? false,
+
                 Estado = usuario.Estado ?? ""
             }
         };

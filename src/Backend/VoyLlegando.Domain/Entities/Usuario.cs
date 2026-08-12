@@ -20,6 +20,12 @@ public class Usuario
 
     public string Rol { get; set; } = string.Empty;
 
+    public decimal? LatitudActual { get; set; }
+
+    public decimal? LongitudActual { get; set; }
+
+    public DateTime? FechaUbicacion { get; set; }
+
     public bool Habilitado { get; set; }
 
     public int? IdTranspor { get; set; }

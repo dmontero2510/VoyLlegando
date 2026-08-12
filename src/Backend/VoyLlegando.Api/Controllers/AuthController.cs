@@ -4,7 +4,8 @@ using System.Security.Claims;
 using VoyLlegando.Application.DTOs;
 using VoyLlegando.Application.Interfaces;
 
-using UsuarioRepositoryInterface = VoyLlegando.Application.Interfaces.IUsuarioRepository;
+using UsuarioRepositoryInterface =
+    VoyLlegando.Application.Interfaces.IUsuarioRepository;
 
 namespace VoyLlegando.Api.Controllers;
 
@@ -13,22 +14,40 @@ namespace VoyLlegando.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-    private readonly UsuarioRepositoryInterface _usuarioRepository;
+
+    private readonly UsuarioRepositoryInterface
+        _usuarioRepository;
+
+    private readonly ILogisticaRepository
+        _logisticaRepository;
 
 
     public AuthController(
         IAuthService authService,
-        UsuarioRepositoryInterface usuarioRepository)
+        UsuarioRepositoryInterface usuarioRepository,
+        ILogisticaRepository logisticaRepository)
     {
-        _authService = authService;
-        _usuarioRepository = usuarioRepository;
+        _authService =
+            authService;
+
+        _usuarioRepository =
+            usuarioRepository;
+
+        _logisticaRepository =
+            logisticaRepository;
     }
 
 
+    // -------------------------------------------------------
+    // POST /api/auth/login
+    // -------------------------------------------------------
+
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest request)
+    public async Task<IActionResult> Login(
+        LoginRequest request)
     {
-        var response = await _authService.Login(request);
+        var response =
+            await _authService.Login(request);
 
         if (!response.Success)
             return Unauthorized(response);
@@ -37,40 +56,108 @@ public class AuthController : ControllerBase
     }
 
 
+    // -------------------------------------------------------
+    // GET /api/auth/perfil
+    // -------------------------------------------------------
+
     [Authorize]
     [HttpGet("perfil")]
     public async Task<IActionResult> Perfil()
     {
-        var idUsuario = User.FindFirst(
-            ClaimTypes.NameIdentifier)?.Value;
+        var idUsuario =
+            User.FindFirst(
+                ClaimTypes.NameIdentifier)
+            ?.Value;
 
 
-        if (idUsuario == null)
+        if (!int.TryParse(
+            idUsuario,
+            out var id))
+        {
             return Unauthorized();
+        }
 
 
-        var usuario = await _usuarioRepository
-            .ObtenerPorIdAsync(int.Parse(idUsuario));
+        var usuario =
+            await _usuarioRepository
+                .ObtenerPorIdAsync(id);
 
 
         if (usuario == null)
             return NotFound();
 
 
+        // ---------------------------------------------------
+        // NOMBRE DE LA LOGISTICA
+        // ---------------------------------------------------
+
+        string? nombreLogistica =
+            null;
+
+
+        if (
+            usuario.Rol == "L" &&
+            usuario.IdTranspor.HasValue
+        )
+        {
+            var logistica =
+                await _logisticaRepository
+                    .ObtenerPorIdAsync(
+                        usuario.IdTranspor.Value);
+
+
+            if (logistica != null)
+            {
+                nombreLogistica =
+                    logistica.Nombre;
+            }
+        }
+
+
+        // ---------------------------------------------------
+        // RESPUESTA
+        // ---------------------------------------------------
+
         return Ok(new
         {
-            id = usuario.IdUsuario,
-            nombre = usuario.Nombre,
-            celular = usuario.Celular,
-            rol = usuario.Rol,
-            idTranspor = usuario.IdTranspor,
-            patChasis = usuario.PatChasis,
-            patAcopla = usuario.PatAcopla,
-            batea = usuario.Batea,
-            corta = usuario.Corta,
-            larga = usuario.Larga,
-            escala = usuario.Escala,
-            estado = usuario.Estado
+            id =
+                usuario.IdUsuario,
+
+            nombre =
+                usuario.Nombre,
+
+            celular =
+                usuario.Celular,
+
+            rol =
+                usuario.Rol,
+
+            idTranspor =
+                usuario.IdTranspor,
+
+            nombreLogistica =
+                nombreLogistica,
+
+            patChasis =
+                usuario.PatChasis,
+
+            patAcopla =
+                usuario.PatAcopla,
+
+            batea =
+                usuario.Batea,
+
+            corta =
+                usuario.Corta,
+
+            larga =
+                usuario.Larga,
+
+            escala =
+                usuario.Escala,
+
+            estado =
+                usuario.Estado
         });
     }
 }

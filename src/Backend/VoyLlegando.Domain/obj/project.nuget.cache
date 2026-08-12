@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "rzAiyMANtI8=",
+  "dgSpecHash": "Bqal2wAS2LQ=",
   "success": true,
   "projectFilePath": "C:\\SIE\\VoyLlegando\\Desarrollo\\src\\Backend\\VoyLlegando.Domain\\VoyLlegando.Domain.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.18\\microsoft.netcore.app.ref.9.0.18.nupkg.sha512",
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.18\\microsoft.windowsdesktop.app.ref.9.0.18.nupkg.sha512",
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.18\\microsoft.aspnetcore.app.ref.9.0.18.nupkg.sha512"
+  ],
   "logs": []
 }

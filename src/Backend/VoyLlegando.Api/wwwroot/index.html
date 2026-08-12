@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>VoyLlegando</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css">
+</head>
+
+<body>
+
+<div class="login-pagina">
+
+    <div class="login-card">
+
+        <div class="logo-bloque">
+
+            <div class="logo-icono">
+                🚚
+            </div>
+
+            <h1 class="login-titulo">
+                VoyLlegando
+            </h1>
+
+            <div class="login-subtitulo">
+                Gestión y seguimiento de viajes
+            </div>
+
+        </div>
+
+        <div class="form-grupo">
+
+            <label for="celular">
+                Celular
+            </label>
+
+            <input
+                id="celular"
+                class="form-control"
+                type="text"
+                inputmode="numeric"
+                autocomplete="username"
+                placeholder="Ingrese su celular">
+
+        </div>
+
+        <div class="form-grupo">
+
+            <label for="clave">
+                Contraseña
+            </label>
+
+            <input
+                id="clave"
+                class="form-control"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Ingrese su contraseña">
+
+        </div>
+
+        <button
+            id="btnIngresar"
+            class="btn btn-principal btn-ancho"
+            type="button"
+            onclick="login()">
+
+            Ingresar
+
+        </button>
+
+        <div
+            id="mensaje"
+            class="mensaje">
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+
+<script>
+    redirigirSiYaEstaLogueado();
+    configurarEnterLogin();
+</script>
+
+<script src="/js/api.js?v=200"></script>
+<script src="/js/auth.js?v=200"></script>
+
+</body>
+
+</html>

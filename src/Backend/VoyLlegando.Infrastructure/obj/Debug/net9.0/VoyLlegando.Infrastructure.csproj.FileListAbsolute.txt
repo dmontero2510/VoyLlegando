@@ -1,4 +1,5 @@
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\bin\Debug\net9.0\VoyLlegando.Infrastructure.deps.json
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\bin\Debug\net9.0\VoyLlegando.Infrastructure.runtimeconfig.json
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\bin\Debug\net9.0\VoyLlegando.Infrastructure.dll
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\bin\Debug\net9.0\VoyLlegando.Infrastructure.pdb
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\bin\Debug\net9.0\VoyLlegando.Application.dll
@@ -10,10 +11,10 @@ C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\n
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\VoyLlegando.Infrastructure.AssemblyInfoInputs.cache
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\VoyLlegando.Infrastructure.AssemblyInfo.cs
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\VoyLlegando.Infrastructure.csproj.CoreCompileInputs.cache
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\VoyLlegando.Infrastructure.sourcelink.json
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\VoyLlega.BBB41E28.Up2Date
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\VoyLlegando.Infrastructure.dll
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\refint\VoyLlegando.Infrastructure.dll
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\VoyLlegando.Infrastructure.pdb
-C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\ref\VoyLlegando.Infrastructure.dll
-C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\bin\Debug\net9.0\VoyLlegando.Infrastructure.runtimeconfig.json
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\VoyLlegando.Infrastructure.genruntimeconfig.cache
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Infrastructure\obj\Debug\net9.0\ref\VoyLlegando.Infrastructure.dll

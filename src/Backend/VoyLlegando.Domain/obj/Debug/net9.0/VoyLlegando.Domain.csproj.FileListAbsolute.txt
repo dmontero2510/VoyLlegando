@@ -5,6 +5,7 @@ C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Debug\net9.0\Vo
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Debug\net9.0\VoyLlegando.Domain.AssemblyInfoInputs.cache
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Debug\net9.0\VoyLlegando.Domain.AssemblyInfo.cs
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Debug\net9.0\VoyLlegando.Domain.csproj.CoreCompileInputs.cache
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Debug\net9.0\VoyLlegando.Domain.sourcelink.json
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Debug\net9.0\VoyLlegando.Domain.dll
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Debug\net9.0\refint\VoyLlegando.Domain.dll
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Debug\net9.0\VoyLlegando.Domain.pdb

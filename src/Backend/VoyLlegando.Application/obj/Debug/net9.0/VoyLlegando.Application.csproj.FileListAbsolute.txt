@@ -8,6 +8,7 @@ C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Debug\net9
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Debug\net9.0\VoyLlegando.Application.AssemblyInfoInputs.cache
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Debug\net9.0\VoyLlegando.Application.AssemblyInfo.cs
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Debug\net9.0\VoyLlegando.Application.csproj.CoreCompileInputs.cache
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Debug\net9.0\VoyLlegando.Application.sourcelink.json
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Debug\net9.0\VoyLlega.3CFB4659.Up2Date
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Debug\net9.0\VoyLlegando.Application.dll
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Debug\net9.0\refint\VoyLlegando.Application.dll

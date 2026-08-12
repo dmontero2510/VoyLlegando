@@ -1,0 +1,16 @@
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\bin\Release\net9.0\VoyLlegando.Application.deps.json
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\bin\Release\net9.0\VoyLlegando.Application.dll
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\bin\Release\net9.0\VoyLlegando.Application.pdb
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\bin\Release\net9.0\VoyLlegando.Domain.dll
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\bin\Release\net9.0\VoyLlegando.Domain.pdb
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\VoyLlegando.Application.csproj.AssemblyReference.cache
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\VoyLlegando.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\VoyLlegando.Application.AssemblyInfoInputs.cache
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\VoyLlegando.Application.AssemblyInfo.cs
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\VoyLlegando.Application.csproj.CoreCompileInputs.cache
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\VoyLlegando.Application.sourcelink.json
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\VoyLlega.3CFB4659.Up2Date
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\VoyLlegando.Application.dll
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\refint\VoyLlegando.Application.dll
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\VoyLlegando.Application.pdb
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Application\obj\Release\net9.0\ref\VoyLlegando.Application.dll

@@ -1,0 +1,12 @@
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\bin\Release\net9.0\VoyLlegando.Domain.deps.json
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\bin\Release\net9.0\VoyLlegando.Domain.dll
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\bin\Release\net9.0\VoyLlegando.Domain.pdb
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Release\net9.0\VoyLlegando.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Release\net9.0\VoyLlegando.Domain.AssemblyInfoInputs.cache
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Release\net9.0\VoyLlegando.Domain.AssemblyInfo.cs
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Release\net9.0\VoyLlegando.Domain.csproj.CoreCompileInputs.cache
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Release\net9.0\VoyLlegando.Domain.sourcelink.json
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Release\net9.0\VoyLlegando.Domain.dll
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Release\net9.0\refint\VoyLlegando.Domain.dll
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Release\net9.0\VoyLlegando.Domain.pdb
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Domain\obj\Release\net9.0\ref\VoyLlegando.Domain.dll

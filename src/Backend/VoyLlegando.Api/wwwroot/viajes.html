@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>
+        VoyLlegando - Viajes
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css">
+
+    <style>
+
+        /* =====================================================
+           HEADER LOGISTICA
+        ===================================================== */
+
+        .header-logistica {
+            background: #0d0d27;
+            border-bottom: 4px solid #28b5e5;
+            min-height: 72px;
+            padding: 12px 24px;
+
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            gap: 20px;
+
+            box-shadow: 0 2px 10px rgba(13, 13, 39, .20);
+        }
+
+        .header-marca {
+            justify-self: start;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            white-space: nowrap;
+            letter-spacing: .8px;
+        }
+
+        .header-marca::before {
+            content: "■";
+            color: #28b5e5;
+            margin-right: 9px;
+        }
+
+        .header-empresa {
+            justify-self: center;
+            text-align: center;
+            color: #28b5e5;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .header-derecha {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-usuario {
+            color: white;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .btn-salir {
+            border: 1px solid rgba(255,255,255,.45);
+            background: transparent;
+            color: white;
+            padding: 8px 13px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-salir:hover {
+            background: rgba(255,255,255,.10);
+        }
+
+
+        /* =====================================================
+           VIAJES
+        ===================================================== */
+
+        .barra-superior {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .barra-superior .titulo-pagina {
+            margin-bottom: 0;
+        }
+
+        .barra-botones {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filtros {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .filtro-viaje {
+            border: 1px solid var(--borde);
+            background: white;
+            color: var(--texto);
+            border-radius: 20px;
+            padding: 8px 13px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .filtro-viaje.activo {
+            background: var(--fondo-oscuro);
+            color: white;
+            border-color: var(--fondo-oscuro);
+        }
+
+        .grilla-viajes {
+            display: grid;
+            grid-template-columns: 390px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .lista-viajes {
+            max-height: 710px;
+            overflow-y: auto;
+        }
+
+        .viaje-item {
+            padding: 13px;
+            margin-bottom: 9px;
+            border: 1px solid var(--borde);
+            border-radius: 9px;
+            cursor: pointer;
+            background: white;
+        }
+
+        .viaje-item:hover {
+            border-color: var(--azul-marca);
+        }
+
+        .viaje-item.seleccionado {
+            border: 2px solid var(--azul-marca);
+            background: var(--azul-suave);
+        }
+
+        .viaje-item-cabecera {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 7px;
+        }
+
+        .viaje-id {
+            font-weight: bold;
+            color: var(--fondo-oscuro);
+        }
+
+        .viaje-ruta {
+            font-size: 13px;
+            line-height: 1.45;
+            color: var(--texto);
+        }
+
+        .viaje-meta {
+            margin-top: 7px;
+            font-size: 12px;
+            color: var(--texto-suave);
+        }
+
+        .estado {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .estado-P {
+            background: #fff3cd;
+            color: #795700;
+        }
+
+        .estado-A {
+            background: #dff6ff;
+            color: #087da8;
+        }
+
+        .estado-V,
+        .estado-O,
+        .estado-R,
+        .estado-D {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .estado-T {
+            background: #eef1f4;
+            color: #555;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .ancho-completo {
+            grid-column: 1 / -1;
+        }
+
+        .triple {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        .checks {
+            display: flex;
+            gap: 22px;
+            flex-wrap: wrap;
+            align-items: center;
+            min-height: 44px;
+        }
+
+        .checks label {
+            display: flex;
+            gap: 7px;
+            align-items: center;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .detalle-resumen {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 16px;
+            margin-bottom: 15px;
+        }
+
+        .detalle-dato {
+            padding: 10px 12px;
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            background: #f8fafc;
+            font-size: 13px;
+        }
+
+        .detalle-dato strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--fondo-oscuro);
+        }
+
+        .asignacion {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--borde);
+        }
+
+        .oculto {
+            display: none !important;
+        }
+
+        .aviso {
+            margin-bottom: 14px;
+            padding: 10px 12px;
+            background: var(--azul-suave);
+            border-left: 4px solid var(--azul-marca);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .sin-registros {
+            padding: 20px 8px;
+            text-align: center;
+            color: var(--texto-suave);
+        }
+
+
+
+        /* =====================================================
+           COMBOS CON ALTA RAPIDA
+        ===================================================== */
+
+        .combo-con-alta {
+            display: grid;
+            grid-template-columns: 1fr 40px;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-mas {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: #28a745;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .btn-mas:hover {
+            background: #218838;
+        }
+
+
+        .btn-mas:disabled {
+            background: #aeb6bd;
+            cursor: not-allowed;
+            opacity: .75;
+        }
+
+        /* =====================================================
+           MODALES DE ALTA RAPIDA
+        ===================================================== */
+
+        .modal-fondo {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 520px;
+            background: white;
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 12px 40px rgba(0,0,0,.25);
+        }
+
+        .modal-cabecera {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .modal-titulo {
+            margin: 0;
+            font-size: 20px;
+            color: var(--fondo-oscuro);
+        }
+
+        .modal-cerrar {
+            border: none;
+            background: transparent;
+            font-size: 26px;
+            cursor: pointer;
+            color: var(--texto-suave);
+        }
+
+        .modal-acciones {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .modal-grid .ancho-completo {
+            grid-column: 1 / -1;
+        }
+
+        /* =====================================================
+           TABLET / MOBILE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .grilla-viajes {
+                grid-template-columns: 1fr;
+            }
+
+            .lista-viajes {
+                max-height: 360px;
+            }
+        }
+
+        @media (max-width: 700px) {
+
+            .header-logistica {
+                grid-template-columns: 1fr auto;
+                padding: 11px 14px;
+                gap: 8px;
+            }
+
+            .header-marca {
+                grid-column: 1;
+                grid-row: 1;
+                font-size: 18px;
+            }
+
+            .header-derecha {
+                grid-column: 2;
+                grid-row: 1;
+                gap: 8px;
+            }
+
+            .header-usuario {
+                font-size: 12px;
+            }
+
+            .header-empresa {
+                grid-column: 1 / -1;
+                grid-row: 2;
+                width: 100%;
+                font-size: 15px;
+                padding-top: 5px;
+            }
+
+            .form-grid,
+            .triple,
+            .detalle-resumen,
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-grid .ancho-completo {
+                grid-column: auto;
+            }
+
+            .ancho-completo {
+                grid-column: auto;
+            }
+
+            .barra-botones {
+                width: 100%;
+            }
+
+            .barra-botones .btn {
+                flex: 1;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<header class="header-logistica">
+
+    <div class="header-marca">
+        VoyLlegando
+    </div>
+
+    <div
+        id="nombreLogistica"
+        class="header-empresa">
+        Logística
+    </div>
+
+    <div class="header-derecha">
+
+        <div
+            id="nombreUsuario"
+            class="header-usuario">
+        </div>
+
+        <button
+            type="button"
+            class="btn-salir"
+            onclick="logout()">
+            Salir
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="contenido">
+
+    <div class="barra-superior">
+
+        <h1 class="titulo-pagina">
+            Viajes
+        </h1>
+
+        <div class="barra-botones">
+
+            <button
+                type="button"
+                class="btn btn-principal"
+                onclick="nuevoViaje()">
+                + Nuevo Viaje
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="volver()">
+                ← Volver
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="mensaje"
+        class="mensaje">
+    </div>
+
+
+    <div class="filtros">
+
+        <button
+            id="filtroTodos"
+            class="filtro-viaje activo"
+            onclick="cambiarFiltro('TODOS')">
+            Todos
+        </button>
+
+        <button
+            id="filtroP"
+            class="filtro-viaje"
+            onclick="cambiarFiltro('P')">
+            Pendientes
+        </button>
+
+        <button
+            id="filtroA"
+            class="filtro-viaje"
+            onclick="cambiarFiltro('A')">
+            Asignados
+        </button>
+
+        <button
+            id="filtroCurso"
+            class="filtro-viaje"
+            onclick="cambiarFiltro('CURSO')">
+            En curso
+        </button>
+
+        <button
+            id="filtroT"
+            class="filtro-viaje"
+            onclick="cambiarFiltro('T')">
+            Terminados
+        </button>
+
+    </div>
+
+
+    <div class="grilla-viajes">
+
+
+        <!-- =================================================
+             LISTADO
+        ================================================== -->
+
+        <section class="card">
+
+            <div class="barra-superior">
+
+                <h2 class="card-titulo">
+                    Viajes
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn btn-secundario"
+                    onclick="cargarViajes()">
+                    Actualizar
+                </button>
+
+            </div>
+
+            <div
+                id="listaViajes"
+                class="lista-viajes">
+                Cargando...
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             FORMULARIO NUEVO VIAJE
+        ================================================== -->
+
+        <section
+            id="seccionNuevo"
+            class="card">
+
+            <h2 class="card-titulo">
+                Nuevo Viaje
+            </h2>
+
+            <div class="aviso">
+                El origen se toma del campo seleccionado y el destino
+                del destino de planta seleccionado.
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-grupo">
+
+                    <label for="idProduc">
+                        Productor
+                    </label>
+
+                    <div class="combo-con-alta">
+
+                        <select
+                            id="idProduc"
+                            class="form-control"
+                            onchange="cambioProductor()">
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                        </select>
+
+                        <button
+                            type="button"
+                            class="btn-mas"
+                            onclick="abrirAltaProductor()"
+                            title="Nuevo productor">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="idOrigen">
+                        Campo / Origen
+                    </label>
+
+                    <div class="combo-con-alta">
+
+                        <select
+                            id="idOrigen"
+                            class="form-control"
+                            disabled>
+
+                            <option value="">
+                                Seleccione productor...
+                            </option>
+
+                        </select>
+
+                        <button
+                            id="btnMasCampo"
+                            type="button"
+                            class="btn-mas"
+                            onclick="abrirAltaCampo()"
+                            title="Nuevo campo"
+                            disabled>
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="idPlanta">
+                        Planta
+                    </label>
+
+                    <div class="combo-con-alta">
+
+                        <select
+                            id="idPlanta"
+                            class="form-control"
+                            onchange="cambioPlanta()">
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                        </select>
+
+                        <button
+                            type="button"
+                            class="btn-mas"
+                            onclick="abrirAltaPlanta()"
+                            title="Nueva planta">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="idDestino">
+                        Destino
+                    </label>
+
+                    <div class="combo-con-alta">
+
+                        <select
+                            id="idDestino"
+                            class="form-control"
+                            disabled>
+
+                            <option value="">
+                                Seleccione planta...
+                            </option>
+
+                        </select>
+
+                        <button
+                            id="btnMasDestino"
+                            type="button"
+                            class="btn-mas"
+                            onclick="abrirAltaDestino()"
+                            title="Nuevo destino"
+                            disabled>
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="idCereal">
+                        Cereal
+                    </label>
+
+                    <div class="combo-con-alta">
+
+                        <select
+                            id="idCereal"
+                            class="form-control">
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                        </select>
+
+                        <button
+                            type="button"
+                            class="btn-mas"
+                            onclick="abrirAltaCereal()"
+                            title="Nuevo cereal">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Tipo fijo del viaje -->
+                <input
+                    id="tipo"
+                    type="hidden"
+                    value="A">
+
+
+                <div class="form-grupo">
+
+                    <label for="ctg">
+                        CTG
+                    </label>
+
+                    <input
+                        id="ctg"
+                        class="form-control"
+                        maxlength="15"
+                        autocomplete="off">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="idEmpresaCrear">
+                        Empresa de Transporte
+                    </label>
+
+                    <select
+                        id="idEmpresaCrear"
+                        class="form-control">
+                        <option value="">
+                            Sin asignar por ahora
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="ancho-completo triple">
+
+                    <div class="form-grupo">
+
+                        <label for="kms">
+                            Kilómetros
+                        </label>
+
+                        <input
+                            id="kms"
+                            class="form-control"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            inputmode="decimal">
+
+                    </div>
+
+
+                    <div class="form-grupo">
+
+                        <label for="tarifa">
+                            Tarifa
+                        </label>
+
+                        <input
+                            id="tarifa"
+                            class="form-control"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            inputmode="decimal">
+
+                    </div>
+
+
+                    <div class="form-grupo">
+
+                        <label>
+                            Equipo requerido
+                        </label>
+
+                        <div class="checks">
+
+                            <label>
+                                <input
+                                    id="batea"
+                                    type="checkbox">
+                                Batea
+                            </label>
+
+                            <label>
+                                <input
+                                    id="corta"
+                                    type="checkbox">
+                                Corta
+                            </label>
+
+                            <label>
+                                <input
+                                    id="larga"
+                                    type="checkbox">
+                                Larga
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grupo ancho-completo">
+
+                    <label for="observaciones">
+                        Observaciones
+                    </label>
+
+                    <input
+                        id="observaciones"
+                        class="form-control"
+                        maxlength="50"
+                        autocomplete="off">
+
+                </div>
+
+            </div>
+
+
+            <div class="acciones">
+
+                <button
+                    type="button"
+                    class="btn btn-principal"
+                    onclick="guardarViaje()">
+                    Guardar Viaje
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-secundario"
+                    onclick="limpiarFormulario()">
+                    Limpiar
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             DETALLE VIAJE
+        ================================================== -->
+
+        <section
+            id="seccionDetalle"
+            class="card oculto">
+
+            <div class="barra-superior">
+
+                <h2
+                    id="tituloDetalle"
+                    class="card-titulo">
+                    Viaje
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn btn-secundario"
+                    onclick="nuevoViaje()">
+                    Cerrar
+                </button>
+
+            </div>
+
+
+            <div
+                id="detalleViaje"
+                class="detalle-resumen">
+            </div>
+
+
+            <div
+                id="seccionAsignar"
+                class="asignacion oculto">
+
+                <h3 class="card-titulo">
+                    Asignar Empresa de Transporte
+                </h3>
+
+                <div class="form-grupo">
+
+                    <label for="idEmpresaAsignar">
+                        Empresa disponible
+                    </label>
+
+                    <select
+                        id="idEmpresaAsignar"
+                        class="form-control">
+                        <option value="">
+                            Seleccione...
+                        </option>
+                    </select>
+
+                </div>
+
+                <div class="acciones">
+
+                    <button
+                        type="button"
+                        class="btn btn-principal"
+                        onclick="asignarViaje()">
+                        Asignar Viaje
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     MODAL NUEVO CEREAL
+===================================================== -->
+
+<div
+    id="modalCereal"
+    class="modal-fondo oculto">
+
+    <div class="modal">
+
+        <div class="modal-cabecera">
+
+            <h2 class="modal-titulo">
+                Nuevo Cereal
+            </h2>
+
+            <button
+                type="button"
+                class="modal-cerrar"
+                onclick="cerrarAltaCereal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="form-grupo">
+
+            <label for="nuevoCerealId">
+                Código
+            </label>
+
+            <input
+                id="nuevoCerealId"
+                class="form-control"
+                type="number"
+                readonly>
+
+        </div>
+
+        <div class="form-grupo">
+
+            <label for="nuevoCerealNombre">
+                Nombre
+            </label>
+
+            <input
+                id="nuevoCerealNombre"
+                class="form-control"
+                maxlength="100"
+                autocomplete="off">
+
+        </div>
+
+        <div class="modal-acciones">
+
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="cerrarAltaCereal()">
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-principal"
+                onclick="guardarNuevoCereal()">
+                Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL NUEVO PRODUCTOR
+===================================================== -->
+
+<div
+    id="modalProductor"
+    class="modal-fondo oculto">
+
+    <div class="modal">
+
+        <div class="modal-cabecera">
+
+            <h2 class="modal-titulo">
+                Nuevo Productor
+            </h2>
+
+            <button
+                type="button"
+                class="modal-cerrar"
+                onclick="cerrarAltaProductor()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-grid">
+
+            <div class="form-grupo ancho-completo">
+
+                <label for="nuevoProductorNombre">
+                    Nombre
+                </label>
+
+                <input
+                    id="nuevoProductorNombre"
+                    class="form-control"
+                    maxlength="80"
+                    autocomplete="off">
+
+            </div>
+
+            <div class="form-grupo ancho-completo">
+
+                <label for="nuevoProductorDomicilio">
+                    Domicilio
+                </label>
+
+                <input
+                    id="nuevoProductorDomicilio"
+                    class="form-control"
+                    maxlength="100"
+                    autocomplete="off">
+
+            </div>
+
+            <div class="form-grupo">
+
+                <label for="nuevoProductorCuit">
+                    CUIT
+                </label>
+
+                <input
+                    id="nuevoProductorCuit"
+                    class="form-control"
+                    inputmode="numeric"
+                    maxlength="11"
+                    autocomplete="off">
+
+            </div>
+
+            <div class="form-grupo">
+
+                <label for="nuevoProductorIva">
+                    IVA
+                </label>
+
+                <select
+                    id="nuevoProductorIva"
+                    class="form-control">
+
+                    <option value="">
+                        Seleccione...
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="modal-acciones">
+
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="cerrarAltaProductor()">
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-principal"
+                onclick="guardarNuevoProductor()">
+                Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     MODAL NUEVO CAMPO
+===================================================== -->
+
+<div
+    id="modalCampo"
+    class="modal-fondo oculto">
+
+    <div class="modal">
+
+        <div class="modal-cabecera">
+
+            <h2 class="modal-titulo">
+                Nuevo Campo
+            </h2>
+
+            <button
+                type="button"
+                class="modal-cerrar"
+                onclick="cerrarAltaCampo()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="aviso">
+            Productor:
+            <strong id="nombreProductorModalCampo"></strong>
+        </div>
+
+        <div class="form-grupo">
+
+            <label for="nuevoCampoDescripcion">
+                Descripción del campo
+            </label>
+
+            <input
+                id="nuevoCampoDescripcion"
+                class="form-control"
+                maxlength="30"
+                autocomplete="off">
+
+        </div>
+
+        <div class="modal-grid">
+
+            <div class="form-grupo">
+
+                <label for="nuevoCampoLatitud">
+                    Latitud
+                </label>
+
+                <input
+                    id="nuevoCampoLatitud"
+                    class="form-control"
+                    type="number"
+                    step="any"
+                    inputmode="decimal">
+
+            </div>
+
+            <div class="form-grupo">
+
+                <label for="nuevoCampoLongitud">
+                    Longitud
+                </label>
+
+                <input
+                    id="nuevoCampoLongitud"
+                    class="form-control"
+                    type="number"
+                    step="any"
+                    inputmode="decimal">
+
+            </div>
+
+        </div>
+
+        <div class="modal-acciones">
+
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="cerrarAltaCampo()">
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-principal"
+                onclick="guardarNuevoCampo()">
+                Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL NUEVA PLANTA
+===================================================== -->
+
+<div
+    id="modalPlanta"
+    class="modal-fondo oculto">
+
+    <div class="modal">
+
+        <div class="modal-cabecera">
+
+            <h2 class="modal-titulo">
+                Nueva Planta
+            </h2>
+
+            <button
+                type="button"
+                class="modal-cerrar"
+                onclick="cerrarAltaPlanta()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-grid">
+
+            <div class="form-grupo ancho-completo">
+
+                <label for="nuevaPlantaNombre">
+                    Nombre
+                </label>
+
+                <input
+                    id="nuevaPlantaNombre"
+                    class="form-control"
+                    maxlength="80"
+                    autocomplete="off">
+
+            </div>
+
+            <div class="form-grupo ancho-completo">
+
+                <label for="nuevaPlantaDomicilio">
+                    Domicilio
+                </label>
+
+                <input
+                    id="nuevaPlantaDomicilio"
+                    class="form-control"
+                    maxlength="100"
+                    autocomplete="off">
+
+            </div>
+
+            <div class="form-grupo">
+
+                <label for="nuevaPlantaCuit">
+                    CUIT
+                </label>
+
+                <input
+                    id="nuevaPlantaCuit"
+                    class="form-control"
+                    inputmode="numeric"
+                    maxlength="11"
+                    autocomplete="off">
+
+            </div>
+
+            <div class="form-grupo">
+
+                <label for="nuevaPlantaIva">
+                    IVA
+                </label>
+
+                <select
+                    id="nuevaPlantaIva"
+                    class="form-control">
+
+                    <option value="">
+                        Seleccione...
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="modal-acciones">
+
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="cerrarAltaPlanta()">
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-principal"
+                onclick="guardarNuevaPlanta()">
+                Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL NUEVO DESTINO
+===================================================== -->
+
+<div
+    id="modalDestino"
+    class="modal-fondo oculto">
+
+    <div class="modal">
+
+        <div class="modal-cabecera">
+
+            <h2 class="modal-titulo">
+                Nuevo Destino
+            </h2>
+
+            <button
+                type="button"
+                class="modal-cerrar"
+                onclick="cerrarAltaDestino()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="aviso">
+            Planta:
+            <strong id="nombrePlantaModalDestino"></strong>
+        </div>
+
+        <div class="form-grupo">
+
+            <label for="nuevoDestinoDescripcion">
+                Descripción del destino
+            </label>
+
+            <input
+                id="nuevoDestinoDescripcion"
+                class="form-control"
+                maxlength="40"
+                autocomplete="off">
+
+        </div>
+
+        <div class="modal-grid">
+
+            <div class="form-grupo">
+
+                <label for="nuevoDestinoLatitud">
+                    Latitud
+                </label>
+
+                <input
+                    id="nuevoDestinoLatitud"
+                    class="form-control"
+                    type="number"
+                    step="any"
+                    inputmode="decimal">
+
+            </div>
+
+            <div class="form-grupo">
+
+                <label for="nuevoDestinoLongitud">
+                    Longitud
+                </label>
+
+                <input
+                    id="nuevoDestinoLongitud"
+                    class="form-control"
+                    type="number"
+                    step="any"
+                    inputmode="decimal">
+
+            </div>
+
+        </div>
+
+        <div class="modal-acciones">
+
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="cerrarAltaDestino()">
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-principal"
+                onclick="guardarNuevoDestino()">
+                Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/viajes.js"></script>
+
+
+</body>
+</html>

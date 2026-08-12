@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>
+        VoyLlegando - Cereales
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css">
+
+
+    <style>
+
+        /* =====================================================
+           HEADER LOGISTICA
+        ===================================================== */
+
+        .header-logistica {
+            background: #0d0d27;
+
+            border-bottom:
+                4px solid #28b5e5;
+
+            min-height:
+                72px;
+
+            padding:
+                12px 24px;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 2fr 1fr;
+
+            align-items:
+                center;
+
+            gap:
+                20px;
+
+            box-shadow:
+                0 2px 10px rgba(13, 13, 39, .20);
+        }
+
+
+        .header-marca {
+            justify-self:
+                start;
+
+            color:
+                white;
+
+            font-size:
+                22px;
+
+            font-weight:
+                bold;
+
+            white-space:
+                nowrap;
+
+            letter-spacing:
+                .8px;
+        }
+
+
+        .header-marca::before {
+            content:
+                "■";
+
+            color:
+                #28b5e5;
+
+            margin-right:
+                9px;
+        }
+
+
+        .header-empresa {
+            justify-self:
+                center;
+
+            text-align:
+                center;
+
+            color:
+                #28b5e5;
+
+            font-size:
+                20px;
+
+            font-weight:
+                bold;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .5px;
+        }
+
+
+        .header-derecha {
+            justify-self:
+                end;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                14px;
+        }
+
+
+        .header-usuario {
+            color:
+                white;
+
+            font-size:
+                14px;
+
+            white-space:
+                nowrap;
+        }
+
+
+        .btn-salir {
+            border:
+                1px solid rgba(255,255,255,.45);
+
+            background:
+                transparent;
+
+            color:
+                white;
+
+            padding:
+                8px 13px;
+
+            border-radius:
+                7px;
+
+            cursor:
+                pointer;
+
+            font-weight:
+                bold;
+        }
+
+
+        .btn-salir:hover {
+            background:
+                rgba(255,255,255,.10);
+        }
+
+
+        /* =====================================================
+           CEREALES
+        ===================================================== */
+
+        .barra-superior {
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+            margin-bottom:
+                20px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .grilla-cereales {
+            display:
+                grid;
+
+            grid-template-columns:
+                420px 1fr;
+
+            gap:
+                20px;
+        }
+
+
+        .lista-cereales {
+            max-height:
+                620px;
+
+            overflow-y:
+                auto;
+        }
+
+
+        .cereal-item {
+            padding:
+                13px;
+
+            margin-bottom:
+                8px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius:
+                9px;
+
+            cursor:
+                pointer;
+
+            background:
+                white;
+        }
+
+
+        .cereal-item:hover {
+            border-color:
+                var(--azul-marca);
+        }
+
+
+        .cereal-item.seleccionado {
+            border:
+                2px solid var(--azul-marca);
+
+            background:
+                var(--azul-suave);
+        }
+
+
+        .cereal-nombre {
+            font-weight:
+                bold;
+
+            color:
+                var(--fondo-oscuro);
+        }
+
+
+        .cereal-detalle {
+            margin-top:
+                5px;
+
+            font-size:
+                13px;
+
+            color:
+                var(--texto-suave);
+        }
+
+
+        .estado-habilitado {
+            font-weight:
+                bold;
+        }
+
+
+        .estado-deshabilitado {
+            font-weight:
+                bold;
+
+            opacity:
+                .65;
+        }
+
+
+        .form-grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 2fr;
+
+            gap:
+                14px;
+        }
+
+
+        .ancho-completo {
+            grid-column:
+                1 / -1;
+        }
+
+
+        .oculto {
+            display:
+                none !important;
+        }
+
+
+        .ayuda {
+            margin-top:
+                8px;
+
+            font-size:
+                13px;
+
+            color:
+                var(--texto-suave);
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .grilla-cereales {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .lista-cereales {
+                max-height:
+                    350px;
+            }
+
+        }
+
+
+        /* =====================================================
+           CELULAR
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .header-logistica {
+                grid-template-columns:
+                    1fr auto;
+
+                padding:
+                    11px 14px;
+
+                gap:
+                    8px;
+            }
+
+
+            .header-marca {
+                grid-column:
+                    1;
+
+                grid-row:
+                    1;
+
+                font-size:
+                    18px;
+            }
+
+
+            .header-derecha {
+                grid-column:
+                    2;
+
+                grid-row:
+                    1;
+
+                gap:
+                    8px;
+            }
+
+
+            .header-usuario {
+                font-size:
+                    12px;
+            }
+
+
+            .header-empresa {
+                grid-column:
+                    1 / -1;
+
+                grid-row:
+                    2;
+
+                width:
+                    100%;
+
+                font-size:
+                    15px;
+
+                padding-top:
+                    5px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .form-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .ancho-completo {
+                grid-column:
+                    auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header-logistica">
+
+
+    <!-- IZQUIERDA -->
+
+    <div class="header-marca">
+        VoyLlegando
+    </div>
+
+
+    <!-- CENTRO -->
+
+    <div
+        id="nombreLogistica"
+        class="header-empresa">
+
+        Logística
+
+    </div>
+
+
+    <!-- DERECHA -->
+
+    <div class="header-derecha">
+
+        <div
+            id="nombreUsuario"
+            class="header-usuario">
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-salir"
+            onclick="logout()">
+
+            Salir
+
+        </button>
+
+    </div>
+
+
+</header>
+
+
+<!-- =====================================================
+     CONTENIDO
+===================================================== -->
+
+<main class="contenido">
+
+
+    <!-- =================================================
+         TITULO / VOLVER
+    ================================================== -->
+
+    <div class="barra-superior">
+
+        <h1 class="titulo-pagina">
+            Cereales
+        </h1>
+
+
+        <button
+            type="button"
+            class="btn btn-secundario"
+            onclick="volver()">
+
+            ← Volver
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         MENSAJES
+    ================================================== -->
+
+    <div
+        id="mensaje"
+        class="mensaje">
+    </div>
+
+
+    <!-- =================================================
+         GRILLA PRINCIPAL
+    ================================================== -->
+
+    <div class="grilla-cereales">
+
+
+        <!-- ==============================================
+             LISTADO
+        =============================================== -->
+
+        <section class="card">
+
+
+            <div class="barra-superior">
+
+                <h2 class="card-titulo">
+                    Cereales
+                </h2>
+
+
+                <button
+                    type="button"
+                    class="btn btn-principal btn-chico"
+                    onclick="nuevoCereal()">
+
+                    + Nuevo
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="listaCereales"
+                class="lista-cereales">
+
+                Cargando...
+
+            </div>
+
+
+        </section>
+
+
+        <!-- ==============================================
+             EDICION
+        =============================================== -->
+
+        <section class="card">
+
+
+            <h2
+                id="tituloCereal"
+                class="card-titulo">
+
+                Nuevo Cereal
+
+            </h2>
+
+
+            <div class="form-grid">
+
+
+                <!-- CODIGO -->
+
+                <div class="form-grupo">
+
+                    <label for="idCereal">
+                        Código
+                    </label>
+
+
+                    <input
+                        id="idCereal"
+                        class="form-control"
+                        type="number"
+                        min="1"
+                        inputmode="numeric">
+
+
+                    <div class="ayuda">
+
+                        El código solamente puede modificarse
+                        al crear el cereal.
+
+                    </div>
+
+                </div>
+
+
+                <!-- NOMBRE -->
+
+                <div class="form-grupo">
+
+                    <label for="nombre">
+                        Nombre
+                    </label>
+
+
+                    <input
+                        id="nombre"
+                        class="form-control"
+                        maxlength="100"
+                        autocomplete="off">
+
+                </div>
+
+
+                <!-- HABILITADO -->
+
+                <div class="form-grupo ancho-completo">
+
+                    <label>
+
+                        <input
+                            id="habilitado"
+                            type="checkbox"
+                            checked>
+
+                        Habilitado
+
+                    </label>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ==========================================
+                 BOTONES
+            =========================================== -->
+
+            <div class="acciones">
+
+
+                <button
+                    type="button"
+                    class="btn btn-principal"
+                    onclick="guardarCereal()">
+
+                    Guardar Cereal
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn-secundario"
+                    onclick="nuevoCereal()">
+
+                    Cancelar
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="btnDeshabilitar"
+                    class="btn btn-peligro oculto"
+                    onclick="deshabilitarCereal()">
+
+                    Deshabilitar
+
+                </button>
+
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="/js/api.js"></script>
+
+<script src="/js/auth.js"></script>
+
+<script src="/js/cereales.js"></script>
+
+
+</body>
+
+</html>

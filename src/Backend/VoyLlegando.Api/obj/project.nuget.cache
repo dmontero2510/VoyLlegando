@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "PkBXex5In5E=",
+  "dgSpecHash": "cbkLdG+EVpg=",
   "success": true,
   "projectFilePath": "C:\\SIE\\VoyLlegando\\Desarrollo\\src\\Backend\\VoyLlegando.Api\\VoyLlegando.Api.csproj",
   "expectedPackageFiles": [
@@ -25,7 +25,11 @@
     "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.6.2\\swashbuckle.aspnetcore.swagger.6.6.2.nupkg.sha512",
     "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.6.2\\swashbuckle.aspnetcore.swaggergen.6.6.2.nupkg.sha512",
     "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.6.2\\swashbuckle.aspnetcore.swaggerui.6.6.2.nupkg.sha512",
-    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.22.0\\system.identitymodel.tokens.jwt.8.22.0.nupkg.sha512"
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\system.identitymodel.tokens.jwt\\8.22.0\\system.identitymodel.tokens.jwt.8.22.0.nupkg.sha512",
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.18\\microsoft.netcore.app.ref.9.0.18.nupkg.sha512",
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.18\\microsoft.windowsdesktop.app.ref.9.0.18.nupkg.sha512",
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.18\\microsoft.aspnetcore.app.ref.9.0.18.nupkg.sha512",
+    "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\9.0.18\\microsoft.netcore.app.host.win-x64.9.0.18.nupkg.sha512"
   ],
   "logs": []
 }

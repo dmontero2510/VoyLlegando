@@ -1,0 +1,3501 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>
+        VoyLlegando - Usuarios
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css?v=202">
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f4f7fa;
+            color: #202334;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .oculto {
+            display: none !important;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header-admin {
+            background: #0d0d27;
+            border-bottom: 4px solid #28b5e5;
+            min-height: 72px;
+            padding: 12px 24px;
+
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-marca {
+            justify-self: start;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .header-marca::before {
+            content: "■";
+            color: #28b5e5;
+            margin-right: 9px;
+        }
+
+        .header-titulo {
+            justify-self: center;
+            text-align: center;
+            color: #28b5e5;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .header-derecha {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-usuario {
+            color: white;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .btn-salir {
+            border: 1px solid rgba(255,255,255,.45);
+            background: transparent;
+            color: white;
+            padding: 8px 13px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           CONTENIDO
+        ===================================================== */
+
+        .contenido {
+            max-width: 1450px;
+            margin: 0 auto;
+            padding: 22px;
+        }
+
+        .barra-superior {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .titulo-pagina {
+            margin: 0;
+            color: #0d0d27;
+            font-size: 27px;
+        }
+
+        .titulo-pagina::after {
+            content: "";
+            display: block;
+            width: 55px;
+            height: 4px;
+            margin-top: 7px;
+            border-radius: 4px;
+            background: #28b5e5;
+        }
+
+
+        /* =====================================================
+           BOTONES
+        ===================================================== */
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn:disabled {
+            opacity: .50;
+            cursor: default;
+        }
+
+        .btn-principal {
+            background: #28b5e5;
+            color: #0d0d27;
+        }
+
+        .btn-secundario {
+            background: #e9edf1;
+            color: #202334;
+        }
+
+        .btn-peligro {
+            background: #c62828;
+            color: white;
+        }
+
+        .btn-chico {
+            padding: 7px 11px;
+            font-size: 13px;
+        }
+
+        .btn-mas {
+            flex: 0 0 42px;
+            width: 42px;
+            height: 42px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: #2e7d32;
+            color: white;
+
+            font-size: 24px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .btn-mas:hover {
+            background: #1b5e20;
+        }
+
+
+        /* =====================================================
+           MENSAJE
+        ===================================================== */
+
+        .mensaje {
+            min-height: 22px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .mensaje.error {
+            color: #c62828;
+        }
+
+
+        /* =====================================================
+           GRILLA
+        ===================================================== */
+
+        .grilla-usuarios {
+            display: grid;
+            grid-template-columns: 390px 1fr;
+            gap: 20px;
+        }
+
+
+        /* =====================================================
+           CARDS
+        ===================================================== */
+
+        .card {
+            background: white;
+            border: 1px solid #dce2e8;
+            border-radius: 12px;
+            padding: 18px;
+
+            box-shadow:
+                0 3px 10px
+                rgba(13,13,39,.05);
+        }
+
+        .card-titulo {
+            margin: 0;
+            color: #0d0d27;
+            font-size: 19px;
+        }
+
+
+        /* =====================================================
+           BUSCADOR
+        ===================================================== */
+
+        .buscador {
+            margin: 14px 0;
+        }
+
+        .buscador input {
+            width: 100%;
+        }
+
+
+        /* =====================================================
+           LISTA
+        ===================================================== */
+
+        .lista-usuarios {
+            max-height: 680px;
+            overflow-y: auto;
+        }
+
+        .usuario-item {
+            padding: 12px;
+            margin-bottom: 8px;
+
+            border: 1px solid #dce2e8;
+            border-radius: 9px;
+
+            cursor: pointer;
+            background: white;
+        }
+
+        .usuario-item:hover {
+            border-color: #28b5e5;
+        }
+
+        .usuario-item.seleccionado {
+            border: 2px solid #28b5e5;
+            background: #e6f8ff;
+        }
+
+        .usuario-item.deshabilitado {
+            opacity: .55;
+        }
+
+        .usuario-nombre {
+            font-weight: bold;
+            color: #0d0d27;
+            margin-bottom: 4px;
+        }
+
+        .usuario-detalle {
+            font-size: 12px;
+            color: #6c7280;
+            line-height: 1.45;
+        }
+
+        .usuario-rol {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 3px 7px;
+
+            border-radius: 5px;
+            background: #eef2f5;
+
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .usuario-inactivo {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           FORMULARIO
+        ===================================================== */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(0,1fr)
+                );
+
+            gap: 14px;
+        }
+
+        .form-grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-grupo label {
+            color: #41475a;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+
+            border: 1px solid #ccd4dc;
+            border-radius: 7px;
+
+            background: white;
+            color: #202334;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #28b5e5;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(40,181,229,.12);
+        }
+
+        .ancho-completo {
+            grid-column: 1 / -1;
+        }
+
+        .combo-con-mas {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+
+        /* =====================================================
+           SECCIONES ROL
+        ===================================================== */
+
+        .seccion-rol {
+            grid-column: 1 / -1;
+
+            margin-top: 5px;
+            padding: 14px;
+
+            background: #f7fafc;
+            border: 1px solid #dce2e8;
+            border-radius: 9px;
+        }
+
+        .seccion-rol-titulo {
+            margin: 0 0 12px 0;
+            color: #0d0d27;
+            font-size: 15px;
+        }
+
+        .vehiculos-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 12px;
+        }
+
+        .checks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 12px;
+        }
+
+        .checks label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .estado-box {
+            padding: 10px 12px;
+
+            border: 1px solid #dce2e8;
+            border-radius: 7px;
+
+            background: #f1f3f5;
+            font-weight: bold;
+        }
+
+        .ayuda {
+            color: #6c7280;
+            font-size: 12px;
+            line-height: 1.35;
+        }
+
+        .acciones {
+            margin-top: 20px;
+
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal-fondo {
+            position: fixed;
+            inset: 0;
+
+            z-index: 5000;
+
+            background:
+                rgba(0,0,0,.45);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 15px;
+        }
+
+        .modal {
+            width: 100%;
+            max-width: 600px;
+
+            max-height: 90vh;
+            overflow-y: auto;
+
+            background: white;
+
+            border-radius: 12px;
+            padding: 20px;
+
+            box-shadow:
+                0 12px 40px
+                rgba(0,0,0,.25);
+        }
+
+        .modal-cabecera {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-bottom: 18px;
+        }
+
+        .modal-cabecera h2 {
+            margin: 0;
+
+            color: #0d0d27;
+            font-size: 20px;
+        }
+
+        .modal-cerrar {
+            border: none;
+            background: transparent;
+
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .modal-acciones {
+            display: flex;
+            justify-content: flex-end;
+
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .grilla-usuarios {
+                grid-template-columns: 1fr;
+            }
+
+            .lista-usuarios {
+                max-height: 320px;
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .header-admin {
+                grid-template-columns: 1fr auto;
+
+                padding: 8px 12px;
+                gap: 5px;
+
+                min-height: 58px;
+            }
+
+            .header-marca {
+                grid-column: 1;
+                grid-row: 1;
+                font-size: 17px;
+            }
+
+            .header-derecha {
+                grid-column: 2;
+                grid-row: 1;
+                gap: 6px;
+            }
+
+            .header-usuario {
+                font-size: 11px;
+            }
+
+            .btn-salir {
+                padding: 6px 9px;
+                font-size: 12px;
+            }
+
+            .header-titulo {
+                grid-column: 1 / -1;
+                grid-row: 2;
+                width: 100%;
+                font-size: 14px;
+            }
+
+            .contenido {
+                padding: 12px;
+            }
+
+            .titulo-pagina {
+                font-size: 21px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ancho-completo,
+            .seccion-rol {
+                grid-column: auto;
+            }
+
+            .vehiculos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .acciones {
+                flex-direction: column;
+            }
+
+            .acciones .btn {
+                width: 100%;
+            }
+
+            .modal {
+                padding: 15px;
+            }
+
+            .modal-acciones {
+                flex-direction: column;
+            }
+
+            .modal-acciones .btn {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header-admin">
+
+    <div class="header-marca">
+        VoyLlegando
+    </div>
+
+    <div class="header-titulo">
+        System Administrator
+    </div>
+
+    <div class="header-derecha">
+
+        <div
+            id="nombreUsuario"
+            class="header-usuario">
+        </div>
+
+        <button
+            type="button"
+            class="btn-salir"
+            onclick="logout()">
+
+            Salir
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     CONTENIDO
+===================================================== -->
+
+<main class="contenido">
+
+
+    <div class="barra-superior">
+
+        <h1 class="titulo-pagina">
+            Usuarios
+        </h1>
+
+        <button
+            type="button"
+            class="btn btn-secundario"
+            onclick="volver()">
+
+            ← Volver
+
+        </button>
+
+    </div>
+
+
+    <div
+        id="mensaje"
+        class="mensaje">
+    </div>
+
+
+    <div class="grilla-usuarios">
+
+
+        <!-- =============================================
+             LISTADO
+        ============================================== -->
+
+        <section class="card">
+
+            <div class="barra-superior">
+
+                <h2 class="card-titulo">
+                    Usuarios
+                </h2>
+
+                <button
+                    type="button"
+                    class="btn btn-principal btn-chico"
+                    onclick="nuevoUsuario()">
+
+                    + Nuevo
+
+                </button>
+
+            </div>
+
+
+            <div class="buscador">
+
+                <input
+                    id="buscar"
+                    class="form-control"
+                    type="search"
+                    placeholder="Buscar nombre, celular o CUIT..."
+                    oninput="mostrarUsuarios()">
+
+            </div>
+
+
+            <div
+                id="listaUsuarios"
+                class="lista-usuarios">
+
+                Cargando...
+
+            </div>
+
+        </section>
+
+
+        <!-- =============================================
+             FORMULARIO
+        ============================================== -->
+
+        <section class="card">
+
+            <h2
+                id="tituloFormulario"
+                class="card-titulo">
+
+                Nuevo Usuario
+
+            </h2>
+
+
+            <br>
+
+
+            <input
+                id="idUsuario"
+                type="hidden">
+
+
+            <div class="form-grid">
+
+
+                <div class="form-grupo">
+
+                    <label for="nombre">
+                        Nombre
+                    </label>
+
+                    <input
+                        id="nombre"
+                        class="form-control"
+                        maxlength="100"
+                        autocomplete="off">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="celular">
+                        Celular
+                    </label>
+
+                    <input
+                        id="celular"
+                        class="form-control"
+                        inputmode="numeric"
+                        autocomplete="off">
+
+                </div>
+
+
+                <div
+                    id="grupoClave"
+                    class="form-grupo">
+
+                    <label for="clave">
+                        Clave
+                    </label>
+
+                    <input
+                        id="clave"
+                        class="form-control"
+                        type="password"
+                        autocomplete="new-password">
+
+                    <div class="ayuda">
+                        Solamente se solicita al crear el usuario.
+                    </div>
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="rol">
+                        Rol
+                    </label>
+
+                    <select
+                        id="rol"
+                        class="form-control"
+                        onchange="cambioRol()">
+
+                        <option value="">
+                            Seleccione...
+                        </option>
+
+                        <option value="L">
+                            L - Logística
+                        </option>
+
+                        <option value="E">
+                            E - Empresa de Transporte
+                        </option>
+
+                        <option value="S">
+                            S - System Administrator
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="domicilio">
+                        Domicilio
+                    </label>
+
+                    <input
+                        id="domicilio"
+                        class="form-control"
+                        maxlength="100"
+                        autocomplete="off">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="iva">
+                        Condición de IVA
+                    </label>
+
+                    <select
+                        id="iva"
+                        class="form-control">
+
+                        <option value="">
+                            Cargando...
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="cuit">
+                        CUIT
+                    </label>
+
+                    <input
+                        id="cuit"
+                        class="form-control"
+                        maxlength="11"
+                        inputmode="numeric"
+                        autocomplete="off">
+
+                </div>
+
+
+                <div class="form-grupo">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        id="email"
+                        class="form-control"
+                        type="email"
+                        maxlength="100"
+                        autocomplete="off">
+
+                </div>
+
+
+                <!-- =====================================
+                     LOGISTICA
+                ====================================== -->
+
+                <div
+                    id="seccionLogistica"
+                    class="seccion-rol oculto">
+
+                    <h3 class="seccion-rol-titulo">
+                        Logística
+                    </h3>
+
+
+                    <div class="form-grupo">
+
+                        <label for="idTranspor">
+                            Logística
+                        </label>
+
+
+                        <div class="combo-con-mas">
+
+                            <select
+                                id="idTranspor"
+                                class="form-control">
+
+                                <option value="">
+                                    Seleccione...
+                                </option>
+
+                            </select>
+
+
+                            <button
+                                type="button"
+                                class="btn-mas"
+                                title="Nueva Logística"
+                                onclick="abrirAltaLogistica()">
+
+                                +
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================
+                     EMPRESA TRANSPORTE
+                ====================================== -->
+
+                <div
+                    id="seccionEmpresa"
+                    class="seccion-rol oculto">
+
+
+                    <h3 class="seccion-rol-titulo">
+                        Empresa de Transporte
+                    </h3>
+
+
+                    <div class="vehiculos-grid">
+
+
+                        <div class="form-grupo">
+
+                            <label for="patChasis">
+                                Patente Chasis
+                            </label>
+
+                            <input
+                                id="patChasis"
+                                class="form-control"
+                                maxlength="10"
+                                autocomplete="off">
+
+                        </div>
+
+
+                        <div class="form-grupo">
+
+                            <label for="patAcopla">
+                                Patente Acoplado
+                            </label>
+
+                            <input
+                                id="patAcopla"
+                                class="form-control"
+                                maxlength="10"
+                                autocomplete="off">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="checks">
+
+                        <label>
+                            <input
+                                id="batea"
+                                type="checkbox">
+
+                            Batea
+                        </label>
+
+                        <label>
+                            <input
+                                id="corta"
+                                type="checkbox">
+
+                            Corta
+                        </label>
+
+                        <label>
+                            <input
+                                id="larga"
+                                type="checkbox">
+
+                            Larga
+                        </label>
+
+                        <label>
+                            <input
+                                id="escala"
+                                type="checkbox">
+
+                            Escala
+                        </label>
+
+                    </div>
+
+
+                    <br>
+
+
+                    <div class="form-grupo">
+
+                        <label>
+                            Estado
+                        </label>
+
+                        <div
+                            id="estadoEmpresa"
+                            class="estado-box">
+
+                            Disponible al crear
+
+                        </div>
+
+                        <div class="ayuda">
+                            El estado no puede modificarse manualmente.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================
+                     SYSTEM
+                ====================================== -->
+
+                <div
+                    id="seccionSystem"
+                    class="seccion-rol oculto">
+
+                    <h3 class="seccion-rol-titulo">
+                        System Administrator
+                    </h3>
+
+                    <div class="ayuda">
+                        No se vincula con Logística,
+                        Planta, Productor ni vehículo.
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="grupoEstadoUsuario"
+                    class="form-grupo ancho-completo oculto">
+
+                    <label>
+                        Estado del usuario
+                    </label>
+
+                    <div
+                        id="estadoUsuario"
+                        class="estado-box">
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="acciones">
+
+                <button
+                    type="button"
+                    id="btnGuardar"
+                    class="btn btn-principal"
+                    onclick="guardarUsuario()">
+
+                    Guardar Usuario
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn-secundario"
+                    onclick="nuevoUsuario()">
+
+                    Cancelar
+
+                </button>
+
+
+                <button
+                    type="button"
+                    id="btnDeshabilitar"
+                    class="btn btn-peligro oculto"
+                    onclick="deshabilitarUsuario()">
+
+                    Deshabilitar Usuario
+
+                </button>
+
+                <button
+                    type="button"
+                    id="btnHabilitar"
+                    class="btn btn-principal oculto"
+                    onclick="habilitarUsuario()">
+
+                    Habilitar Usuario
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     MODAL NUEVA LOGISTICA
+===================================================== -->
+
+<div
+    id="modalLogistica"
+    class="modal-fondo oculto">
+
+    <div class="modal">
+
+
+        <div class="modal-cabecera">
+
+            <h2>
+                Nueva Logística
+            </h2>
+
+            <button
+                type="button"
+                class="modal-cerrar"
+                onclick="cerrarAltaLogistica()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+            <div class="form-grupo ancho-completo">
+
+                <label for="nuevaLogisticaNombre">
+                    Nombre
+                </label>
+
+                <input
+                    id="nuevaLogisticaNombre"
+                    class="form-control"
+                    maxlength="100"
+                    autocomplete="off">
+
+            </div>
+
+
+            <div class="form-grupo ancho-completo">
+
+                <label for="nuevaLogisticaDomicilio">
+                    Domicilio
+                </label>
+
+                <input
+                    id="nuevaLogisticaDomicilio"
+                    class="form-control"
+                    maxlength="100"
+                    autocomplete="off">
+
+            </div>
+
+
+            <div class="form-grupo">
+
+                <label for="nuevaLogisticaIva">
+                    Condición de IVA
+                </label>
+
+                <select
+                    id="nuevaLogisticaIva"
+                    class="form-control">
+
+                    <option value="">
+                        Seleccione...
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-grupo">
+
+                <label for="nuevaLogisticaCuit">
+                    CUIT
+                </label>
+
+                <input
+                    id="nuevaLogisticaCuit"
+                    class="form-control"
+                    maxlength="11"
+                    inputmode="numeric"
+                    autocomplete="off">
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-acciones">
+
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="cerrarAltaLogistica()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="button"
+                id="btnGuardarLogistica"
+                class="btn btn-principal"
+                onclick="guardarNuevaLogistica()">
+
+                Guardar Logística
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="/js/api.js?v=202"></script>
+<script src="/js/auth.js?v=202"></script>
+
+
+<script>
+
+    // =======================================================
+    // VARIABLES
+    // =======================================================
+
+    let usuarios = [];
+
+    let usuarioSeleccionado = null;
+
+    let tiposIva = [];
+
+    let logisticas = [];
+
+
+    // =======================================================
+    // INICIO
+    // =======================================================
+
+    async function iniciar()
+    {
+        const perfil =
+            await validarSesion(
+                "S"
+            );
+
+
+        if (!perfil)
+            return;
+
+
+        document
+            .getElementById(
+                "nombreUsuario"
+            )
+            .textContent =
+                perfil.nombre ||
+                "Administrador";
+
+
+        await cargarTiposIva();
+
+        await cargarLogisticas();
+
+        await cargarUsuarios();
+
+        nuevoUsuario();
+    }
+
+
+    iniciar();
+
+
+    // =======================================================
+    // VOLVER
+    // =======================================================
+
+    function volver()
+    {
+        window.location.href =
+            "/admin.html";
+    }
+
+
+    // =======================================================
+    // MENSAJE
+    // =======================================================
+
+    function mensaje(
+        texto,
+        error = false
+    )
+    {
+        const elemento =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        elemento.textContent =
+            texto || "";
+
+
+        elemento.className =
+            error
+                ? "mensaje error"
+                : "mensaje";
+    }
+
+
+    // =======================================================
+    // PETICION
+    // =======================================================
+
+    async function peticion(
+        url,
+        opciones = {}
+    )
+    {
+        const token =
+            API.obtenerToken();
+
+
+        const headers =
+        {
+            ...(opciones.headers || {})
+        };
+
+
+        if (token)
+        {
+            headers.Authorization =
+                `Bearer ${token}`;
+        }
+
+
+        if (
+            opciones.body &&
+            !headers["Content-Type"]
+        )
+        {
+            headers["Content-Type"] =
+                "application/json";
+        }
+
+
+        const response =
+            await fetch(
+                url,
+                {
+                    ...opciones,
+                    headers
+                }
+            );
+
+
+        if (!response.ok)
+        {
+            let detalle = "";
+
+
+            try
+            {
+                const datos =
+                    await response.json();
+
+
+                if (
+                    typeof datos ===
+                    "string"
+                )
+                {
+                    detalle = datos;
+                }
+                else
+                {
+                    detalle =
+                        datos.mensaje ||
+                        datos.message ||
+                        datos.title ||
+                        JSON.stringify(datos);
+                }
+            }
+            catch
+            {
+                detalle =
+                    await response.text();
+            }
+
+
+            throw new Error(
+                detalle ||
+                `Error ${response.status}`
+            );
+        }
+
+
+        if (
+            response.status ===
+            204
+        )
+        {
+            return null;
+        }
+
+
+        const texto =
+            await response.text();
+
+
+        if (!texto)
+            return null;
+
+
+        try
+        {
+            return JSON.parse(
+                texto
+            );
+        }
+        catch
+        {
+            return texto;
+        }
+    }
+
+
+    // =======================================================
+    // TIPOS IVA
+    // =======================================================
+
+    async function cargarTiposIva()
+    {
+        try
+        {
+            tiposIva =
+                await peticion(
+                    "/api/TiposIva"
+                );
+
+
+            llenarComboIva(
+                "iva"
+            );
+
+
+            llenarComboIva(
+                "nuevaLogisticaIva"
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                "No se pudieron cargar los tipos de IVA: " +
+                error.message,
+                true
+            );
+        }
+    }
+
+
+    function llenarComboIva(
+        idCombo
+    )
+    {
+        const combo =
+            document.getElementById(
+                idCombo
+            );
+
+
+        if (!combo)
+            return;
+
+
+        combo.innerHTML =
+            `
+            <option value="">
+                Seleccione...
+            </option>
+            `;
+
+
+        tiposIva.forEach(
+            tipo =>
+            {
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    String(
+                        tipo.idIva
+                    );
+
+
+                option.textContent =
+                    tipo.descripcion;
+
+
+                combo.appendChild(
+                    option
+                );
+            }
+        );
+    }
+
+
+    // =======================================================
+    // LOGISTICAS
+    // =======================================================
+
+    async function cargarLogisticas(
+        idSeleccionar = null
+    )
+    {
+        const combo =
+            document.getElementById(
+                "idTranspor"
+            );
+
+
+        combo.innerHTML =
+            `
+            <option value="">
+                Cargando...
+            </option>
+            `;
+
+
+        try
+        {
+            logisticas =
+                await peticion(
+                    "/api/Logisticas"
+                );
+
+
+            combo.innerHTML =
+                `
+                <option value="">
+                    Seleccione...
+                </option>
+                `;
+
+
+            logisticas
+                .filter(
+                    logistica =>
+                        logistica.habilitado !== false
+                )
+                .forEach(
+                    logistica =>
+                    {
+                        const option =
+                            document.createElement(
+                                "option"
+                            );
+
+
+                        option.value =
+                            logistica.idTranspor;
+
+
+                        option.textContent =
+                            logistica.nombre;
+
+
+                        combo.appendChild(
+                            option
+                        );
+                    }
+                );
+
+
+            if (
+                idSeleccionar !== null
+            )
+            {
+                combo.value =
+                    String(
+                        idSeleccionar
+                    );
+            }
+        }
+        catch (error)
+        {
+            combo.innerHTML =
+                `
+                <option value="">
+                    No disponible
+                </option>
+                `;
+
+
+            mensaje(
+                "No se pudieron cargar las Logísticas: " +
+                error.message,
+                true
+            );
+        }
+    }
+
+
+    // =======================================================
+    // MODAL LOGISTICA
+    // =======================================================
+
+    function abrirAltaLogistica()
+    {
+        document
+            .getElementById(
+                "nuevaLogisticaNombre"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "nuevaLogisticaDomicilio"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "nuevaLogisticaCuit"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "nuevaLogisticaIva"
+            )
+            .value =
+                tiposIva.some(
+                    x =>
+                        String(
+                            x.idIva
+                        ) === "1"
+                )
+                    ? "1"
+                    : "";
+
+
+        document
+            .getElementById(
+                "modalLogistica"
+            )
+            .classList
+            .remove(
+                "oculto"
+            );
+
+
+        setTimeout(
+            () =>
+            {
+                document
+                    .getElementById(
+                        "nuevaLogisticaNombre"
+                    )
+                    .focus();
+            },
+            50
+        );
+    }
+
+
+    function cerrarAltaLogistica()
+    {
+        document
+            .getElementById(
+                "modalLogistica"
+            )
+            .classList
+            .add(
+                "oculto"
+            );
+    }
+
+
+    async function guardarNuevaLogistica()
+    {
+        const nombre =
+            document
+                .getElementById(
+                    "nuevaLogisticaNombre"
+                )
+                .value
+                .trim();
+
+
+        const domicilio =
+            document
+                .getElementById(
+                    "nuevaLogisticaDomicilio"
+                )
+                .value
+                .trim();
+
+
+        const iva =
+            document
+                .getElementById(
+                    "nuevaLogisticaIva"
+                )
+                .value;
+
+
+        const cuit =
+            document
+                .getElementById(
+                    "nuevaLogisticaCuit"
+                )
+                .value
+                .replace(
+                    /\D/g,
+                    ""
+                );
+
+
+        if (!nombre)
+        {
+            mensaje(
+                "Ingrese el nombre de la Logística.",
+                true
+            );
+
+            return;
+        }
+
+
+        if (!iva)
+        {
+            mensaje(
+                "Seleccione la condición de IVA.",
+                true
+            );
+
+            return;
+        }
+
+
+        if (
+            cuit.length !== 11 ||
+            !/^\d{11}$/.test(cuit)
+        )
+        {
+            mensaje(
+                "El CUIT debe contener 11 dígitos.",
+                true
+            );
+
+            return;
+        }
+
+
+        const boton =
+            document.getElementById(
+                "btnGuardarLogistica"
+            );
+
+
+        try
+        {
+            boton.disabled =
+                true;
+
+
+            boton.textContent =
+                "Guardando...";
+
+
+            mensaje(
+                "Guardando Logística..."
+            );
+
+
+            const respuesta =
+                await peticion(
+                    "/api/Logisticas",
+                    {
+                        method:
+                            "POST",
+
+                        body:
+                            JSON.stringify(
+                                {
+                                    nombre:
+                                        nombre,
+
+                                    domicilio:
+                                        domicilio || null,
+
+                                    iva:
+                                        String(iva),
+
+                                    cuit:
+                                        cuit
+                                }
+                            )
+                    }
+                );
+
+
+            const idTranspor =
+                respuesta.idTranspor ??
+                respuesta.id;
+
+
+            cerrarAltaLogistica();
+
+
+            await cargarLogisticas(
+                idTranspor
+            );
+
+
+            mensaje(
+                respuesta.mensaje ||
+                "Logística creada correctamente."
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message,
+                true
+            );
+        }
+        finally
+        {
+            boton.disabled =
+                false;
+
+
+            boton.textContent =
+                "Guardar Logística";
+        }
+    }
+
+
+    // =======================================================
+    // CARGAR USUARIOS
+    // =======================================================
+
+    async function cargarUsuarios(
+        idSeleccionar = null
+    )
+    {
+        const lista =
+            document.getElementById(
+                "listaUsuarios"
+            );
+
+
+        lista.innerHTML =
+            "Cargando...";
+
+
+        try
+        {
+            usuarios =
+                await peticion(
+                    "/api/Usuarios"
+                );
+
+
+            usuarios.sort(
+                (a,b) =>
+                    String(
+                        a.nombre || ""
+                    )
+                    .localeCompare(
+                        String(
+                            b.nombre || ""
+                        ),
+                        "es"
+                    )
+            );
+
+
+            mostrarUsuarios();
+
+
+            if (
+                idSeleccionar !== null
+            )
+            {
+                await seleccionarUsuario(
+                    idSeleccionar
+                );
+            }
+        }
+        catch (error)
+        {
+            lista.innerHTML =
+                "";
+
+
+            mensaje(
+                "No se pudieron cargar los usuarios: " +
+                error.message,
+                true
+            );
+        }
+    }
+
+
+    // =======================================================
+    // MOSTRAR USUARIOS
+    // =======================================================
+
+    function mostrarUsuarios()
+    {
+        const lista =
+            document.getElementById(
+                "listaUsuarios"
+            );
+
+
+        const buscar =
+            document
+                .getElementById(
+                    "buscar"
+                )
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        lista.innerHTML =
+            "";
+
+
+        const filtrados =
+            usuarios.filter(
+                usuario =>
+                {
+                    if (!buscar)
+                        return true;
+
+
+                    const texto =
+                        [
+                            usuario.nombre,
+                            usuario.celular,
+                            usuario.cuit,
+                            usuario.email,
+                            usuario.rol
+                        ]
+                        .join(" ")
+                        .toLowerCase();
+
+
+                    return texto.includes(
+                        buscar
+                    );
+                }
+            );
+
+
+        if (
+            filtrados.length ===
+            0
+        )
+        {
+            lista.innerHTML =
+                `
+                <div class="ayuda">
+                    No hay usuarios.
+                </div>
+                `;
+
+            return;
+        }
+
+
+        filtrados.forEach(
+            usuario =>
+            {
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "usuario-item";
+
+
+                if (
+                    !usuario.habilitado
+                )
+                {
+                    item.classList.add(
+                        "deshabilitado"
+                    );
+                }
+
+
+                if (
+                    usuarioSeleccionado &&
+                    Number(
+                        usuarioSeleccionado.idUsuario
+                    ) ===
+                    Number(
+                        usuario.idUsuario
+                    )
+                )
+                {
+                    item.classList.add(
+                        "seleccionado"
+                    );
+                }
+
+
+                item.innerHTML =
+    `
+    <div class="usuario-nombre">
+
+        ${escapar(
+            usuario.nombre ||
+            "(Sin nombre)"
+        )}
+
+    </div>
+
+    <div class="usuario-detalle">
+
+        Celular:
+        ${escapar(
+            usuario.celular || "-"
+        )}
+
+        <br>
+
+        CUIT:
+        ${escapar(
+            usuario.cuit || "-"
+        )}
+
+    </div>
+
+    <span class="usuario-rol">
+
+        ${escapar(
+            descripcionRol(
+                usuario.rol
+            )
+        )}
+
+    </span>
+
+    ${
+        !usuario.habilitado
+            ?
+            `
+            <div class="usuario-inactivo">
+                Deshabilitado
+            </div>
+            `
+            :
+            ""
+    }
+
+    <div style="
+        margin-top:10px;
+        text-align:right;
+    ">
+
+        <button
+            type="button"
+            class="btn btn-secundario btn-chico btn-editar-usuario">
+
+            Editar
+
+        </button>
+
+    </div>
+    `;
+
+
+                // Clic sobre toda la tarjeta
+                item.onclick =
+                    () =>
+                        seleccionarUsuario(
+                            usuario.idUsuario
+                        );
+
+
+                // Doble clic sobre toda la tarjeta
+                item.ondblclick =
+                    () =>
+                        seleccionarUsuario(
+                            usuario.idUsuario
+                        );
+
+
+                // Botón Editar:
+                // usamos addEventListener en lugar de onclick inline
+                // para evitar problemas con "event" en el navegador.
+                const botonEditar =
+                    item.querySelector(
+                        ".btn-editar-usuario"
+                    );
+
+
+                if (botonEditar)
+                {
+                    botonEditar.addEventListener(
+                        "click",
+                        async function(evento)
+                        {
+                            evento.preventDefault();
+                            evento.stopPropagation();
+
+                            await seleccionarUsuario(
+                                usuario.idUsuario
+                            );
+                        }
+                    );
+                }
+
+
+                lista.appendChild(
+                    item
+                );
+            }
+        );
+    }
+
+
+    // =======================================================
+    // NUEVO USUARIO
+    // =======================================================
+
+    function nuevoUsuario()
+    {
+        usuarioSeleccionado =
+            null;
+
+
+        document
+            .getElementById(
+                "tituloFormulario"
+            )
+            .textContent =
+                "Nuevo Usuario";
+
+
+        document
+            .getElementById(
+                "idUsuario"
+            )
+            .value =
+                "";
+
+document
+    .getElementById(
+        "btnGuardar"
+    )
+    .textContent =
+        "Guardar Usuario";
+
+        document
+            .getElementById(
+                "nombre"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "celular"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "clave"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "domicilio"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "iva"
+            )
+            .value =
+                tiposIva.some(
+                    x =>
+                        String(
+                            x.idIva
+                        ) === "1"
+                )
+                    ? "1"
+                    : "";
+
+
+        document
+            .getElementById(
+                "cuit"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "email"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "rol"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "idTranspor"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "patChasis"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "patAcopla"
+            )
+            .value =
+                "";
+
+
+        document
+            .getElementById(
+                "batea"
+            )
+            .checked =
+                false;
+
+
+        document
+            .getElementById(
+                "corta"
+            )
+            .checked =
+                false;
+
+
+        document
+            .getElementById(
+                "larga"
+            )
+            .checked =
+                false;
+
+
+        document
+            .getElementById(
+                "escala"
+            )
+            .checked =
+                false;
+
+
+        document
+            .getElementById(
+                "grupoClave"
+            )
+            .classList
+            .remove(
+                "oculto"
+            );
+
+
+        document
+            .getElementById(
+                "grupoEstadoUsuario"
+            )
+            .classList
+            .add(
+                "oculto"
+            );
+
+
+        document
+            .getElementById(
+                "btnDeshabilitar"
+            )
+            .classList
+            .add(
+                "oculto"
+            );
+
+        document
+            .getElementById(
+                "btnHabilitar"
+            )
+            .classList
+            .add(
+                "oculto"
+            );
+        cambioRol();
+
+        mostrarUsuarios();
+
+        mensaje("");
+    }
+
+
+    // =======================================================
+    // SELECCIONAR
+    // =======================================================
+
+async function seleccionarUsuario(
+    idUsuario
+)
+{
+    try
+    {
+        const usuario =
+            usuarios.find(
+                u =>
+                    Number(
+                        u.idUsuario
+                    ) ===
+                    Number(
+                        idUsuario
+                    )
+            );
+
+
+        if (!usuario)
+        {
+            mensaje(
+                "No se encontró el usuario seleccionado.",
+                true
+            );
+
+            return;
+        }
+
+
+        usuarioSeleccionado =
+            usuario;
+
+document
+    .getElementById(
+        "btnGuardar"
+    )
+    .textContent =
+        "Actualizar Usuario";
+
+            document
+                .getElementById(
+                    "tituloFormulario"
+                )
+                .textContent =
+                    `Usuario #${usuario.idUsuario}`;
+
+
+            document
+                .getElementById(
+                    "idUsuario"
+                )
+                .value =
+                    usuario.idUsuario;
+
+
+            document
+                .getElementById(
+                    "nombre"
+                )
+                .value =
+                    usuario.nombre || "";
+
+
+            document
+                .getElementById(
+                    "celular"
+                )
+                .value =
+                    usuario.celular || "";
+
+
+            document
+                .getElementById(
+                    "domicilio"
+                )
+                .value =
+                    usuario.domicilio || "";
+
+
+            document
+                .getElementById(
+                    "iva"
+                )
+                .value =
+                    usuario.iva != null
+                        ? String(usuario.iva)
+                        : "";
+
+
+            document
+                .getElementById(
+                    "cuit"
+                )
+                .value =
+                    usuario.cuit || "";
+
+
+            document
+                .getElementById(
+                    "email"
+                )
+                .value =
+                    usuario.email || "";
+
+
+            document
+                .getElementById(
+                    "rol"
+                )
+                .value =
+                    usuario.rol || "";
+
+
+            document
+                .getElementById(
+                    "idTranspor"
+                )
+                .value =
+                    usuario.idTranspor ??
+                    "";
+
+
+            document
+                .getElementById(
+                    "patChasis"
+                )
+                .value =
+                    usuario.patChasis || "";
+
+
+            document
+                .getElementById(
+                    "patAcopla"
+                )
+                .value =
+                    usuario.patAcopla || "";
+
+
+            document
+                .getElementById(
+                    "batea"
+                )
+                .checked =
+                    Boolean(usuario.batea);
+
+
+            document
+                .getElementById(
+                    "corta"
+                )
+                .checked =
+                    Boolean(usuario.corta);
+
+
+            document
+                .getElementById(
+                    "larga"
+                )
+                .checked =
+                    Boolean(usuario.larga);
+
+
+            document
+                .getElementById(
+                    "escala"
+                )
+                .checked =
+                    Boolean(usuario.escala);
+
+
+            document
+                .getElementById(
+                    "grupoClave"
+                )
+                .classList
+                .add(
+                    "oculto"
+                );
+
+
+            document
+                .getElementById(
+                    "grupoEstadoUsuario"
+                )
+                .classList
+                .remove(
+                    "oculto"
+                );
+
+
+            document
+                .getElementById(
+                    "estadoUsuario"
+                )
+                .textContent =
+                    usuario.habilitado
+                        ? "Habilitado"
+                        : "Deshabilitado";
+
+
+const botonDeshabilitar =
+    document.getElementById(
+        "btnDeshabilitar"
+    );
+
+const botonHabilitar =
+    document.getElementById(
+        "btnHabilitar"
+    );
+
+
+if (usuario.habilitado)
+{
+    // Usuario ACTIVO:
+    // mostrar Deshabilitar
+    // ocultar Habilitar
+
+    botonDeshabilitar
+        .classList
+        .remove(
+            "oculto"
+        );
+
+    botonHabilitar
+        .classList
+        .add(
+            "oculto"
+        );
+}
+else
+{
+    // Usuario INACTIVO:
+    // ocultar Deshabilitar
+    // mostrar Habilitar
+
+    botonDeshabilitar
+        .classList
+        .add(
+            "oculto"
+        );
+
+    botonHabilitar
+        .classList
+        .remove(
+            "oculto"
+        );
+}
+
+            cambioRol();
+
+
+            if (
+                usuario.rol === "L" &&
+                usuario.idTranspor != null
+            )
+            {
+                document
+                    .getElementById(
+                        "idTranspor"
+                    )
+                    .value =
+                        String(
+                            usuario.idTranspor
+                        );
+            }
+
+
+            actualizarEstadoEmpresa(
+                usuario.estado
+            );
+
+
+            mostrarUsuarios();
+
+            mensaje("");
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message,
+                true
+            );
+        }
+    }
+
+
+    // =======================================================
+    // CAMBIO ROL
+    // =======================================================
+
+    function cambioRol()
+    {
+        const rol =
+            document
+                .getElementById(
+                    "rol"
+                )
+                .value;
+
+
+        document
+            .getElementById(
+                "seccionLogistica"
+            )
+            .classList
+            .toggle(
+                "oculto",
+                rol !== "L"
+            );
+
+
+        document
+            .getElementById(
+                "seccionEmpresa"
+            )
+            .classList
+            .toggle(
+                "oculto",
+                rol !== "E"
+            );
+
+
+        document
+            .getElementById(
+                "seccionSystem"
+            )
+            .classList
+            .toggle(
+                "oculto",
+                rol !== "S"
+            );
+
+
+        if (
+            rol !== "L"
+        )
+        {
+            document
+                .getElementById(
+                    "idTranspor"
+                )
+                .value =
+                    "";
+        }
+
+
+        if (
+            rol !== "E"
+        )
+        {
+            document
+                .getElementById(
+                    "patChasis"
+                )
+                .value =
+                    "";
+
+
+            document
+                .getElementById(
+                    "patAcopla"
+                )
+                .value =
+                    "";
+
+
+            document
+                .getElementById(
+                    "batea"
+                )
+                .checked =
+                    false;
+
+
+            document
+                .getElementById(
+                    "corta"
+                )
+                .checked =
+                    false;
+
+
+            document
+                .getElementById(
+                    "larga"
+                )
+                .checked =
+                    false;
+
+
+            document
+                .getElementById(
+                    "escala"
+                )
+                .checked =
+                    false;
+        }
+    }
+
+
+    // =======================================================
+    // GUARDAR USUARIO
+    // =======================================================
+
+    async function guardarUsuario()
+    {
+        const idUsuario =
+            valorEnteroONull(
+                "idUsuario"
+            );
+
+
+        const esNuevo =
+            !idUsuario;
+
+
+        const nombre =
+            document
+                .getElementById(
+                    "nombre"
+                )
+                .value
+                .trim();
+
+
+        const celular =
+            document
+                .getElementById(
+                    "celular"
+                )
+                .value
+                .replace(
+                    /\D/g,
+                    ""
+                );
+
+
+        const clave =
+            document
+                .getElementById(
+                    "clave"
+                )
+                .value;
+
+
+        const domicilio =
+            document
+                .getElementById(
+                    "domicilio"
+                )
+                .value
+                .trim();
+
+
+        const iva =
+            document
+                .getElementById(
+                    "iva"
+                )
+                .value;
+
+
+        const cuit =
+            document
+                .getElementById(
+                    "cuit"
+                )
+                .value
+                .replace(
+                    /\D/g,
+                    ""
+                );
+
+
+        const email =
+            document
+                .getElementById(
+                    "email"
+                )
+                .value
+                .trim();
+
+
+        const rol =
+            document
+                .getElementById(
+                    "rol"
+                )
+                .value;
+
+
+        if (!nombre)
+        {
+            mensaje(
+                "Ingrese el nombre.",
+                true
+            );
+
+            return;
+        }
+
+
+        if (!celular)
+        {
+            mensaje(
+                "Ingrese el celular.",
+                true
+            );
+
+            return;
+        }
+
+
+        if (
+            esNuevo &&
+            !clave
+        )
+        {
+            mensaje(
+                "Ingrese la clave.",
+                true
+            );
+
+            return;
+        }
+
+
+        if (!rol)
+        {
+            mensaje(
+                "Seleccione el rol.",
+                true
+            );
+
+            return;
+        }
+
+
+        if (!iva)
+        {
+            mensaje(
+                "Seleccione la condición de IVA.",
+                true
+            );
+
+            return;
+        }
+
+
+        if (
+            cuit.length !== 11
+        )
+        {
+            mensaje(
+                "El CUIT debe contener 11 dígitos.",
+                true
+            );
+
+            return;
+        }
+
+
+        const idTranspor =
+            rol === "L"
+                ? valorEnteroONull(
+                    "idTranspor"
+                )
+                : null;
+
+
+        if (
+            rol === "L" &&
+            !idTranspor
+        )
+        {
+            mensaje(
+                "Seleccione una Logística.",
+                true
+            );
+
+            return;
+        }
+
+
+        const datos =
+        {
+            celular:
+                celular,
+
+            clave:
+                esNuevo
+                    ? clave
+                    : "",
+
+            nombre:
+                nombre,
+
+            domicilio:
+                domicilio || null,
+
+            iva:
+                String(iva),
+
+            cuit:
+                cuit,
+
+            email:
+                email,
+
+            rol:
+                rol,
+
+            idTranspor:
+                idTranspor,
+
+            idPlanta:
+                null,
+
+            idProduc:
+                null,
+
+            patChasis:
+                rol === "E"
+                    ? textoONull("patChasis")
+                    : null,
+
+            patAcopla:
+                rol === "E"
+                    ? textoONull("patAcopla")
+                    : null,
+
+            batea:
+                rol === "E"
+                    ? document
+                        .getElementById("batea")
+                        .checked
+                    : false,
+
+            corta:
+                rol === "E"
+                    ? document
+                        .getElementById("corta")
+                        .checked
+                    : false,
+
+            larga:
+                rol === "E"
+                    ? document
+                        .getElementById("larga")
+                        .checked
+                    : false,
+
+            escala:
+                rol === "E"
+                    ? document
+                        .getElementById("escala")
+                        .checked
+                    : false,
+
+            estado:
+                null
+        };
+
+
+        try
+        {
+            bloquearGuardar(
+                true
+            );
+
+
+            mensaje(
+                esNuevo
+                    ? "Creando usuario..."
+                    : "Guardando cambios..."
+            );
+
+
+            let respuesta;
+
+
+            if (esNuevo)
+            {
+                respuesta =
+                    await peticion(
+                        "/api/Usuarios",
+                        {
+                            method:
+                                "POST",
+
+                            body:
+                                JSON.stringify(
+                                    datos
+                                )
+                        }
+                    );
+            }
+            else
+            {
+                respuesta =
+                    await peticion(
+                        `/api/Usuarios/${idUsuario}`,
+                        {
+                            method:
+                                "PUT",
+
+                            body:
+                                JSON.stringify(
+                                    datos
+                                )
+                        }
+                    );
+            }
+
+
+            const id =
+                respuesta?.id ??
+                idUsuario;
+
+
+            await cargarUsuarios(
+                id
+            );
+
+
+            mensaje(
+                esNuevo
+                    ? "Usuario creado correctamente."
+                    : "Usuario actualizado correctamente."
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message,
+                true
+            );
+        }
+        finally
+        {
+            bloquearGuardar(
+                false
+            );
+        }
+    }
+
+// =======================================================
+// HABILITAR
+// =======================================================
+
+async function habilitarUsuario()
+{
+    if (
+        !usuarioSeleccionado ||
+        usuarioSeleccionado.habilitado
+    )
+    {
+        return;
+    }
+
+
+    if (
+        !confirm(
+            `¿Habilitar al usuario "${usuarioSeleccionado.nombre}"?`
+        )
+    )
+    {
+        return;
+    }
+
+
+    try
+    {
+        mensaje(
+            "Habilitando usuario..."
+        );
+
+
+        const respuesta =
+            await peticion(
+                `/api/Usuarios/${usuarioSeleccionado.idUsuario}/habilitar`,
+                {
+                    method:
+                        "POST"
+                }
+            );
+
+
+        const id =
+            usuarioSeleccionado.idUsuario;
+
+
+        await cargarUsuarios(
+            id
+        );
+
+
+        mensaje(
+            respuesta?.mensaje ||
+            "Usuario habilitado correctamente."
+        );
+    }
+    catch (error)
+    {
+        mensaje(
+            error.message,
+            true
+        );
+    }
+}
+
+    // =======================================================
+    // DESHABILITAR
+    // =======================================================
+
+    async function deshabilitarUsuario()
+    {
+        if (
+            !usuarioSeleccionado ||
+            !usuarioSeleccionado.habilitado
+        )
+        {
+            return;
+        }
+
+
+        if (
+            !confirm(
+                `¿Deshabilitar al usuario "${usuarioSeleccionado.nombre}"?`
+            )
+        )
+        {
+            return;
+        }
+
+
+        try
+        {
+            mensaje(
+                "Deshabilitando usuario..."
+            );
+
+
+            await peticion(
+                `/api/Usuarios/${usuarioSeleccionado.idUsuario}`,
+                {
+                    method:
+                        "DELETE"
+                }
+            );
+
+
+            const id =
+                usuarioSeleccionado.idUsuario;
+
+
+            await cargarUsuarios(
+                id
+            );
+
+
+            mensaje(
+                "Usuario deshabilitado correctamente."
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message,
+                true
+            );
+        }
+    }
+
+
+    // =======================================================
+    // ESTADO EMPRESA
+    // =======================================================
+
+    function actualizarEstadoEmpresa(
+        estado
+    )
+    {
+        const elemento =
+            document.getElementById(
+                "estadoEmpresa"
+            );
+
+
+        if (!usuarioSeleccionado)
+        {
+            elemento.textContent =
+                "Disponible al crear";
+
+            return;
+        }
+
+
+        elemento.textContent =
+            descripcionEstadoEmpresa(
+                estado
+            );
+    }
+
+
+    function descripcionEstadoEmpresa(
+        estado
+    )
+    {
+        switch (estado)
+        {
+            case "D":
+                return "Disponible";
+
+            case "V":
+                return "Viajando";
+
+            case "F":
+                return "Fuera de Servicio";
+
+            default:
+                return estado || "-";
+        }
+    }
+
+
+    // =======================================================
+    // ROL
+    // =======================================================
+
+    function descripcionRol(
+        rol
+    )
+    {
+        switch (rol)
+        {
+            case "L":
+                return "L - Logística";
+
+            case "E":
+                return "E - Empresa de Transporte";
+
+            case "S":
+                return "S - System Administrator";
+
+            case "A":
+                return "A - Acopio / Planta";
+
+            case "P":
+                return "P - Productor";
+
+            default:
+                return rol || "-";
+        }
+    }
+
+
+    // =======================================================
+    // BLOQUEAR
+    // =======================================================
+
+    function bloquearGuardar(
+        bloqueado
+    )
+    {
+        const boton =
+            document.getElementById(
+                "btnGuardar"
+            );
+
+
+        boton.disabled =
+            bloqueado;
+
+
+        boton.textContent =
+            bloqueado
+                ? "Guardando..."
+                : "Guardar Usuario";
+    }
+
+
+    // =======================================================
+    // UTILIDADES
+    // =======================================================
+
+    function valorEnteroONull(
+        id
+    )
+    {
+        const elemento =
+            document.getElementById(
+                id
+            );
+
+
+        if (
+            !elemento ||
+            elemento.value === ""
+        )
+        {
+            return null;
+        }
+
+
+        const numero =
+            Number(
+                elemento.value
+            );
+
+
+        if (
+            !Number.isInteger(numero) ||
+            numero <= 0
+        )
+        {
+            return null;
+        }
+
+
+        return numero;
+    }
+
+
+    function textoONull(
+        id
+    )
+    {
+        const elemento =
+            document.getElementById(
+                id
+            );
+
+
+        if (!elemento)
+            return null;
+
+
+        const valor =
+            elemento
+                .value
+                .trim();
+
+
+        return valor || null;
+    }
+
+
+    function escapar(
+        valor
+    )
+    {
+        const elemento =
+            document.createElement(
+                "div"
+            );
+
+
+        elemento.textContent =
+            valor ?? "";
+
+
+        return elemento.innerHTML;
+    }
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>
+        VoyLlegando - Productores y Campos
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css">
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+
+    <style>
+
+        /* =====================================================
+           HEADER LOGISTICA
+        ===================================================== */
+
+        .header-logistica {
+            background: #0d0d27;
+
+            border-bottom:
+                4px solid #28b5e5;
+
+            min-height:
+                72px;
+
+            padding:
+                12px 24px;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 2fr 1fr;
+
+            align-items:
+                center;
+
+            gap:
+                20px;
+
+            box-shadow:
+                0 2px 10px rgba(13, 13, 39, .20);
+        }
+
+
+        .header-marca {
+            justify-self:
+                start;
+
+            color:
+                white;
+
+            font-size:
+                22px;
+
+            font-weight:
+                bold;
+
+            white-space:
+                nowrap;
+
+            letter-spacing:
+                .8px;
+        }
+
+
+        .header-marca::before {
+            content:
+                "■";
+
+            color:
+                #28b5e5;
+
+            margin-right:
+                9px;
+        }
+
+
+        .header-empresa {
+            justify-self:
+                center;
+
+            text-align:
+                center;
+
+            color:
+                #28b5e5;
+
+            font-size:
+                20px;
+
+            font-weight:
+                bold;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .5px;
+        }
+
+
+        .header-derecha {
+            justify-self:
+                end;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                14px;
+        }
+
+
+        .header-usuario {
+            color:
+                white;
+
+            font-size:
+                14px;
+
+            white-space:
+                nowrap;
+        }
+
+
+        .btn-salir {
+            border:
+                1px solid rgba(255,255,255,.45);
+
+            background:
+                transparent;
+
+            color:
+                white;
+
+            padding:
+                8px 13px;
+
+            border-radius:
+                7px;
+
+            cursor:
+                pointer;
+
+            font-weight:
+                bold;
+        }
+
+
+        .btn-salir:hover {
+            background:
+                rgba(255,255,255,.10);
+        }
+
+
+        /* =====================================================
+           PRODUCTORES
+        ===================================================== */
+
+        .barra-superior {
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+            margin-bottom:
+                20px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .grilla-productores {
+            display:
+                grid;
+
+            grid-template-columns:
+                380px 1fr;
+
+            gap:
+                20px;
+        }
+
+
+        .lista-productores {
+            max-height:
+                620px;
+
+            overflow-y:
+                auto;
+        }
+
+
+        .productor-item {
+            padding:
+                13px;
+
+            margin-bottom:
+                8px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius:
+                9px;
+
+            cursor:
+                pointer;
+
+            background:
+                white;
+        }
+
+
+        .productor-item:hover {
+            border-color:
+                var(--azul-marca);
+        }
+
+
+        .productor-item.seleccionado {
+            border:
+                2px solid var(--azul-marca);
+
+            background:
+                var(--azul-suave);
+        }
+
+
+        .productor-nombre {
+            font-weight:
+                bold;
+
+            color:
+                var(--fondo-oscuro);
+        }
+
+
+        .productor-detalle {
+            margin-top:
+                5px;
+
+            font-size:
+                13px;
+
+            color:
+                var(--texto-suave);
+        }
+
+
+        .form-grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap:
+                14px;
+        }
+
+
+        .form-grid .ancho-completo {
+            grid-column:
+                1 / -1;
+        }
+
+
+        .campos-cabecera {
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+            margin-bottom:
+                12px;
+        }
+
+
+        .campo-item {
+            padding:
+                12px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius:
+                8px;
+
+            margin-bottom:
+                8px;
+
+            background:
+                white;
+        }
+
+
+        .campo-nombre {
+            font-weight:
+                bold;
+        }
+
+
+        .campo-coordenadas {
+            margin-top:
+                4px;
+
+            font-size:
+                12px;
+
+            color:
+                var(--texto-suave);
+        }
+
+
+        .campo-botones {
+            display:
+                flex;
+
+            gap:
+                6px;
+
+            margin-top:
+                9px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .btn-chico {
+            padding:
+                7px 10px;
+
+            font-size:
+                12px;
+        }
+
+
+        .mapa-campo {
+            width:
+                100%;
+
+            height:
+                400px;
+
+            border:
+                2px solid var(--fondo-oscuro);
+
+            border-radius:
+                10px;
+
+            overflow:
+                hidden;
+
+            margin-top:
+                10px;
+        }
+
+
+        .mapa-ayuda {
+            margin-top:
+                8px;
+
+            padding:
+                9px 11px;
+
+            border-left:
+                4px solid var(--azul-marca);
+
+            background:
+                var(--azul-suave);
+
+            border-radius:
+                5px;
+
+            font-size:
+                13px;
+        }
+
+
+        .oculto {
+            display:
+                none !important;
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .grilla-productores {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .lista-productores {
+                max-height:
+                    350px;
+            }
+
+        }
+
+
+        /* =====================================================
+           CELULAR
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .header-logistica {
+                grid-template-columns:
+                    1fr auto;
+
+                padding:
+                    11px 14px;
+
+                gap:
+                    8px;
+            }
+
+
+            .header-marca {
+                grid-column:
+                    1;
+
+                grid-row:
+                    1;
+
+                font-size:
+                    18px;
+            }
+
+
+            .header-derecha {
+                grid-column:
+                    2;
+
+                grid-row:
+                    1;
+
+                gap:
+                    8px;
+            }
+
+
+            .header-usuario {
+                font-size:
+                    12px;
+            }
+
+
+            .header-empresa {
+                grid-column:
+                    1 / -1;
+
+                grid-row:
+                    2;
+
+                width:
+                    100%;
+
+                font-size:
+                    15px;
+
+                padding-top:
+                    5px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .form-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .form-grid .ancho-completo {
+                grid-column:
+                    auto;
+            }
+
+
+            .mapa-campo {
+                height:
+                    350px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header-logistica">
+
+
+    <div class="header-marca">
+        VoyLlegando
+    </div>
+
+
+    <div
+        id="nombreLogistica"
+        class="header-empresa">
+
+        Logística
+
+    </div>
+
+
+    <div class="header-derecha">
+
+        <div
+            id="nombreUsuario"
+            class="header-usuario">
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-salir"
+            onclick="logout()">
+
+            Salir
+
+        </button>
+
+    </div>
+
+
+</header>
+
+
+<!-- =====================================================
+     CONTENIDO
+===================================================== -->
+
+<main class="contenido">
+
+
+    <div class="barra-superior">
+
+
+        <div>
+
+            <h1 class="titulo-pagina">
+                Productores y Campos
+            </h1>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn btn-secundario"
+            onclick="volver()">
+
+            ← Volver
+
+        </button>
+
+
+    </div>
+
+
+    <!-- =================================================
+         MENSAJES
+    ================================================== -->
+
+    <div
+        id="mensaje"
+        class="mensaje">
+    </div>
+
+
+    <div class="grilla-productores">
+
+
+        <!-- =================================================
+             PRODUCTORES
+        ================================================== -->
+
+        <section class="card">
+
+
+            <div class="campos-cabecera">
+
+
+                <h2 class="card-titulo">
+                    Productores
+                </h2>
+
+
+                <button
+                    type="button"
+                    class="btn btn-principal btn-chico"
+                    onclick="nuevoProductor()">
+
+                    + Nuevo
+
+                </button>
+
+
+            </div>
+
+
+            <div
+                id="avisoProductorDeshabilitado"
+                class="mapa-info oculto">
+
+                Este productor está deshabilitado.
+                No se pueden agregar nuevos campos.
+
+            </div>
+
+
+            <div
+                id="listaProductores"
+                class="lista-productores">
+
+                Cargando...
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             DETALLE
+        ================================================== -->
+
+        <div>
+
+
+            <!-- =============================================
+                 FORMULARIO PRODUCTOR
+            ============================================== -->
+
+            <section class="card seccion">
+
+
+                <h2
+                    id="tituloProductor"
+                    class="card-titulo">
+
+                    Nuevo Productor
+
+                </h2>
+
+
+                <input
+                    id="idProductor"
+                    type="hidden">
+
+
+                <div class="form-grid">
+
+
+                    <!-- NOMBRE -->
+
+                    <div class="form-grupo ancho-completo">
+
+                        <label for="nombre">
+                            Nombre
+                        </label>
+
+                        <input
+                            id="nombre"
+                            class="form-control"
+                            maxlength="80">
+
+                    </div>
+
+
+                    <!-- DOMICILIO -->
+
+                    <div class="form-grupo ancho-completo">
+
+                        <label for="domicilio">
+                            Domicilio
+                        </label>
+
+                        <input
+                            id="domicilio"
+                            class="form-control"
+                            maxlength="100">
+
+                    </div>
+
+
+                    <!-- CUIT -->
+
+                    <div class="form-grupo">
+
+                        <label for="cuit">
+                            CUIT
+                        </label>
+
+                        <input
+                            id="cuit"
+                            class="form-control"
+                            inputmode="numeric"
+                            maxlength="11">
+
+                    </div>
+
+
+                    <!-- IVA -->
+
+                    <div class="form-grupo">
+
+                        <label for="iva">
+                            IVA
+                        </label>
+
+                        <select
+                            id="iva"
+                            class="form-control">
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- HABILITADO -->
+
+                    <div class="form-grupo ancho-completo">
+
+                        <label>
+
+                            <input
+                                id="habilitado"
+                                type="checkbox"
+                                checked>
+
+                            Habilitado
+
+                        </label>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =========================================
+                     BOTONES PRODUCTOR
+                ========================================== -->
+
+                <div class="acciones">
+
+
+                    <button
+                        type="button"
+                        class="btn btn-principal"
+                        onclick="guardarProductor()">
+
+                        Guardar Productor
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secundario"
+                        onclick="nuevoProductor()">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="btnDeshabilitar"
+                        class="btn btn-peligro oculto"
+                        onclick="deshabilitarProductor()">
+
+                        Deshabilitar
+
+                    </button>
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =============================================
+                 CAMPOS
+            ============================================== -->
+
+            <section
+                id="seccionCampos"
+                class="card seccion oculto">
+
+
+                <div class="campos-cabecera">
+
+
+                    <h2 class="card-titulo">
+
+                        Campos de
+                        <span id="nombreProductorCampos"></span>
+
+                    </h2>
+
+
+                    <button
+                        type="button"
+                        id="btnNuevoCampo"
+                        class="btn btn-principal btn-chico"
+                        onclick="nuevoCampo()">
+
+                        + Nuevo Campo
+
+                    </button>
+
+
+                </div>
+
+
+                <div id="listaCampos">
+                </div>
+
+
+            </section>
+
+
+            <!-- =============================================
+                 FORMULARIO CAMPO
+            ============================================== -->
+
+            <section
+                id="seccionCampoEditar"
+                class="card seccion oculto">
+
+
+                <h2
+                    id="tituloCampo"
+                    class="card-titulo">
+
+                    Nuevo Campo
+
+                </h2>
+
+
+                <input
+                    id="idCampo"
+                    type="hidden">
+
+
+                <!-- DESCRIPCION -->
+
+                <div class="form-grupo">
+
+                    <label for="descripCampo">
+                        Descripción del campo
+                    </label>
+
+                    <input
+                        id="descripCampo"
+                        class="form-control"
+                        maxlength="30">
+
+                </div>
+
+
+                <!-- COORDENADAS -->
+
+                <div class="form-grid">
+
+
+                    <div class="form-grupo">
+
+                        <label for="latitud">
+                            Latitud
+                        </label>
+
+                        <input
+                            id="latitud"
+                            class="form-control"
+                            readonly>
+
+                    </div>
+
+
+                    <div class="form-grupo">
+
+                        <label for="longitud">
+                            Longitud
+                        </label>
+
+                        <input
+                            id="longitud"
+                            class="form-control"
+                            readonly>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- UBICACION -->
+
+                <div class="acciones">
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secundario"
+                        onclick="usarMiUbicacion()">
+
+                        📍 Mi ubicación
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secundario"
+                        onclick="limpiarUbicacion()">
+
+                        Quitar ubicación
+
+                    </button>
+
+
+                </div>
+
+
+                <!-- MAPA -->
+
+                <div
+                    id="mapaCampo"
+                    class="mapa-campo">
+                </div>
+
+
+                <div class="mapa-ayuda">
+
+                    Haga clic sobre el mapa para indicar
+                    la ubicación del campo.
+
+                    También puede arrastrar el marcador
+                    para corregir la posición.
+
+                </div>
+
+
+                <!-- =========================================
+                     BOTONES CAMPO
+                ========================================== -->
+
+                <div
+                    class="acciones"
+                    style="margin-top:15px;">
+
+
+                    <button
+                        type="button"
+                        class="btn btn-principal"
+                        onclick="guardarCampo()">
+
+                        Guardar Campo
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secundario"
+                        onclick="cancelarCampo()">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="btnEliminarCampo"
+                        class="btn btn-peligro oculto"
+                        onclick="eliminarCampo()">
+
+                        Eliminar Campo
+
+                    </button>
+
+
+                </div>
+
+
+            </section>
+
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT GENERAL
+===================================================== -->
+
+<script src="/js/api.js"></script>
+
+<script src="/js/auth.js"></script>
+
+
+<!-- =====================================================
+     LEAFLET
+===================================================== -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<!-- =====================================================
+     PRODUCTORES
+===================================================== -->
+
+<script src="/js/productores.js"></script>
+
+
+</body>
+
+</html>

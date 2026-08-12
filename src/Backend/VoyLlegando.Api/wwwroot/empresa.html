@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>
+        VoyLlegando - Empresa
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css">
+</head>
+
+<body>
+
+<header class="app-header">
+
+    <div class="app-logo">
+        VoyLlegando
+    </div>
+
+    <div>
+
+        <div
+            id="nombreUsuario"
+            class="app-usuario">
+        </div>
+
+        <button
+            class="btn btn-secundario"
+            onclick="logout()">
+
+            Salir
+
+        </button>
+
+    </div>
+
+</header>
+
+<main class="contenido">
+
+    <h1 class="titulo-pagina">
+        Empresa de Transporte
+    </h1>
+
+    <div class="menu-modulos">
+
+        <div
+            class="modulo"
+            onclick="
+                window.location.href =
+                '/mapa.html'
+            ">
+
+            <div class="modulo-icono">
+                🚚
+            </div>
+
+            <div class="modulo-titulo">
+                Mi viaje
+            </div>
+
+            <div class="modulo-descripcion">
+                Ver recorrido, ubicación y estado del viaje
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+
+<script>
+
+    async function iniciar()
+    {
+        const perfil =
+            await validarSesion("E");
+
+        if (!perfil)
+            return;
+
+        document
+            .getElementById(
+                "nombreUsuario"
+            )
+            .textContent =
+                perfil.nombre;
+    }
+
+    iniciar();
+
+</script>
+
+</body>
+
+</html>

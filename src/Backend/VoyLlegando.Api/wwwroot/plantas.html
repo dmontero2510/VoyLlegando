@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>
+        VoyLlegando - Plantas y Destinos
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css">
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+
+    <style>
+
+        /* =====================================================
+           HEADER LOGISTICA
+        ===================================================== */
+
+        .header-logistica {
+            background: #0d0d27;
+
+            border-bottom:
+                4px solid #28b5e5;
+
+            min-height:
+                72px;
+
+            padding:
+                12px 24px;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 2fr 1fr;
+
+            align-items:
+                center;
+
+            gap:
+                20px;
+        }
+
+
+        .header-marca {
+            justify-self:
+                start;
+
+            color:
+                white;
+
+            font-size:
+                22px;
+
+            font-weight:
+                bold;
+
+            white-space:
+                nowrap;
+        }
+
+
+        .header-marca::before {
+            content:
+                "■";
+
+            color:
+                #28b5e5;
+
+            margin-right:
+                9px;
+        }
+
+
+        .header-empresa {
+            justify-self:
+                center;
+
+            text-align:
+                center;
+
+            color:
+                #28b5e5;
+
+            font-size:
+                20px;
+
+            font-weight:
+                bold;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .5px;
+        }
+
+
+        .header-derecha {
+            justify-self:
+                end;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                14px;
+        }
+
+
+        .header-usuario {
+            color:
+                white;
+
+            font-size:
+                14px;
+
+            white-space:
+                nowrap;
+        }
+
+
+        .btn-salir {
+            border:
+                1px solid rgba(255,255,255,.45);
+
+            background:
+                transparent;
+
+            color:
+                white;
+
+            padding:
+                8px 13px;
+
+            border-radius:
+                7px;
+
+            cursor:
+                pointer;
+
+            font-weight:
+                bold;
+        }
+
+
+        .btn-salir:hover {
+            background:
+                rgba(255,255,255,.10);
+        }
+
+
+        /* =====================================================
+           PANTALLA PLANTAS
+        ===================================================== */
+
+        .barra-superior {
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+            margin-bottom:
+                20px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .grilla-plantas {
+            display:
+                grid;
+
+            grid-template-columns:
+                380px 1fr;
+
+            gap:
+                20px;
+        }
+
+
+        .lista-plantas {
+            max-height:
+                620px;
+
+            overflow-y:
+                auto;
+        }
+
+
+        .planta-item {
+            padding:
+                13px;
+
+            margin-bottom:
+                8px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius:
+                9px;
+
+            cursor:
+                pointer;
+
+            background:
+                white;
+        }
+
+
+        .planta-item:hover {
+            border-color:
+                var(--azul-marca);
+        }
+
+
+        .planta-item.seleccionado {
+            border:
+                2px solid var(--azul-marca);
+
+            background:
+                var(--azul-suave);
+        }
+
+
+        .planta-nombre {
+            font-weight:
+                bold;
+
+            color:
+                var(--fondo-oscuro);
+        }
+
+
+        .planta-detalle {
+            margin-top:
+                5px;
+
+            font-size:
+                13px;
+
+            color:
+                var(--texto-suave);
+        }
+
+
+        .form-grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap:
+                14px;
+        }
+
+
+        .form-grid .ancho-completo {
+            grid-column:
+                1 / -1;
+        }
+
+
+        .destinos-cabecera {
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+            margin-bottom:
+                12px;
+        }
+
+
+        .destino-item {
+            padding:
+                12px;
+
+            border:
+                1px solid var(--borde);
+
+            border-radius:
+                8px;
+
+            margin-bottom:
+                8px;
+
+            background:
+                white;
+        }
+
+
+        .destino-nombre {
+            font-weight:
+                bold;
+        }
+
+
+        .destino-coordenadas {
+            margin-top:
+                4px;
+
+            font-size:
+                12px;
+
+            color:
+                var(--texto-suave);
+        }
+
+
+        .destino-botones {
+            display:
+                flex;
+
+            gap:
+                6px;
+
+            margin-top:
+                9px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .btn-chico {
+            padding:
+                7px 10px;
+
+            font-size:
+                12px;
+        }
+
+
+        .mapa-destino {
+            width:
+                100%;
+
+            height:
+                400px;
+
+            border:
+                2px solid var(--fondo-oscuro);
+
+            border-radius:
+                10px;
+
+            overflow:
+                hidden;
+
+            margin-top:
+                10px;
+        }
+
+
+        .mapa-ayuda {
+            margin-top:
+                8px;
+
+            padding:
+                9px 11px;
+
+            border-left:
+                4px solid var(--azul-marca);
+
+            background:
+                var(--azul-suave);
+
+            border-radius:
+                5px;
+
+            font-size:
+                13px;
+        }
+
+
+        .oculto {
+            display:
+                none !important;
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .grilla-plantas {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .lista-plantas {
+                max-height:
+                    350px;
+            }
+
+        }
+
+
+        /* =====================================================
+           CELULAR
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .header-logistica {
+                grid-template-columns:
+                    1fr auto;
+
+                padding:
+                    11px 14px;
+
+                gap:
+                    8px;
+            }
+
+
+            .header-marca {
+                grid-column:
+                    1;
+
+                grid-row:
+                    1;
+
+                font-size:
+                    18px;
+            }
+
+
+            .header-derecha {
+                grid-column:
+                    2;
+
+                grid-row:
+                    1;
+
+                gap:
+                    8px;
+            }
+
+
+            .header-usuario {
+                font-size:
+                    12px;
+            }
+
+
+            .header-empresa {
+                grid-column:
+                    1 / -1;
+
+                grid-row:
+                    2;
+
+                width:
+                    100%;
+
+                font-size:
+                    15px;
+
+                padding-top:
+                    5px;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .form-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .form-grid .ancho-completo {
+                grid-column:
+                    auto;
+            }
+
+
+            .mapa-destino {
+                height:
+                    350px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header-logistica">
+
+
+    <!-- IZQUIERDA -->
+
+    <div class="header-marca">
+        VoyLlegando
+    </div>
+
+
+    <!-- CENTRO -->
+
+    <div
+        id="nombreLogistica"
+        class="header-empresa">
+
+        Logística
+
+    </div>
+
+
+    <!-- DERECHA -->
+
+    <div class="header-derecha">
+
+        <div
+            id="nombreUsuario"
+            class="header-usuario">
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-salir"
+            onclick="logout()">
+
+            Salir
+
+        </button>
+
+    </div>
+
+
+</header>
+
+
+<!-- =====================================================
+     CONTENIDO
+===================================================== -->
+
+<main class="contenido">
+
+
+    <div class="barra-superior">
+
+
+        <div>
+
+            <h1 class="titulo-pagina">
+                Plantas y Destinos
+            </h1>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="btn btn-secundario"
+            onclick="volver()">
+
+            ← Volver
+
+        </button>
+
+
+    </div>
+
+
+    <!-- =================================================
+         MENSAJES
+    ================================================== -->
+
+    <div
+        id="mensaje"
+        class="mensaje">
+    </div>
+
+
+    <div class="grilla-plantas">
+
+
+        <!-- =================================================
+             LISTADO DE PLANTAS
+        ================================================== -->
+
+        <section class="card">
+
+
+            <div class="destinos-cabecera">
+
+
+                <h2 class="card-titulo">
+                    Plantas
+                </h2>
+
+
+                <button
+                    type="button"
+                    class="btn btn-principal btn-chico"
+                    onclick="nuevaPlanta()">
+
+                    + Nueva
+
+                </button>
+
+
+            </div>
+
+
+            <div
+                id="listaPlantas"
+                class="lista-plantas">
+
+                Cargando...
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             DETALLE
+        ================================================== -->
+
+        <div>
+
+
+            <!-- =============================================
+                 FORMULARIO PLANTA
+            ============================================== -->
+
+            <section class="card seccion">
+
+
+                <h2
+                    id="tituloPlanta"
+                    class="card-titulo">
+
+                    Nueva Planta
+
+                </h2>
+
+
+                <input
+                    id="idPlanta"
+                    type="hidden">
+
+
+                <div class="form-grid">
+
+
+                    <!-- NOMBRE -->
+
+                    <div class="form-grupo ancho-completo">
+
+                        <label for="nombre">
+                            Nombre
+                        </label>
+
+                        <input
+                            id="nombre"
+                            class="form-control"
+                            maxlength="80">
+
+                    </div>
+
+
+                    <!-- DOMICILIO -->
+
+                    <div class="form-grupo ancho-completo">
+
+                        <label for="domicilio">
+                            Domicilio
+                        </label>
+
+                        <input
+                            id="domicilio"
+                            class="form-control"
+                            maxlength="100">
+
+                    </div>
+
+
+                    <!-- CUIT -->
+
+                    <div class="form-grupo">
+
+                        <label for="cuit">
+                            CUIT
+                        </label>
+
+                        <input
+                            id="cuit"
+                            class="form-control"
+                            inputmode="numeric"
+                            maxlength="11">
+
+                    </div>
+
+
+                    <!-- IVA -->
+
+                    <div class="form-grupo">
+
+                        <label for="iva">
+                            IVA
+                        </label>
+
+                        <select
+                            id="iva"
+                            class="form-control">
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- HABILITADA -->
+
+                    <div class="form-grupo ancho-completo">
+
+                        <label>
+
+                            <input
+                                id="habilitado"
+                                type="checkbox"
+                                checked>
+
+                            Habilitada
+
+                        </label>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =========================================
+                     BOTONES PLANTA
+                ========================================== -->
+
+                <div class="acciones">
+
+
+                    <button
+                        type="button"
+                        class="btn btn-principal"
+                        onclick="guardarPlanta()">
+
+                        Guardar Planta
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secundario"
+                        onclick="nuevaPlanta()">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="btnDeshabilitar"
+                        class="btn btn-peligro oculto"
+                        onclick="deshabilitarPlanta()">
+
+                        Deshabilitar
+
+                    </button>
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =============================================
+                 DESTINOS
+            ============================================== -->
+
+            <section
+                id="seccionDestinos"
+                class="card seccion oculto">
+
+
+                <div class="destinos-cabecera">
+
+
+                    <h2 class="card-titulo">
+
+                        Destinos de
+                        <span id="nombrePlantaDestinos"></span>
+
+                    </h2>
+
+
+                    <button
+                        type="button"
+                        id="btnNuevoDestino"
+                        class="btn btn-principal btn-chico"
+                        onclick="nuevoDestino()">
+
+                        + Nuevo Destino
+
+                    </button>
+
+
+                </div>
+
+
+                <!-- PLANTA DESHABILITADA -->
+
+                <div
+                    id="avisoPlantaDeshabilitada"
+                    class="mapa-info oculto">
+
+                    Esta planta está deshabilitada.
+                    No se pueden agregar nuevos destinos.
+
+                </div>
+
+
+                <div id="listaDestinos">
+                </div>
+
+
+            </section>
+
+
+            <!-- =============================================
+                 FORMULARIO DESTINO
+            ============================================== -->
+
+            <section
+                id="seccionDestinoEditar"
+                class="card seccion oculto">
+
+
+                <h2
+                    id="tituloDestino"
+                    class="card-titulo">
+
+                    Nuevo Destino
+
+                </h2>
+
+
+                <input
+                    id="idDestino"
+                    type="hidden">
+
+
+                <!-- DESCRIPCION -->
+
+                <div class="form-grupo">
+
+                    <label for="descripDestino">
+                        Descripción del destino
+                    </label>
+
+                    <input
+                        id="descripDestino"
+                        class="form-control"
+                        maxlength="40">
+
+                </div>
+
+
+                <!-- COORDENADAS -->
+
+                <div class="form-grid">
+
+
+                    <div class="form-grupo">
+
+                        <label for="latitud">
+                            Latitud
+                        </label>
+
+                        <input
+                            id="latitud"
+                            class="form-control"
+                            readonly>
+
+                    </div>
+
+
+                    <div class="form-grupo">
+
+                        <label for="longitud">
+                            Longitud
+                        </label>
+
+                        <input
+                            id="longitud"
+                            class="form-control"
+                            readonly>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- UBICACION -->
+
+                <div class="acciones">
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secundario"
+                        onclick="usarMiUbicacion()">
+
+                        📍 Mi ubicación
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secundario"
+                        onclick="limpiarUbicacion()">
+
+                        Quitar ubicación
+
+                    </button>
+
+
+                </div>
+
+
+                <!-- MAPA -->
+
+                <div
+                    id="mapaDestino"
+                    class="mapa-destino">
+                </div>
+
+
+                <div class="mapa-ayuda">
+
+                    Haga clic sobre el mapa para indicar
+                    la ubicación del destino.
+
+                    También puede arrastrar el marcador
+                    para corregir la posición.
+
+                </div>
+
+
+                <!-- =========================================
+                     BOTONES DESTINO
+                ========================================== -->
+
+                <div
+                    class="acciones"
+                    style="margin-top:15px;">
+
+
+                    <button
+                        type="button"
+                        class="btn btn-principal"
+                        onclick="guardarDestino()">
+
+                        Guardar Destino
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secundario"
+                        onclick="cancelarDestino()">
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="btnEliminarDestino"
+                        class="btn btn-peligro oculto"
+                        onclick="eliminarDestino()">
+
+                        Eliminar Destino
+
+                    </button>
+
+
+                </div>
+
+
+            </section>
+
+
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+<!-- =====================================================
+     JAVASCRIPT GENERAL
+===================================================== -->
+
+<script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+
+
+<!-- =====================================================
+     LEAFLET
+===================================================== -->
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<!-- =====================================================
+     PLANTAS
+===================================================== -->
+
+<script src="/js/plantas.js"></script>
+
+
+</body>
+
+</html>

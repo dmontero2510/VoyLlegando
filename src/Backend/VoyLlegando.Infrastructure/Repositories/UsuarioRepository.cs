@@ -39,7 +39,10 @@ SELECT
     corta AS Corta,
     larga AS Larga,
     escala AS Escala,
-    estado AS Estado
+    estado AS Estado,
+    latitud_actual   AS LatitudActual,
+    longitud_actual  AS LongitudActual,
+    fecha_ubicacion  AS FechaUbicacion
 FROM usuarios
 WHERE celular = @celular
 LIMIT 1;";
@@ -66,59 +69,168 @@ AND (@excluirId IS NULL OR id_usuario <> @excluirId);";
         return cantidad > 0;
     }
 
-    public async Task<IEnumerable<Usuario>> ObtenerTodosAsync()
-    {
-        using var connection = _factory.CreateConnection();
+public async Task<IEnumerable<Usuario>> ObtenerTodosAsync()
+{
+    using var connection =
+        _factory.CreateConnection();
 
-        return await connection.QueryAsync<Usuario>(
-            "SELECT * FROM usuarios ORDER BY id_usuario");
-    }
+    const string sql = """
+        SELECT
+            id_usuario  AS IdUsuario,
+            celular     AS Celular,
+            clave       AS Clave,
+            nombre      AS Nombre,
+            domicilio   AS Domicilio,
+            iva         AS Iva,
+            cuit        AS Cuit,
+            email       AS Email,
+            rol         AS Rol,
+            habilitado  AS Habilitado,
+            id_transpor AS IdTranspor,
+            id_planta   AS IdPlanta,
+            id_produc   AS IdProduc,
+            pat_chasis  AS PatChasis,
+            pat_acopla  AS PatAcopla,
+            batea       AS Batea,
+            corta       AS Corta,
+            larga       AS Larga,
+            escala      AS Escala,
+            estado      AS Estado
+        FROM public.usuarios
+        ORDER BY id_usuario;
+        """;
 
-    public async Task<Usuario?> ObtenerPorIdAsync(int id)
-    {
-        using var connection = _factory.CreateConnection();
+    return await connection
+        .QueryAsync<Usuario>(
+            sql
+        );
+}
+public async Task<Usuario?> ObtenerPorIdAsync(int id)
+{
+    using var connection = _factory.CreateConnection();
 
-        return await connection.QueryFirstOrDefaultAsync<Usuario>(
-            "SELECT * FROM usuarios WHERE id_usuario = @id",
-            new { id });
-    }
+    const string sql = @"
+SELECT
+    id_usuario AS IdUsuario,
+    nombre AS Nombre,
+    domicilio AS Domicilio,
+    iva AS Iva,
+    cuit AS Cuit,
+    celular AS Celular,
+    clave AS Clave,
+    email AS Email,
+    rol AS Rol,
+    habilitado AS Habilitado,
+    id_transpor AS IdTranspor,
+    id_planta AS IdPlanta,
+    id_produc AS IdProduc,
+    pat_chasis AS PatChasis,
+    pat_acopla AS PatAcopla,
+    batea AS Batea,
+    corta AS Corta,
+    larga AS Larga,
+    escala AS Escala,
+    estado AS Estado,
+    latitud_actual   AS LatitudActual,
+    longitud_actual  AS LongitudActual,
+    fecha_ubicacion  AS FechaUbicacion
+FROM usuarios
+WHERE id_usuario = @id;
+";
 
-    public async Task<int> CrearAsync(Usuario usuario)
-    {
-        using var connection = _factory.CreateConnection();
+    return await connection.QueryFirstOrDefaultAsync<Usuario>(
+        sql,
+        new { id }
+	);
+}
+public async Task<int> CrearAsync(Usuario usuario)
+{
+    using var connection = _factory.CreateConnection();
 
-        const string sql = @"
+    const string sql = @"
 INSERT INTO usuarios
 (
     nombre,
+    domicilio,
+    iva,
+    cuit,
     celular,
     clave,
     email,
-    cuit,
-    rol
+    rol,
+    habilitado,
+    id_transpor,
+    id_planta,
+    id_produc,
+    pat_chasis,
+    pat_acopla,
+    batea,
+    corta,
+    larga,
+    escala,
+    estado
 )
 VALUES
 (
     @Nombre,
+    @Domicilio,
+    @Iva,
+    @Cuit,
     @Celular,
     @Clave,
     @Email,
-    @Cuit,
-    @Rol
+    @Rol,
+    @Habilitado,
+    @IdTranspor,
+    @IdPlanta,
+    @IdProduc,
+    @PatChasis,
+    @PatAcopla,
+    @Batea,
+    @Corta,
+    @Larga,
+    @Escala,
+    @Estado
 )
-RETURNING id_usuario;";
+RETURNING id_usuario;
+";
 
-        return await connection.ExecuteScalarAsync<int>(sql, usuario);
-    }
+    return await connection.ExecuteScalarAsync<int>(
+        sql,
+        usuario);
+}
+public async Task ActualizarAsync(Usuario usuario)
+{
+    using var connection = _factory.CreateConnection();
 
-    public async Task ActualizarAsync(Usuario usuario)
-    {
-        using var connection = _factory.CreateConnection();
+    const string sql = @"
+UPDATE usuarios
+SET
+    nombre = @Nombre,
+    domicilio = @Domicilio,
+    iva = @Iva,
+    cuit = @Cuit,
+    celular = @Celular,
+    email = @Email,
+    rol = @Rol,
+    latitud_actual  = @LatitudActual,
+    longitud_actual = @LongitudActual,
+    fecha_ubicacion = @FechaUbicacion,
+    id_transpor = @IdTranspor,
+    id_planta = @IdPlanta,
+    id_produc = @IdProduc,
+    pat_chasis = @PatChasis,
+    pat_acopla = @PatAcopla,
+    batea = @Batea,
+    corta = @Corta,
+    larga = @Larga,
+    escala = @Escala,
+    estado = @Estado
+WHERE id_usuario = @IdUsuario;
+";
 
-        await connection.ExecuteAsync(
-            "UPDATE usuarios SET nombre=@Nombre WHERE id_usuario=@IdUsuario",
-            usuario);
-    }
+    await connection.ExecuteAsync(sql, usuario);
+}
 
     public async Task BajaAsync(int id)
     {
