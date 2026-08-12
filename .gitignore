@@ -1,0 +1,43 @@
+# ============================================
+# VOYLLEGANDO
+# ============================================
+
+# .NET
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
+
+# Publicacion local
+Publicacion/
+publish/
+
+# Configuracion local / secretos
+appsettings.Development.json
+
+# Variables de entorno
+.env
+.env.*
+
+# Backups
+*.bak
+*.backup
