@@ -1,5 +1,5 @@
 @echo off
-title VoyLlegando - Git Commit
+title VoyLlegando - Git Commit y Push
 
 cd /d C:\SIE\VoyLlegando\Desarrollo
 
@@ -9,40 +9,60 @@ echo   VOYLLEGANDO - GIT COMMIT
 echo ============================================
 echo.
 
-echo [1/5] Verificando repositorio...
 git status
 
 echo.
-echo [2/5] Agregando archivos modificados...
-git add .
+set /p MENSAJE=Ingrese descripcion del commit: 
 
-echo.
-echo [3/5] Archivos que entraran al commit...
-git status
-
-echo.
-echo [4/5] Creando commit...
-git commit -m "Admin cereales y registro de empresas"
-
-if errorlevel 1 (
+if "%MENSAJE%"=="" (
     echo.
-    echo ATENCION:
-    echo Git no pudo crear el commit o no habia cambios.
+    echo ERROR: Debe ingresar una descripcion.
     echo.
     pause
     exit /b 1
 )
 
 echo.
-echo [5/5] Commit creado correctamente.
+echo [1/4] Agregando cambios...
+git add .
+
+echo.
+echo [2/4] Creando commit...
+git commit -m "%MENSAJE%"
+
+if errorlevel 1 (
+    echo.
+    echo No se pudo crear el commit.
+    echo Puede que no haya cambios pendientes.
+    echo.
+    pause
+    exit /b 1
+)
+
+echo.
+echo [3/4] Subiendo a origin/main...
+git push origin main
+
+if errorlevel 1 (
+    echo.
+    echo ERROR AL HACER PUSH
+    echo El commit quedo guardado localmente.
+    echo.
+    pause
+    exit /b 1
+)
+
+echo.
+echo [4/4] Estado final...
+git status
+
+echo.
+echo ============================================
+echo   TODO OK
+echo ============================================
 echo.
 
 git log -1 --oneline
 
 echo.
-echo ============================================
-echo   COMMIT FINALIZADO
-echo ============================================
-echo.
-
 pause
