@@ -15,9 +15,215 @@
     <link
         rel="stylesheet"
         href="/css/app.css?v=6">
+
+    <style>
+
+        /* =====================================================
+           ESTADO EMPRESA
+        ===================================================== */
+
+        .estado-empresa
+        {
+            background: white;
+
+            border:
+                1px solid #dce2e8;
+
+            border-radius: 10px;
+
+            padding: 16px;
+
+            margin-bottom: 20px;
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .estado-empresa-info
+        {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+
+        .estado-empresa-titulo
+        {
+            font-size: 12px;
+
+            color: #6c7280;
+
+            font-weight: bold;
+
+            text-transform: uppercase;
+        }
+
+
+        .estado-empresa-valor
+        {
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: #0d0d27;
+        }
+
+
+        .estado-badge
+        {
+            display: inline-block;
+
+            padding:
+                8px 14px;
+
+            border-radius: 20px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        .estado-disponible
+        {
+            background: #e8f5e9;
+
+            border:
+                1px solid #66bb6a;
+
+            color: #1b5e20;
+        }
+
+
+        .estado-viajando
+        {
+            background: #e3f2fd;
+
+            border:
+                1px solid #42a5f5;
+
+            color: #0d47a1;
+        }
+
+
+        .estado-fuera
+        {
+            background: #fff3e0;
+
+            border:
+                1px solid #ffb74d;
+
+            color: #e65100;
+        }
+
+
+        .btn-disponible
+        {
+            min-height: 44px;
+
+            padding:
+                10px 18px;
+
+            border-radius: 8px;
+
+            border:
+                1px solid #2e7d32;
+
+            background: #e8f5e9;
+
+            color: #1b5e20;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .btn-disponible:hover
+        {
+            background: #c8e6c9;
+        }
+
+
+        .btn-disponible:disabled
+        {
+            opacity: .6;
+
+            cursor: wait;
+        }
+
+
+        .oculto
+        {
+            display: none !important;
+        }
+
+
+        .mensaje-estado
+        {
+            width: 100%;
+
+            min-height: 18px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            color: #555;
+        }
+
+
+        .mensaje-estado.ok
+        {
+            color: #2e7d32;
+        }
+
+
+        .mensaje-estado.error
+        {
+            color: #c62828;
+        }
+
+
+        @media
+        (
+            max-width: 600px
+        )
+        {
+            .estado-empresa
+            {
+                align-items:
+                    stretch;
+
+                flex-direction:
+                    column;
+            }
+
+
+            .btn-disponible
+            {
+                width: 100%;
+            }
+        }
+
+    </style>
+
 </head>
 
+
 <body>
+
 
 <header class="app-header">
 
@@ -25,12 +231,14 @@
         VoyLlegando
     </div>
 
+
     <div>
 
         <div
             id="nombreUsuario"
             class="app-usuario">
         </div>
+
 
         <button
             class="btn btn-secundario"
@@ -44,13 +252,68 @@
 
 </header>
 
+
 <main class="contenido">
+
 
     <h1 class="titulo-pagina">
         Empresa de Transporte
     </h1>
 
+
+    <!-- =====================================================
+         ESTADO DE LA EMPRESA
+    ====================================================== -->
+
+    <div class="estado-empresa">
+
+        <div class="estado-empresa-info">
+
+            <div class="estado-empresa-titulo">
+                Estado actual
+            </div>
+
+
+            <div>
+
+                <span
+                    id="estadoEmpresa"
+                    class="estado-badge">
+
+                    Consultando...
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="btnDisponible"
+            type="button"
+            class="btn-disponible oculto"
+            onclick="ponerDisponible()">
+
+            PONERME DISPONIBLE
+
+        </button>
+
+
+        <div
+            id="mensajeEstado"
+            class="mensaje-estado">
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MENU
+    ====================================================== -->
+
     <div class="menu-modulos">
+
 
         <!-- ========================================= -->
         <!-- MI VIAJE                                  -->
@@ -155,6 +418,14 @@
 <script>
 
     // =======================================================
+    // VARIABLES
+    // =======================================================
+
+    let estadoActualEmpresa =
+        null;
+
+
+    // =======================================================
     // INICIO
     // =======================================================
 
@@ -168,12 +439,345 @@
         if (!perfil)
             return;
 
+
         document
             .getElementById(
                 "nombreUsuario"
             )
             .textContent =
-                perfil.nombre;
+                perfil.nombre ||
+                "";
+
+
+        await cargarEstadoEmpresa();
+    }
+
+
+    // =======================================================
+    // CARGAR ESTADO EMPRESA
+    // =======================================================
+
+    async function cargarEstadoEmpresa()
+    {
+        const estadoElemento =
+            document.getElementById(
+                "estadoEmpresa"
+            );
+
+
+        const btnDisponible =
+            document.getElementById(
+                "btnDisponible"
+            );
+
+
+        try
+        {
+            limpiarMensajeEstado();
+
+
+            const datos =
+                await API.get(
+                    "/api/Viajes/mi-estado"
+                );
+
+
+            if (!datos)
+            {
+                throw new Error(
+                    "No se pudo obtener el estado de la Empresa."
+                );
+            }
+
+
+            estadoActualEmpresa =
+                datos.estado;
+
+
+            mostrarEstadoEmpresa(
+                estadoActualEmpresa
+            );
+
+
+            // ------------------------------------------------
+            // SOLO F = FUERA DE SERVICIO
+            // PUEDE VOLVER A DISPONIBLE
+            // ------------------------------------------------
+
+            if (
+                datos.habilitado &&
+                estadoActualEmpresa === "F"
+            )
+            {
+                btnDisponible
+                    .classList
+                    .remove(
+                        "oculto"
+                    );
+            }
+            else
+            {
+                btnDisponible
+                    .classList
+                    .add(
+                        "oculto"
+                    );
+            }
+
+
+            if (!datos.habilitado)
+            {
+                mostrarMensajeEstado(
+                    "La Empresa se encuentra deshabilitada.",
+                    true
+                );
+            }
+        }
+        catch (error)
+        {
+            estadoElemento.textContent =
+                "No disponible";
+
+
+            estadoElemento.className =
+                "estado-badge estado-fuera";
+
+
+            btnDisponible
+                .classList
+                .add(
+                    "oculto"
+                );
+
+
+            mostrarMensajeEstado(
+                error.message ||
+                "No se pudo consultar el estado de la Empresa.",
+                true
+            );
+        }
+    }
+
+
+    // =======================================================
+    // MOSTRAR ESTADO
+    // =======================================================
+
+    function mostrarEstadoEmpresa(
+        estado
+    )
+    {
+        const elemento =
+            document.getElementById(
+                "estadoEmpresa"
+            );
+
+
+        elemento.className =
+            "estado-badge";
+
+
+        switch (estado)
+        {
+            case "D":
+
+                elemento.textContent =
+                    "Disponible";
+
+                elemento.classList.add(
+                    "estado-disponible"
+                );
+
+                break;
+
+
+            case "V":
+
+                elemento.textContent =
+                    "Viajando";
+
+                elemento.classList.add(
+                    "estado-viajando"
+                );
+
+                break;
+
+
+            case "F":
+
+                elemento.textContent =
+                    "Fuera de Servicio";
+
+                elemento.classList.add(
+                    "estado-fuera"
+                );
+
+                break;
+
+
+            default:
+
+                elemento.textContent =
+                    estado ||
+                    "Sin estado";
+
+                elemento.classList.add(
+                    "estado-fuera"
+                );
+
+                break;
+        }
+    }
+
+
+    // =======================================================
+    // PONER DISPONIBLE
+    // =======================================================
+
+    async function ponerDisponible()
+    {
+        if (
+            estadoActualEmpresa !== "F"
+        )
+        {
+            return;
+        }
+
+
+        const confirmar =
+            window.confirm(
+                "¿Desea ponerse disponible para tomar un nuevo viaje?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        const boton =
+            document.getElementById(
+                "btnDisponible"
+            );
+
+
+        const textoOriginal =
+            boton.textContent;
+
+
+        try
+        {
+            boton.disabled =
+                true;
+
+
+            boton.textContent =
+                "ACTUALIZANDO...";
+
+
+            limpiarMensajeEstado();
+
+
+            const respuesta =
+                await API.post(
+                    "/api/Usuarios/mi-disponibilidad"
+                );
+
+
+            estadoActualEmpresa =
+                respuesta.estado ||
+                "D";
+
+
+            mostrarEstadoEmpresa(
+                estadoActualEmpresa
+            );
+
+
+            boton
+                .classList
+                .add(
+                    "oculto"
+                );
+
+
+            mostrarMensajeEstado(
+                respuesta.mensaje ||
+                "La Empresa ahora está disponible.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            mostrarMensajeEstado(
+                error.message ||
+                "No se pudo cambiar el estado de la Empresa.",
+                true
+            );
+        }
+        finally
+        {
+            boton.disabled =
+                false;
+
+
+            boton.textContent =
+                textoOriginal;
+        }
+    }
+
+
+    // =======================================================
+    // MENSAJE ESTADO
+    // =======================================================
+
+    function mostrarMensajeEstado(
+        texto,
+        esError =
+            false,
+        esOk =
+            false
+    )
+    {
+        const elemento =
+            document.getElementById(
+                "mensajeEstado"
+            );
+
+
+        elemento.textContent =
+            texto ||
+            "";
+
+
+        elemento.classList.remove(
+            "error",
+            "ok"
+        );
+
+
+        if (esError)
+        {
+            elemento.classList.add(
+                "error"
+            );
+        }
+
+
+        if (esOk)
+        {
+            elemento.classList.add(
+                "ok"
+            );
+        }
+    }
+
+
+    function limpiarMensajeEstado()
+    {
+        mostrarMensajeEstado(
+            ""
+        );
     }
 
 
@@ -184,7 +788,7 @@
     function abrirMiViaje()
     {
         window.location.href =
-            "/miviaje.html?v=1";
+            "/miviaje.html?v=10";
     }
 
 
@@ -195,7 +799,7 @@
     function abrirViajesPendientes()
     {
         window.location.href =
-            "/viajes-pendientes.html";
+            "/viajes-pendientes.html?v=10";
     }
 
 
@@ -206,7 +810,7 @@
     function abrirMisLogisticas()
     {
         window.location.href =
-            "/mis-logisticas.html";
+            "/mis-logisticas.html?v=10";
     }
 
 
@@ -217,7 +821,7 @@
     function abrirMiPerfil()
     {
         window.location.href =
-            "/mi-perfil.html";
+            "/mi-perfil.html?v=10";
     }
 
 

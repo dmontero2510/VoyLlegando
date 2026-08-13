@@ -525,6 +525,36 @@
             color: #0d47a1;
         }
 
+        .btn-ruta
+        {
+            background: #ede7f6;
+
+            border:
+                1px solid #5e35b1;
+
+            color: #4527a0;
+        }
+
+        .btn-destino
+        {
+            background: #e0f7fa;
+
+            border:
+                1px solid #00838f;
+
+            color: #006064;
+        }
+
+        .btn-terminar
+        {
+            background: #e8f5e9;
+
+            border:
+                1px solid #2e7d32;
+
+            color: #1b5e20;
+        }
+
         .btn-ubicacion
         {
             background: #fffde7;
@@ -1047,6 +1077,39 @@
                 onclick="llegarOrigen()">
 
                 LLEGUÉ AL ORIGEN
+
+            </button>
+
+
+            <button
+                id="btnSalirOrigen"
+                type="button"
+                class="btn-ruta oculto"
+                onclick="salirOrigen()">
+
+                SALIR DEL ORIGEN
+
+            </button>
+
+
+            <button
+                id="btnLlegarDestino"
+                type="button"
+                class="btn-destino oculto"
+                onclick="llegarDestino()">
+
+                LLEGUÉ AL DESTINO
+
+            </button>
+
+
+            <button
+                id="btnTerminar"
+                type="button"
+                class="btn-terminar oculto"
+                onclick="terminarViaje()">
+
+                TERMINAR VIAJE
 
             </button>
 
@@ -2080,6 +2143,21 @@
         );
 
 
+        ocultarBoton(
+            "btnSalirOrigen"
+        );
+
+
+        ocultarBoton(
+            "btnLlegarDestino"
+        );
+
+
+        ocultarBoton(
+            "btnTerminar"
+        );
+
+
         // ---------------------------------------------------
         // A = ASIGNADO
         // ---------------------------------------------------
@@ -2109,6 +2187,48 @@
         {
             mostrarBoton(
                 "btnLlegarOrigen"
+            );
+        }
+
+
+        // ---------------------------------------------------
+        // O = EN ORIGEN
+        // ---------------------------------------------------
+
+        if (
+            estado === "O"
+        )
+        {
+            mostrarBoton(
+                "btnSalirOrigen"
+            );
+        }
+
+
+        // ---------------------------------------------------
+        // R = EN RUTA
+        // ---------------------------------------------------
+
+        if (
+            estado === "R"
+        )
+        {
+            mostrarBoton(
+                "btnLlegarDestino"
+            );
+        }
+
+
+        // ---------------------------------------------------
+        // D = EN DESTINO
+        // ---------------------------------------------------
+
+        if (
+            estado === "D"
+        )
+        {
+            mostrarBoton(
+                "btnTerminar"
             );
         }
     }
@@ -2316,6 +2436,240 @@
             mensaje(
                 error.message ||
                 "No se pudo registrar la llegada.",
+                true
+            );
+        }
+        finally
+        {
+            bloquearAcciones(
+                false
+            );
+        }
+    }
+
+
+    // =======================================================
+    // SALIR DEL ORIGEN
+    // =======================================================
+
+    async function salirOrigen()
+    {
+        if (!viajeActual)
+            return;
+
+
+        const confirmar =
+            window.confirm(
+                "¿Confirma que salió del origen?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        try
+        {
+            bloquearAcciones(
+                true
+            );
+
+
+            mensaje(
+                "Registrando salida del origen..."
+            );
+
+
+            const respuesta =
+                await API.post(
+                    `/api/Viajes/${viajeActual.idViaje}/salir-origen`,
+                    {}
+                );
+
+
+            viajeActual.estado =
+                "R";
+
+
+            mostrarViaje(
+                viajeActual
+            );
+
+
+            mensaje(
+                respuesta.mensaje ||
+                "Salida del origen registrada.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message ||
+                "No se pudo registrar la salida del origen.",
+                true
+            );
+        }
+        finally
+        {
+            bloquearAcciones(
+                false
+            );
+        }
+    }
+
+
+    // =======================================================
+    // LLEGAR AL DESTINO
+    // =======================================================
+
+    async function llegarDestino()
+    {
+        if (!viajeActual)
+            return;
+
+
+        const confirmar =
+            window.confirm(
+                "¿Confirma que llegó al destino?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        try
+        {
+            bloquearAcciones(
+                true
+            );
+
+
+            mensaje(
+                "Registrando llegada al destino..."
+            );
+
+
+            const respuesta =
+                await API.post(
+                    `/api/Viajes/${viajeActual.idViaje}/llegar-destino`,
+                    {}
+                );
+
+
+            viajeActual.estado =
+                "D";
+
+
+            mostrarViaje(
+                viajeActual
+            );
+
+
+            mensaje(
+                respuesta.mensaje ||
+                "Llegada al destino registrada.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message ||
+                "No se pudo registrar la llegada al destino.",
+                true
+            );
+        }
+        finally
+        {
+            bloquearAcciones(
+                false
+            );
+        }
+    }
+
+
+    // =======================================================
+    // TERMINAR VIAJE
+    // =======================================================
+
+    async function terminarViaje()
+    {
+        if (!viajeActual)
+            return;
+
+
+        const confirmar =
+            window.confirm(
+                "¿Confirma que desea terminar este viaje?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        try
+        {
+            bloquearAcciones(
+                true
+            );
+
+
+            mensaje(
+                "Terminando viaje..."
+            );
+
+
+            const respuesta =
+                await API.post(
+                    `/api/Viajes/${viajeActual.idViaje}/terminar`,
+                    {}
+                );
+
+
+            viajeActual.estado =
+                "T";
+
+
+            ponerTexto(
+                "estadoViaje",
+                descripcionEstado(
+                    viajeActual.estado
+                )
+            );
+
+
+            actualizarBotones(
+                viajeActual.estado
+            );
+
+
+            mensaje(
+                respuesta.mensaje ||
+                "Viaje terminado correctamente.",
+                false,
+                true
+            );
+
+
+            setTimeout(
+                function()
+                {
+                    window.location.href =
+                        "/empresa.html?v=6";
+                },
+                1200
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message ||
+                "No se pudo terminar el viaje.",
                 true
             );
         }
