@@ -2892,12 +2892,11 @@ function mostrarDetalle(
             )
         )}
 
-        ${datoDetalle(
-            "Empresa asignada",
-            nombreEmpresa(
-                viaje.idCamionero
-            )
-        )}
+${datoDetalle(
+    "Empresa asignada",
+    viaje.nombreEmpresa ||
+    "Sin asignar"
+)}
 
         ${datoDetalle(
             "Equipo",

@@ -8,6 +8,8 @@ public class Viaje
 
     public int? IdCamionero { get; set; }
 
+    public string? NombreEmpresa { get; set; }
+
     public string Tipo { get; set; } = "";
 
     public DateTime? FechaPedido { get; set; }

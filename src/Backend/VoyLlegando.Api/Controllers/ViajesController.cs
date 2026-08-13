@@ -300,6 +300,38 @@ public async Task<IActionResult> ObtenerEmpresa(
             viajes.Select(MapearViaje));
     }
 
+// -------------------------------------------------------
+// GET /api/Viajes/pendientes-empresa
+// EMPRESA DE TRANSPORTE
+// -------------------------------------------------------
+
+[HttpGet("pendientes-empresa")]
+public async Task<IActionResult> PendientesEmpresa()
+{
+    var usuario = await ObtenerUsuarioActual();
+
+    if (usuario == null)
+        return Unauthorized();
+
+    if (usuario.Rol != "E")
+        return Forbid();
+
+    if (!usuario.Habilitado)
+        return BadRequest(
+            "La Empresa de Transporte está deshabilitada.");
+
+    if (usuario.Estado != "D")
+        return BadRequest(
+            "La Empresa de Transporte no está disponible.");
+
+    var viajes =
+        await _viajeRepository
+            .ObtenerPendientesParaEmpresaAsync(
+                usuario.IdUsuario);
+
+    return Ok(viajes);
+}
+
     // -------------------------------------------------------
     // GET /api/Viajes/viaje-actual
     // EMPRESA DE TRANSPORTE
@@ -968,7 +1000,47 @@ public async Task<IActionResult> ObtenerEmpresa(
             .ObtenerPorIdAsync(
                 idUsuario);
     }
+// -------------------------------------------------------
+// POST /api/Viajes/{id}/tomar
+// EMPRESA DE TRANSPORTE
+// -------------------------------------------------------
 
+[HttpPost("{id:int}/tomar")]
+public async Task<IActionResult> Tomar(
+    int id)
+{
+    var usuario =
+        await ObtenerUsuarioActual();
+
+    if (usuario == null)
+        return Unauthorized();
+
+    if (usuario.Rol != "E")
+        return Forbid();
+
+    try
+    {
+        await _viajeService
+            .TomarAsync(
+                id,
+                usuario.IdUsuario);
+
+        return Ok(new
+        {
+            ok = true,
+            mensaje =
+                "Viaje tomado correctamente."
+        });
+    }
+    catch (InvalidOperationException ex)
+    {
+        return BadRequest(new
+        {
+            ok = false,
+            mensaje = ex.Message
+        });
+    }
+}
     // -------------------------------------------------------
     // MAPEO
     // -------------------------------------------------------
@@ -986,6 +1058,9 @@ public async Task<IActionResult> ObtenerEmpresa(
 
             IdCamionero =
                 viaje.IdCamionero,
+
+            NombreEmpresa =
+                viaje.NombreEmpresa,
 
             Tipo =
                 viaje.Tipo,

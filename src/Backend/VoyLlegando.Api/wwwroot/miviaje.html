@@ -1,0 +1,2721 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>
+        VoyLlegando - Mi Viaje
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css?v=6">
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        crossorigin="">
+
+    <style>
+
+        *
+        {
+            box-sizing: border-box;
+        }
+
+        body
+        {
+            margin: 0;
+            background: #f4f7fa;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            color: #202334;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header-empresa
+        {
+            background: #0d0d27;
+
+            border-bottom:
+                4px solid #28b5e5;
+
+            min-height: 72px;
+
+            padding:
+                12px 24px;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr 1fr;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        .header-marca
+        {
+            color: white;
+
+            font-size: 22px;
+            font-weight: bold;
+
+            letter-spacing: .8px;
+        }
+
+        .header-marca::before
+        {
+            content: "■";
+
+            color: #28b5e5;
+
+            margin-right: 9px;
+        }
+
+        .header-titulo
+        {
+            text-align: center;
+
+            color: #28b5e5;
+
+            font-size: 18px;
+            font-weight: bold;
+
+            text-transform: uppercase;
+        }
+
+        .header-derecha
+        {
+            justify-self: end;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .header-usuario
+        {
+            color: white;
+
+            font-size: 14px;
+        }
+
+        .btn-salir
+        {
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .45
+                );
+
+            background: transparent;
+
+            color: white;
+
+            padding:
+                8px 13px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           CONTENIDO
+        ===================================================== */
+
+        .contenido-viaje
+        {
+            max-width: 1200px;
+
+            margin:
+                0 auto;
+
+            padding: 20px;
+        }
+
+        .cabecera-pagina
+        {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            margin-bottom: 18px;
+        }
+
+        .cabecera-pagina h1
+        {
+            margin: 0;
+
+            color: #0d0d27;
+
+            font-size: 28px;
+        }
+
+        .cabecera-pagina h1::after
+        {
+            content: "";
+
+            display: block;
+
+            width: 55px;
+            height: 4px;
+
+            margin-top: 8px;
+
+            border-radius: 4px;
+
+            background: #28b5e5;
+        }
+
+        .btn-volver
+        {
+            padding:
+                10px 15px;
+
+            border:
+                1px solid #d7dce2;
+
+            border-radius: 8px;
+
+            background: white;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           ESTADO
+        ===================================================== */
+
+        .estado-general
+        {
+            background: white;
+
+            border:
+                1px solid #dce2e8;
+
+            border-radius: 10px;
+
+            padding: 16px;
+
+            margin-bottom: 16px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            gap: 10px;
+        }
+
+        .estado-etiqueta
+        {
+            font-size: 13px;
+
+            color: #6c7280;
+
+            text-transform: uppercase;
+
+            font-weight: bold;
+        }
+
+        .estado-valor
+        {
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: #0d0d27;
+        }
+
+        .estado-badge
+        {
+            padding:
+                8px 14px;
+
+            border-radius: 20px;
+
+            background: #e3f2fd;
+
+            border:
+                1px solid #90caf9;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           DATOS
+        ===================================================== */
+
+        .datos-viaje
+        {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    4,
+                    minmax(
+                        150px,
+                        1fr
+                    )
+                );
+
+            gap: 12px;
+
+            margin-bottom: 16px;
+        }
+
+        .dato-viaje
+        {
+            background: white;
+
+            border:
+                1px solid #dce2e8;
+
+            border-radius: 9px;
+
+            padding: 13px;
+        }
+
+        .dato-viaje strong
+        {
+            display: block;
+
+            font-size: 11px;
+
+            text-transform: uppercase;
+
+            color: #6c7280;
+
+            margin-bottom: 5px;
+        }
+
+        .dato-viaje span
+        {
+            font-weight: bold;
+
+            color: #0d0d27;
+
+            overflow-wrap: anywhere;
+        }
+
+
+        /* =====================================================
+           RUTA
+        ===================================================== */
+
+        .ruta
+        {
+            display: grid;
+
+            grid-template-columns:
+                1fr auto 1fr;
+
+            align-items: center;
+
+            gap: 14px;
+
+            background: white;
+
+            border:
+                1px solid #dce2e8;
+
+            border-radius: 10px;
+
+            padding: 17px;
+
+            margin-bottom: 16px;
+        }
+
+        .ruta-lugar
+        {
+            text-align: center;
+        }
+
+        .ruta-lugar strong
+        {
+            display: block;
+
+            color: #6c7280;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 5px;
+        }
+
+        .ruta-lugar span
+        {
+            font-size: 18px;
+
+            font-weight: bold;
+
+            color: #0d0d27;
+        }
+
+        .ruta-flecha
+        {
+            font-size: 30px;
+
+            color: #28b5e5;
+        }
+
+
+        /* =====================================================
+           MAPA
+        ===================================================== */
+
+        .mapa-contenedor
+        {
+            background: white;
+
+            border:
+                1px solid #dce2e8;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            margin-bottom: 16px;
+        }
+
+        .mapa-titulo
+        {
+            padding:
+                12px 15px;
+
+            font-weight: bold;
+
+            color: #0d0d27;
+
+            border-bottom:
+                1px solid #dce2e8;
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        #estadoMapa
+        {
+            font-size: 12px;
+
+            font-weight: normal;
+
+            color: #6c7280;
+        }
+
+        #map
+        {
+            height: 430px;
+
+            width: 100%;
+
+            background: #e9edf1;
+        }
+
+
+        /* =====================================================
+           ACCIONES
+        ===================================================== */
+
+        .acciones
+        {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    1fr
+                );
+
+            gap: 10px;
+
+            margin-bottom: 15px;
+        }
+
+        .acciones button
+        {
+            min-height: 52px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .acciones button:disabled
+        {
+            opacity: .55;
+
+            cursor: wait;
+        }
+
+        .btn-iniciar
+        {
+            background: #e8f5e9;
+
+            border:
+                1px solid #2e7d32;
+
+            color: #1b5e20;
+        }
+
+        .btn-rechazar
+        {
+            background: #fff3e0;
+
+            border:
+                1px solid #ef6c00;
+
+            color: #e65100;
+        }
+
+        .btn-origen
+        {
+            background: #e3f2fd;
+
+            border:
+                1px solid #1565c0;
+
+            color: #0d47a1;
+        }
+
+        .btn-ubicacion
+        {
+            background: #fffde7;
+
+            border:
+                1px solid #f9a825;
+
+            color: #795548;
+        }
+
+
+        /* =====================================================
+           MENSAJES
+        ===================================================== */
+
+        #mensaje
+        {
+            min-height: 20px;
+
+            padding:
+                10px 2px;
+
+            font-weight: bold;
+
+            color: #555;
+        }
+
+        #mensaje.error
+        {
+            color: #c62828;
+        }
+
+        #mensaje.ok
+        {
+            color: #2e7d32;
+        }
+
+        .sin-viaje
+        {
+            background: white;
+
+            border:
+                1px solid #dce2e8;
+
+            border-radius: 10px;
+
+            padding:
+                35px 20px;
+
+            text-align: center;
+
+            font-size: 18px;
+
+            color: #6c7280;
+        }
+
+        .oculto
+        {
+            display: none !important;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media
+        (
+            max-width: 800px
+        )
+        {
+
+            .header-empresa
+            {
+                grid-template-columns:
+                    1fr auto;
+
+                padding:
+                    11px 14px;
+            }
+
+            .header-marca
+            {
+                font-size: 18px;
+            }
+
+            .header-titulo
+            {
+                grid-column:
+                    1 / -1;
+
+                grid-row: 2;
+
+                font-size: 15px;
+            }
+
+            .header-derecha
+            {
+                gap: 7px;
+            }
+
+            .header-usuario
+            {
+                font-size: 12px;
+            }
+
+            .contenido-viaje
+            {
+                padding: 13px;
+            }
+
+            .cabecera-pagina h1
+            {
+                font-size: 23px;
+            }
+
+            .datos-viaje
+            {
+                grid-template-columns:
+                    repeat(
+                        2,
+                        1fr
+                    );
+            }
+
+            .acciones
+            {
+                grid-template-columns:
+                    1fr;
+            }
+
+            #map
+            {
+                height: 390px;
+            }
+
+        }
+
+
+        @media
+        (
+            max-width: 500px
+        )
+        {
+
+            .datos-viaje
+            {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .ruta
+            {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .ruta-flecha
+            {
+                transform:
+                    rotate(
+                        90deg
+                    );
+
+                text-align: center;
+            }
+
+            .estado-general
+            {
+                align-items:
+                    flex-start;
+
+                flex-direction:
+                    column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header-empresa">
+
+    <div class="header-marca">
+        VoyLlegando
+    </div>
+
+
+    <div class="header-titulo">
+        Empresa de Transporte
+    </div>
+
+
+    <div class="header-derecha">
+
+        <div
+            id="nombreUsuario"
+            class="header-usuario">
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-salir"
+            onclick="logout()">
+
+            Salir
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<main class="contenido-viaje">
+
+
+    <div class="cabecera-pagina">
+
+        <h1>
+            Mi Viaje
+        </h1>
+
+
+        <button
+            type="button"
+            class="btn-volver"
+            onclick="
+                window.location.href =
+                '/empresa.html?v=6'
+            ">
+
+            ← Volver
+
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         SIN VIAJE
+    ====================================================== -->
+
+    <div
+        id="sinViaje"
+        class="sin-viaje oculto">
+
+        No tiene un viaje activo.
+
+    </div>
+
+
+    <!-- =====================================================
+         VIAJE
+    ====================================================== -->
+
+    <div
+        id="contenidoViaje"
+        class="oculto">
+
+
+        <div class="estado-general">
+
+            <div>
+
+                <div class="estado-etiqueta">
+                    Viaje
+                </div>
+
+                <div
+                    id="tituloViaje"
+                    class="estado-valor">
+
+                    -
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="estadoViaje"
+                class="estado-badge">
+
+                -
+
+            </div>
+
+        </div>
+
+
+        <!-- DATOS -->
+
+        <div class="datos-viaje">
+
+
+            <div class="dato-viaje">
+
+                <strong>
+                    Fecha Pedido
+                </strong>
+
+                <span id="fechaPedido">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato-viaje">
+
+                <strong>
+                    CTG
+                </strong>
+
+                <span id="ctg">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato-viaje">
+
+                <strong>
+                    Kilómetros
+                </strong>
+
+                <span id="kms">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato-viaje">
+
+                <strong>
+                    Tarifa
+                </strong>
+
+                <span id="tarifa">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato-viaje">
+
+                <strong>
+                    Batea
+                </strong>
+
+                <span id="batea">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato-viaje">
+
+                <strong>
+                    Corta
+                </strong>
+
+                <span id="corta">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato-viaje">
+
+                <strong>
+                    Larga
+                </strong>
+
+                <span id="larga">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato-viaje">
+
+                <strong>
+                    Observaciones
+                </strong>
+
+                <span id="observaciones">
+                    -
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- RUTA -->
+
+        <div class="ruta">
+
+            <div class="ruta-lugar">
+
+                <strong>
+                    Origen
+                </strong>
+
+                <span id="origen">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="ruta-flecha">
+                ➜
+            </div>
+
+
+            <div class="ruta-lugar">
+
+                <strong>
+                    Destino
+                </strong>
+
+                <span id="destino">
+                    -
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- MAPA -->
+
+        <div class="mapa-contenedor">
+
+<div class="mapa-titulo">
+
+    <span>
+        Recorrido
+    </span>
+
+    <div
+        style="
+            text-align: right;
+        ">
+
+        <div
+            id="datosRecorrido"
+            style="
+                font-size: 14px;
+                font-weight: bold;
+                color: #0d0d27;
+            ">
+        </div>
+
+        <div
+            id="estadoMapa"
+            style="
+                margin-top: 3px;
+            ">
+        </div>
+
+    </div>
+
+</div>
+
+            <div id="map">
+            </div>
+
+        </div>
+
+
+        <!-- ACCIONES -->
+
+        <div
+            id="acciones"
+            class="acciones">
+
+
+            <button
+                id="btnRechazar"
+                type="button"
+                class="btn-rechazar oculto"
+                onclick="rechazarViaje()">
+
+                RECHAZAR VIAJE
+
+            </button>
+
+
+            <button
+                id="btnIniciar"
+                type="button"
+                class="btn-iniciar oculto"
+                onclick="iniciarViaje()">
+
+                INICIAR VIAJE
+
+            </button>
+
+
+            <button
+                id="btnLlegarOrigen"
+                type="button"
+                class="btn-origen oculto"
+                onclick="llegarOrigen()">
+
+                LLEGUÉ AL ORIGEN
+
+            </button>
+
+
+            <button
+                id="btnUbicacion"
+                type="button"
+                class="btn-ubicacion"
+                onclick="actualizarMiUbicacion()">
+
+                ACTUALIZAR MI UBICACIÓN
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div id="mensaje">
+    </div>
+
+
+</main>
+
+
+<script src="/js/api.js?v=6"></script>
+<script src="/js/auth.js?v=6"></script>
+
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    crossorigin="">
+</script>
+
+
+<script>
+
+    // =======================================================
+    // VARIABLES
+    // =======================================================
+
+    let viajeActual =
+        null;
+
+
+    let map =
+        null;
+
+
+    let lineaRuta =
+        null;
+
+
+    let lineaDirecta =
+        null;
+
+
+    let marcadorOrigen =
+        null;
+
+
+    let marcadorDestino =
+        null;
+
+
+    let marcadorCamion =
+        null;
+
+
+    // =======================================================
+    // INICIO
+    // =======================================================
+
+    async function iniciarPagina()
+    {
+        const perfil =
+            await validarSesion(
+                "E"
+            );
+
+
+        if (!perfil)
+            return;
+
+
+        document
+            .getElementById(
+                "nombreUsuario"
+            )
+            .textContent =
+                perfil.nombre ||
+                "";
+
+
+        inicializarMapa();
+
+
+        cargarViajeActual();
+    }
+
+
+    // =======================================================
+    // INICIALIZAR MAPA
+    // =======================================================
+
+    function inicializarMapa()
+    {
+        map =
+            L.map(
+                "map",
+                {
+                    zoomControl:
+                        true
+                }
+            );
+
+
+        L.tileLayer(
+            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom:
+                    19,
+
+                attribution:
+                    '&copy; OpenStreetMap'
+            }
+        )
+        .addTo(
+            map
+        );
+
+
+        map.setView(
+            [
+                -35.5,
+                -62.5
+            ],
+            6
+        );
+    }
+
+
+    // =======================================================
+    // CARGAR VIAJE ACTUAL
+    // =======================================================
+
+    async function cargarViajeActual()
+    {
+        mensaje(
+            "Cargando datos del viaje..."
+        );
+
+
+        try
+        {
+            const viajes =
+                await API.get(
+                    "/api/Viajes/mis-viajes"
+                );
+
+
+            const activos =
+            [
+                "A",
+                "V",
+                "O",
+                "R",
+                "D"
+            ];
+
+
+            viajeActual =
+                viajes.find(
+                    viaje =>
+                        activos.includes(
+                            viaje.estado
+                        )
+                );
+
+
+            if (!viajeActual)
+            {
+                mostrarSinViaje();
+
+                mensaje(
+                    "No tiene un viaje activo."
+                );
+
+                return;
+            }
+
+
+            // ------------------------------------------------
+            // MOSTRAMOS LOS DATOS INMEDIATAMENTE
+            // ------------------------------------------------
+
+            mostrarViaje(
+                viajeActual
+            );
+
+
+            // ------------------------------------------------
+            // MOSTRAMOS ORIGEN Y DESTINO SIN ESPERAR OSRM
+            // ------------------------------------------------
+
+            mostrarRutaInicial(
+                viajeActual
+            );
+
+
+            mensaje(
+                "Viaje cargado.",
+                false,
+                true
+            );
+
+
+            // ------------------------------------------------
+            // ESTAS DOS TAREAS SE HACEN EN PARALELO
+            // NO BLOQUEAMOS LA PANTALLA
+            // ------------------------------------------------
+
+            Promise.allSettled(
+                [
+                    cargarRecorrido(
+                        viajeActual.idViaje
+                    ),
+
+                    cargarMiUbicacion(
+                        viajeActual.idViaje
+                    )
+                ]
+            );
+        }
+        catch (error)
+        {
+            mostrarSinViaje();
+
+            mensaje(
+                error.message ||
+                "No se pudo cargar el viaje.",
+                true
+            );
+        }
+    }
+
+
+    // =======================================================
+    // MOSTRAR SIN VIAJE
+    // =======================================================
+
+    function mostrarSinViaje()
+    {
+        document
+            .getElementById(
+                "contenidoViaje"
+            )
+            .classList
+            .add(
+                "oculto"
+            );
+
+
+        document
+            .getElementById(
+                "sinViaje"
+            )
+            .classList
+            .remove(
+                "oculto"
+            );
+    }
+
+
+    // =======================================================
+    // MOSTRAR VIAJE
+    // =======================================================
+
+    function mostrarViaje(
+        viaje
+    )
+    {
+        document
+            .getElementById(
+                "sinViaje"
+            )
+            .classList
+            .add(
+                "oculto"
+            );
+
+
+        document
+            .getElementById(
+                "contenidoViaje"
+            )
+            .classList
+            .remove(
+                "oculto"
+            );
+
+
+        // Leaflet necesita recalcular el tamaño porque
+        // el mapa estaba dentro de un DIV oculto.
+
+        setTimeout(
+            function()
+            {
+                if (map)
+                {
+                    map.invalidateSize();
+                }
+            },
+            50
+        );
+
+
+        ponerTexto(
+            "tituloViaje",
+            `Viaje #${viaje.idViaje}`
+        );
+
+
+        ponerTexto(
+            "estadoViaje",
+            descripcionEstado(
+                viaje.estado
+            )
+        );
+
+
+        ponerTexto(
+            "fechaPedido",
+            formatearFecha(
+                viaje.fechaPedido
+            )
+        );
+
+
+        ponerTexto(
+            "ctg",
+            viaje.ctg
+        );
+
+
+        ponerTexto(
+            "kms",
+            formatearNumero(
+                viaje.kms
+            )
+        );
+
+
+        ponerTexto(
+            "tarifa",
+            formatearTarifa(
+                viaje.tarifa
+            )
+        );
+
+
+        ponerTexto(
+            "batea",
+            siNo(
+                viaje.batea
+            )
+        );
+
+
+        ponerTexto(
+            "corta",
+            siNo(
+                viaje.corta
+            )
+        );
+
+
+        ponerTexto(
+            "larga",
+            siNo(
+                viaje.larga
+            )
+        );
+
+
+        ponerTexto(
+            "observaciones",
+            viaje.observaciones
+        );
+
+
+        ponerTexto(
+            "origen",
+            viaje.origen
+        );
+
+
+        ponerTexto(
+            "destino",
+            viaje.destino
+        );
+
+
+        actualizarBotones(
+            viaje.estado
+        );
+    }
+
+
+    // =======================================================
+    // MOSTRAR RUTA INICIAL
+    //
+    // Esto NO llama a OSRM.
+    // Usa directamente las coordenadas guardadas en el viaje.
+    // =======================================================
+
+    function mostrarRutaInicial(
+        viaje
+    )
+    {
+        const latOrigen =
+            Number(
+                viaje.latitudOrigen
+            );
+
+
+        const lonOrigen =
+            Number(
+                viaje.longitudOrigen
+            );
+
+
+        const latDestino =
+            Number(
+                viaje.latitudDestino
+            );
+
+
+        const lonDestino =
+            Number(
+                viaje.longitudDestino
+            );
+
+
+        if (
+            !Number.isFinite(
+                latOrigen
+            ) ||
+            !Number.isFinite(
+                lonOrigen
+            ) ||
+            !Number.isFinite(
+                latDestino
+            ) ||
+            !Number.isFinite(
+                lonDestino
+            )
+        )
+        {
+            estadoMapa(
+                "Esperando recorrido..."
+            );
+
+            return;
+        }
+
+
+        const origen =
+        [
+            latOrigen,
+            lonOrigen
+        ];
+
+
+        const destino =
+        [
+            latDestino,
+            lonDestino
+        ];
+
+
+        // ---------------------------------------------------
+        // MARCADOR ORIGEN
+        // ---------------------------------------------------
+
+        marcadorOrigen =
+            L.marker(
+                origen
+            )
+            .addTo(
+                map
+            )
+            .bindPopup(
+                "<b>Origen</b>"
+            );
+
+
+        // ---------------------------------------------------
+        // MARCADOR DESTINO
+        // ---------------------------------------------------
+
+        marcadorDestino =
+            L.marker(
+                destino
+            )
+            .addTo(
+                map
+            )
+            .bindPopup(
+                "<b>Destino</b>"
+            );
+
+
+        // ---------------------------------------------------
+        // LINEA PROVISORIA
+        //
+        // Sirve para que el usuario vea inmediatamente
+        // origen y destino mientras OSRM calcula la ruta.
+        // ---------------------------------------------------
+
+        lineaDirecta =
+            L.polyline(
+                [
+                    origen,
+                    destino
+                ],
+                {
+                    weight:
+                        3,
+
+                    opacity:
+                        .40,
+
+                    dashArray:
+                        "8,8"
+                }
+            )
+            .addTo(
+                map
+            );
+
+
+        const limites =
+            L.latLngBounds(
+                [
+                    origen,
+                    destino
+                ]
+            );
+
+
+        map.fitBounds(
+            limites,
+            {
+                padding:
+                [
+                    40,
+                    40
+                ]
+            }
+        );
+
+
+        estadoMapa(
+            "Calculando recorrido..."
+        );
+    }
+
+
+    // =======================================================
+    // CARGAR RECORRIDO REAL
+    // =======================================================
+
+    async function cargarRecorrido(
+        idViaje
+    )
+    {
+        estadoMapa(
+            "Calculando recorrido..."
+        );
+
+
+        try
+        {
+            const datos =
+                await API.get(
+                    `/api/Viajes/${idViaje}/recorrido`
+                );
+
+
+            if (!datos)
+            {
+                estadoMapa(
+                    "Recorrido no disponible"
+                );
+
+                return;
+            }
+
+
+            mostrarDatosRecorrido(
+                datos.distanciaKm,
+                datos.duracionMinutos
+            );
+
+
+            if (
+                !datos.ruta ||
+                datos.ruta.length === 0
+            )
+            {
+                estadoMapa(
+                    "Recorrido no disponible"
+                );
+
+                return;
+            }
+
+
+            const puntos =
+                datos.ruta
+                    .map(
+                        punto =>
+                        [
+                            Number(
+                                punto.latitud
+                            ),
+
+                            Number(
+                                punto.longitud
+                            )
+                        ]
+                    )
+                    .filter(
+                        punto =>
+                            Number.isFinite(
+                                punto[0]
+                            ) &&
+                            Number.isFinite(
+                                punto[1]
+                            )
+                    );
+
+
+            if (
+                puntos.length <
+                2
+            )
+            {
+                estadoMapa(
+                    "Recorrido no disponible"
+                );
+
+                return;
+            }
+
+
+            // ------------------------------------------------
+            // SACAMOS SOLAMENTE LA LINEA PROVISORIA
+            // ------------------------------------------------
+
+            if (lineaDirecta)
+            {
+                map.removeLayer(
+                    lineaDirecta
+                );
+
+                lineaDirecta =
+                    null;
+            }
+
+
+            // ------------------------------------------------
+            // DIBUJAMOS RECORRIDO REAL
+            // ------------------------------------------------
+
+            if (lineaRuta)
+            {
+                map.removeLayer(
+                    lineaRuta
+                );
+            }
+
+
+            lineaRuta =
+                L.polyline(
+                    puntos,
+                    {
+                        weight:
+                            5,
+
+                        opacity:
+                            .85
+                    }
+                )
+                .addTo(
+                    map
+                );
+
+
+            map.fitBounds(
+                lineaRuta.getBounds(),
+                {
+                    padding:
+                    [
+                        35,
+                        35
+                    ]
+                }
+            );
+
+
+            estadoMapa(
+                "Recorrido cargado"
+            );
+        }
+        catch (error)
+        {
+            console.error(
+                "Error cargando recorrido:",
+                error
+            );
+
+
+            estadoMapa(
+                "No se pudo calcular el recorrido"
+            );
+        }
+    }
+
+
+    // =======================================================
+    // CARGAR MI UBICACION
+    // =======================================================
+
+    async function cargarMiUbicacion(
+        idViaje
+    )
+    {
+        try
+        {
+            const datos =
+                await API.get(
+                    `/api/Viajes/${idViaje}/ubicacion`
+                );
+
+
+            if (
+                datos &&
+                datos.latitud != null &&
+                datos.longitud != null
+            )
+            {
+                mostrarCamion(
+                    Number(
+                        datos.latitud
+                    ),
+
+                    Number(
+                        datos.longitud
+                    )
+                );
+            }
+        }
+        catch
+        {
+            // Es totalmente normal si la Empresa
+            // todavía no informó su ubicación.
+        }
+    }
+
+
+    // =======================================================
+    // ACTUALIZAR MI UBICACION
+    // =======================================================
+
+    function actualizarMiUbicacion()
+    {
+        if (
+            !navigator.geolocation
+        )
+        {
+            mensaje(
+                "Este dispositivo no permite obtener la ubicación.",
+                true
+            );
+
+            return;
+        }
+
+
+        mensaje(
+            "Obteniendo ubicación..."
+        );
+
+
+        navigator
+            .geolocation
+            .getCurrentPosition(
+                enviarUbicacion,
+                errorUbicacion,
+                {
+                    enableHighAccuracy:
+                        true,
+
+                    timeout:
+                        15000,
+
+                    maximumAge:
+                        0
+                }
+            );
+    }
+
+
+    // =======================================================
+    // ENVIAR UBICACION
+    // =======================================================
+
+    async function enviarUbicacion(
+        posicion
+    )
+    {
+        const latitud =
+            posicion.coords.latitude;
+
+
+        const longitud =
+            posicion.coords.longitude;
+
+
+        try
+        {
+            await API.post(
+                "/api/Usuarios/mi-ubicacion",
+                {
+                    latitud:
+                        latitud,
+
+                    longitud:
+                        longitud
+                }
+            );
+
+
+            mostrarCamion(
+                latitud,
+                longitud
+            );
+
+
+            mensaje(
+                "Ubicación actualizada.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message ||
+                "No se pudo enviar la ubicación.",
+                true
+            );
+        }
+    }
+
+
+    // =======================================================
+    // ERROR GPS
+    // =======================================================
+
+    function errorUbicacion(
+        error
+    )
+    {
+        let texto =
+            "No se pudo obtener la ubicación.";
+
+
+        if (
+            error.code ===
+            error.PERMISSION_DENIED
+        )
+        {
+            texto =
+                "Debe permitir el acceso a la ubicación.";
+        }
+
+
+        if (
+            error.code ===
+            error.POSITION_UNAVAILABLE
+        )
+        {
+            texto =
+                "La ubicación no está disponible.";
+        }
+
+
+        if (
+            error.code ===
+            error.TIMEOUT
+        )
+        {
+            texto =
+                "Se agotó el tiempo para obtener la ubicación.";
+        }
+
+
+        mensaje(
+            texto,
+            true
+        );
+    }
+
+
+    // =======================================================
+    // MOSTRAR CAMION
+    // =======================================================
+
+    function mostrarCamion(
+        latitud,
+        longitud
+    )
+    {
+        if (
+            !Number.isFinite(
+                latitud
+            ) ||
+            !Number.isFinite(
+                longitud
+            )
+        )
+        {
+            return;
+        }
+
+
+        const posicion =
+        [
+            latitud,
+            longitud
+        ];
+
+
+        if (marcadorCamion)
+        {
+            marcadorCamion
+                .setLatLng(
+                    posicion
+                );
+
+            return;
+        }
+
+
+        const icono =
+            L.divIcon(
+                {
+                    className:
+                        "",
+
+                    html:
+                        `
+                        <div
+                            style="
+                                font-size:30px;
+                                line-height:30px;
+                            ">
+                            🚚
+                        </div>
+                        `,
+
+                    iconSize:
+                    [
+                        36,
+                        36
+                    ],
+
+                    iconAnchor:
+                    [
+                        18,
+                        18
+                    ]
+                }
+            );
+
+
+        marcadorCamion =
+            L.marker(
+                posicion,
+                {
+                    icon:
+                        icono,
+
+                    zIndexOffset:
+                        1000
+                }
+            )
+            .addTo(
+                map
+            )
+            .bindPopup(
+                "<b>Mi ubicación</b>"
+            );
+    }
+
+
+    // =======================================================
+    // BOTONES SEGUN ESTADO
+    // =======================================================
+
+    function actualizarBotones(
+        estado
+    )
+    {
+        ocultarBoton(
+            "btnRechazar"
+        );
+
+
+        ocultarBoton(
+            "btnIniciar"
+        );
+
+
+        ocultarBoton(
+            "btnLlegarOrigen"
+        );
+
+
+        // ---------------------------------------------------
+        // A = ASIGNADO
+        // ---------------------------------------------------
+
+        if (
+            estado === "A"
+        )
+        {
+            mostrarBoton(
+                "btnRechazar"
+            );
+
+
+            mostrarBoton(
+                "btnIniciar"
+            );
+        }
+
+
+        // ---------------------------------------------------
+        // V = VIAJE INICIADO
+        // ---------------------------------------------------
+
+        if (
+            estado === "V"
+        )
+        {
+            mostrarBoton(
+                "btnLlegarOrigen"
+            );
+        }
+    }
+
+
+    // =======================================================
+    // INICIAR VIAJE
+    // =======================================================
+
+    async function iniciarViaje()
+    {
+        if (!viajeActual)
+            return;
+
+
+        const confirmar =
+            window.confirm(
+                "¿Desea iniciar este viaje?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        try
+        {
+            bloquearAcciones(
+                true
+            );
+
+
+            mensaje(
+                "Iniciando viaje..."
+            );
+
+
+            const respuesta =
+                await API.post(
+                    `/api/Viajes/${viajeActual.idViaje}/iniciar`,
+                    {}
+                );
+
+
+            viajeActual.estado =
+                "V";
+
+
+            mostrarViaje(
+                viajeActual
+            );
+
+
+            mensaje(
+                respuesta.mensaje ||
+                "Viaje iniciado.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message ||
+                "No se pudo iniciar el viaje.",
+                true
+            );
+        }
+        finally
+        {
+            bloquearAcciones(
+                false
+            );
+        }
+    }
+
+
+    // =======================================================
+    // RECHAZAR VIAJE
+    // =======================================================
+
+    async function rechazarViaje()
+    {
+        if (!viajeActual)
+            return;
+
+
+        const confirmar =
+            window.confirm(
+                "¿Está seguro que desea rechazar este viaje?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        try
+        {
+            bloquearAcciones(
+                true
+            );
+
+
+            mensaje(
+                "Rechazando viaje..."
+            );
+
+
+            const respuesta =
+                await API.post(
+                    `/api/Viajes/${viajeActual.idViaje}/rechazar`,
+                    {}
+                );
+
+
+            viajeActual =
+                null;
+
+
+            mostrarSinViaje();
+
+
+            mensaje(
+                respuesta.mensaje ||
+                "Viaje rechazado.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message ||
+                "No se pudo rechazar el viaje.",
+                true
+            );
+        }
+        finally
+        {
+            bloquearAcciones(
+                false
+            );
+        }
+    }
+
+
+    // =======================================================
+    // LLEGAR AL ORIGEN
+    // =======================================================
+
+    async function llegarOrigen()
+    {
+        if (!viajeActual)
+            return;
+
+
+        const confirmar =
+            window.confirm(
+                "¿Confirma que llegó al origen?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        try
+        {
+            bloquearAcciones(
+                true
+            );
+
+
+            mensaje(
+                "Registrando llegada al origen..."
+            );
+
+
+            const respuesta =
+                await API.post(
+                    `/api/Viajes/${viajeActual.idViaje}/llegar-origen`,
+                    {}
+                );
+
+
+            viajeActual.estado =
+                "O";
+
+
+            mostrarViaje(
+                viajeActual
+            );
+
+
+            mensaje(
+                respuesta.mensaje ||
+                "Llegada registrada.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message ||
+                "No se pudo registrar la llegada.",
+                true
+            );
+        }
+        finally
+        {
+            bloquearAcciones(
+                false
+            );
+        }
+    }
+
+
+    // =======================================================
+    // UTILIDADES
+    // =======================================================
+
+    function estadoMapa(
+        texto
+    )
+    {
+        document
+            .getElementById(
+                "estadoMapa"
+            )
+            .textContent =
+                texto ||
+                "";
+    }
+
+
+    function mostrarDatosRecorrido(
+        distanciaKm,
+        duracionMinutos
+    )
+    {
+        const elemento =
+            document.getElementById(
+                "datosRecorrido"
+            );
+
+
+        if (!elemento)
+            return;
+
+
+        const distancia =
+            Number(
+                distanciaKm
+            );
+
+
+        const minutos =
+            Math.round(
+                Number(
+                    duracionMinutos
+                )
+            );
+
+
+        if (
+            !Number.isFinite(
+                distancia
+            ) ||
+            !Number.isFinite(
+                minutos
+            )
+        )
+        {
+            elemento.textContent =
+                "";
+
+            return;
+        }
+
+
+        const horas =
+            Math.floor(
+                minutos / 60
+            );
+
+
+        const minutosRestantes =
+            minutos % 60;
+
+
+        let textoTiempo =
+            "";
+
+
+        if (horas > 0)
+        {
+            textoTiempo =
+                `${horas} h`;
+
+
+            if (
+                minutosRestantes > 0
+            )
+            {
+                textoTiempo +=
+                    ` ${minutosRestantes} min`;
+            }
+        }
+        else
+        {
+            textoTiempo =
+                `${minutos} min`;
+        }
+
+
+        elemento.textContent =
+            `${distancia.toLocaleString(
+                "es-AR",
+                {
+                    maximumFractionDigits:
+                        1
+                }
+            )} km · ${textoTiempo}`;
+    }
+
+
+    function descripcionEstado(
+        estado
+    )
+    {
+        switch (estado)
+        {
+            case "P":
+                return "Pendiente";
+
+            case "A":
+                return "Asignado";
+
+            case "V":
+                return "Viaje iniciado";
+
+            case "O":
+                return "En origen";
+
+            case "R":
+                return "En ruta";
+
+            case "D":
+                return "En destino";
+
+            case "T":
+                return "Terminado";
+
+            case "I":
+                return "Informado";
+
+            default:
+                return estado || "-";
+        }
+    }
+
+
+    function ponerTexto(
+        id,
+        valor
+    )
+    {
+        document
+            .getElementById(
+                id
+            )
+            .textContent =
+                valor === null ||
+                valor === undefined ||
+                valor === ""
+                    ?
+                    "-"
+                    :
+                    valor;
+    }
+
+
+    function siNo(
+        valor
+    )
+    {
+        return valor
+            ?
+            "Sí"
+            :
+            "No";
+    }
+
+
+    function formatearNumero(
+        valor
+    )
+    {
+        if (
+            valor === null ||
+            valor === undefined ||
+            valor === ""
+        )
+        {
+            return "-";
+        }
+
+
+        const numero =
+            Number(
+                valor
+            );
+
+
+        if (
+            Number.isNaN(
+                numero
+            )
+        )
+        {
+            return valor;
+        }
+
+
+        return numero
+            .toLocaleString(
+                "es-AR"
+            );
+    }
+
+
+    function formatearTarifa(
+        valor
+    )
+    {
+        if (
+            valor === null ||
+            valor === undefined ||
+            valor === ""
+        )
+        {
+            return "-";
+        }
+
+
+        const numero =
+            Number(
+                valor
+            );
+
+
+        if (
+            Number.isNaN(
+                numero
+            )
+        )
+        {
+            return valor;
+        }
+
+
+        return numero
+            .toLocaleString(
+                "es-AR",
+                {
+                    style:
+                        "currency",
+
+                    currency:
+                        "ARS"
+                }
+            );
+    }
+
+
+    function formatearFecha(
+        valor
+    )
+    {
+        if (!valor)
+            return "-";
+
+
+        const fecha =
+            new Date(
+                valor
+            );
+
+
+        if (
+            Number.isNaN(
+                fecha.getTime()
+            )
+        )
+        {
+            return valor;
+        }
+
+
+        return fecha
+            .toLocaleString(
+                "es-AR"
+            );
+    }
+
+
+    function mostrarBoton(
+        id
+    )
+    {
+        document
+            .getElementById(
+                id
+            )
+            .classList
+            .remove(
+                "oculto"
+            );
+    }
+
+
+    function ocultarBoton(
+        id
+    )
+    {
+        document
+            .getElementById(
+                id
+            )
+            .classList
+            .add(
+                "oculto"
+            );
+    }
+
+
+    function bloquearAcciones(
+        bloquear
+    )
+    {
+        document
+            .querySelectorAll(
+                "#acciones button"
+            )
+            .forEach(
+                boton =>
+                {
+                    boton.disabled =
+                        bloquear;
+                }
+            );
+    }
+
+
+    function mensaje(
+        texto,
+        error =
+            false,
+        ok =
+            false
+    )
+    {
+        const elemento =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        elemento.textContent =
+            texto ||
+            "";
+
+
+        elemento.classList.remove(
+            "error",
+            "ok"
+        );
+
+
+        if (error)
+        {
+            elemento.classList.add(
+                "error"
+            );
+        }
+
+
+        if (ok)
+        {
+            elemento.classList.add(
+                "ok"
+            );
+        }
+    }
+
+
+    // =======================================================
+    // INICIAR
+    // =======================================================
+
+    iniciarPagina();
+
+</script>
+
+
+</body>
+
+</html>

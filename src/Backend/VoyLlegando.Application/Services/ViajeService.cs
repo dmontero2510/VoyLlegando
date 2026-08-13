@@ -20,6 +20,16 @@ public class ViajeService
         _viajeEventoRepository = viajeEventoRepository;
     }
 
+    public async Task TomarAsync(
+        int idViaje,
+        int idEmpresa)
+    {
+        await _viajeRepository
+            .TomarPendienteAsync(
+                idViaje,
+                idEmpresa);
+    }
+
     // -------------------------------------------------------
     // CREAR VIAJE
     // -------------------------------------------------------

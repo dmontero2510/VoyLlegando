@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Viajes Pendientes - VoyLlegando
+    </title>
+
+    <link rel="stylesheet"
+          href="/css/app.css?v=6">
+
+    <style>
+
+        *
+        {
+            box-sizing: border-box;
+        }
+
+        body
+        {
+            margin: 0;
+            background: #f4f7fa;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #202334;
+        }
+
+        .header-empresa
+        {
+            background: #0d0d27;
+            border-bottom: 4px solid #28b5e5;
+            min-height: 72px;
+            padding: 12px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-marca
+        {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: .8px;
+        }
+
+        .header-marca::before
+        {
+            content: "■";
+            color: #28b5e5;
+            margin-right: 9px;
+        }
+
+        .header-titulo
+        {
+            text-align: center;
+            color: #28b5e5;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .header-derecha
+        {
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-usuario
+        {
+            color: white;
+            font-size: 14px;
+        }
+
+        .btn-salir
+        {
+            border: 1px solid rgba(255,255,255,.45);
+            background: transparent;
+            color: white;
+            padding: 8px 13px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .pagina
+        {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .encabezado-pagina
+        {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .encabezado-pagina h1
+        {
+            margin: 0;
+            color: #0d0d27;
+            font-size: 28px;
+        }
+
+        .encabezado-pagina h1::after
+        {
+            content: "";
+            display: block;
+            width: 55px;
+            height: 4px;
+            margin-top: 8px;
+            border-radius: 4px;
+            background: #28b5e5;
+        }
+
+        .datos-empresa
+        {
+            margin-top: 10px;
+            color: #5f6673;
+        }
+
+        .estado-empresa
+        {
+            margin-top: 8px;
+            font-size: 14px;
+        }
+
+        .estado-disponible
+        {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .estado-no-disponible
+        {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .mensaje
+        {
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .mensaje-info
+        {
+            background: #eef4ff;
+        }
+
+        .mensaje-error
+        {
+            background: #ffeaea;
+            color: #9d1c1c;
+        }
+
+        .sin-viajes
+        {
+            padding: 30px 15px;
+            text-align: center;
+            background: white;
+            border: 1px solid #dce2e8;
+            border-radius: 10px;
+        }
+
+        .tabla-contenedor
+        {
+            width: 100%;
+            overflow-x: auto;
+            background: white;
+            border: 1px solid #dce2e8;
+            border-radius: 10px;
+        }
+
+        table
+        {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1050px;
+        }
+
+        th,
+        td
+        {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        th
+        {
+            font-weight: 600;
+            background: #f7f9fb;
+            color: #0d0d27;
+        }
+
+        .centrado
+        {
+            text-align: center;
+        }
+
+        .importe
+        {
+            text-align: right;
+        }
+
+        .btn-tomar
+        {
+            border: 0;
+            border-radius: 7px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #28b5e5;
+            color: #0d0d27;
+        }
+
+        .btn-tomar:disabled
+        {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
+        .acciones
+        {
+            margin-top: 20px;
+        }
+
+        .btn-volver
+        {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #d7dce2;
+            color: #202334;
+            font-weight: bold;
+        }
+
+        .btn-volver:hover
+        {
+            background: #f5f7f9;
+        }
+
+        @media (max-width: 700px)
+        {
+            .header-empresa
+            {
+                grid-template-columns: 1fr auto;
+                padding: 12px 14px;
+            }
+
+            .header-titulo
+            {
+                display: none;
+            }
+
+            .header-derecha
+            {
+                gap: 8px;
+            }
+
+            .header-usuario
+            {
+                display: none;
+            }
+
+            .pagina
+            {
+                padding: 12px;
+            }
+
+            .encabezado-pagina
+            {
+                display: block;
+            }
+
+            .encabezado-pagina h1
+            {
+                font-size: 24px;
+            }
+
+            table
+            {
+                font-size: 13px;
+            }
+
+            th,
+            td
+            {
+                padding: 8px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header-empresa">
+
+    <div class="header-marca">
+        VoyLlegando
+    </div>
+
+    <div class="header-titulo">
+        Empresa de Transporte
+    </div>
+
+    <div class="header-derecha">
+
+        <div
+            id="nombreUsuario"
+            class="header-usuario">
+        </div>
+
+        <button
+            type="button"
+            class="btn-salir"
+            onclick="logout()">
+            Salir
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="pagina">
+
+
+    <!-- ============================================= -->
+    <!-- ENCABEZADO                                    -->
+    <!-- ============================================= -->
+
+    <div class="encabezado-pagina">
+
+        <div>
+
+            <h1>
+                Viajes Pendientes
+            </h1>
+
+            <div class="datos-empresa">
+
+                Empresa:
+
+                <strong id="nombreEmpresa">
+                    ...
+                </strong>
+
+                <div class="estado-empresa">
+                    Estado:
+                    <span id="estadoEmpresa">
+                        ...
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ============================================= -->
+    <!-- MENSAJES                                      -->
+    <!-- ============================================= -->
+
+    <div id="mensaje"
+         class="mensaje">
+    </div>
+
+
+    <div id="cargando"
+         class="mensaje mensaje-info"
+         style="display:block;">
+
+        Cargando viajes pendientes...
+
+    </div>
+
+
+
+    <!-- ============================================= -->
+    <!-- SIN VIAJES                                    -->
+    <!-- ============================================= -->
+
+    <div id="sinViajes"
+         class="sin-viajes"
+         style="display:none;">
+
+        No hay viajes pendientes disponibles.
+
+    </div>
+
+
+
+    <!-- ============================================= -->
+    <!-- TABLA                                         -->
+    <!-- ============================================= -->
+
+    <div id="contenedorTabla"
+         class="tabla-contenedor"
+         style="display:none;">
+
+
+        <table>
+
+
+            <thead>
+
+            <tr>
+
+                <th>
+                    Logística
+                </th>
+
+                <th>
+                    Productor
+                </th>
+
+                <th>
+                    Origen
+                </th>
+
+                <th>
+                    Planta
+                </th>
+
+                <th>
+                    Destino
+                </th>
+
+                <th>
+                    Cereal
+                </th>
+
+                <th class="importe">
+                    Kms
+                </th>
+
+                <th class="importe">
+                    Tarifa
+                </th>
+
+                <th class="centrado">
+                    Batea
+                </th>
+
+                <th class="centrado">
+                    Corta
+                </th>
+
+                <th class="centrado">
+                    Larga
+                </th>
+
+                <th>
+                    Estado
+                </th>
+
+                <th class="centrado">
+                    Acción
+                </th>
+
+            </tr>
+
+            </thead>
+
+
+            <tbody id="tablaViajes">
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+
+
+    <!-- ============================================= -->
+    <!-- VOLVER                                        -->
+    <!-- ============================================= -->
+
+    <div class="acciones">
+
+        <a href="/empresa.html?v=6"
+           class="btn-volver">
+
+            Volver
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- ================================================= -->
+<!-- JAVASCRIPT GENERAL                                -->
+<!-- ================================================= -->
+
+<script src="/js/api.js?v=6"></script>
+
+<script src="/js/auth.js?v=6"></script>
+
+
+
+<script>
+
+    // =================================================
+    // VARIABLES
+    // =================================================
+
+    let usuarioActual = null;
+
+
+
+    // =================================================
+    // INICIO
+    // =================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        iniciar
+    );
+
+
+
+    async function iniciar()
+    {
+
+        try
+        {
+
+            // -----------------------------------------
+            // VALIDAR SESION EMPRESA
+            // -----------------------------------------
+
+            usuarioActual =
+                await validarSesion("E");
+
+
+            if (!usuarioActual)
+                return;
+
+
+            // -----------------------------------------
+            // MOSTRAR NOMBRE
+            // -----------------------------------------
+
+            document.getElementById(
+                "nombreEmpresa"
+            ).textContent =
+                usuarioActual.nombre || "";
+
+
+            document.getElementById(
+                "nombreUsuario"
+            ).textContent =
+                usuarioActual.nombre || "";
+
+
+            // -----------------------------------------
+            // CONSULTAR ESTADO
+            // -----------------------------------------
+
+            await cargarEstadoEmpresa();
+
+        }
+        catch (error)
+        {
+
+            ocultarCargando();
+
+            mostrarError(
+                error.message ||
+                "No se pudo iniciar la pantalla."
+            );
+
+        }
+
+    }
+
+
+
+    // =================================================
+    // ESTADO DE LA EMPRESA
+    // =================================================
+
+    async function cargarEstadoEmpresa()
+    {
+
+        try
+        {
+
+            const datos =
+                await API.get(
+                    "/api/Viajes/mi-estado"
+                );
+
+
+            mostrarEstado(
+                datos.estado
+            );
+
+
+            // -----------------------------------------
+            // EMPRESA DESHABILITADA
+            // -----------------------------------------
+
+            if (!datos.habilitado)
+            {
+
+                ocultarCargando();
+
+                mostrarError(
+                    "La Empresa de Transporte está deshabilitada."
+                );
+
+                return;
+
+            }
+
+
+            // -----------------------------------------
+            // SOLO D PUEDE VER VIAJES PENDIENTES
+            // -----------------------------------------
+
+            if (datos.estado !== "D")
+            {
+
+                ocultarCargando();
+
+
+                if (datos.estado === "F")
+                {
+
+                    mostrarError(
+                        "La Empresa de Transporte está Fuera de Servicio y no puede tomar viajes."
+                    );
+
+                }
+                else if (datos.estado === "V")
+                {
+
+                    mostrarError(
+                        "La Empresa de Transporte se encuentra Viajando y no puede tomar otro viaje."
+                    );
+
+                }
+                else
+                {
+
+                    mostrarError(
+                        "La Empresa de Transporte no está disponible para tomar viajes."
+                    );
+
+                }
+
+
+                return;
+
+            }
+
+
+            // -----------------------------------------
+            // EMPRESA DISPONIBLE
+            // -----------------------------------------
+
+            await cargarViajes();
+
+        }
+        catch (error)
+        {
+
+            ocultarCargando();
+
+            mostrarError(
+                error.message ||
+                "No se pudo consultar el estado de la Empresa."
+            );
+
+        }
+
+    }
+
+
+
+    // =================================================
+    // CARGAR VIAJES PENDIENTES
+    // =================================================
+
+    async function cargarViajes()
+    {
+
+        try
+        {
+
+            const viajes =
+                await API.get(
+                    "/api/Viajes/pendientes-empresa"
+                );
+
+
+            ocultarCargando();
+
+
+            mostrarViajes(
+                viajes
+            );
+
+        }
+        catch (error)
+        {
+
+            ocultarCargando();
+
+            mostrarError(
+                error.message ||
+                "No se pudieron cargar los viajes pendientes."
+            );
+
+        }
+
+    }
+
+
+
+    // =================================================
+    // MOSTRAR VIAJES
+    // =================================================
+
+    function mostrarViajes(viajes)
+    {
+
+        const tbody =
+            document.getElementById(
+                "tablaViajes"
+            );
+
+
+        const contenedor =
+            document.getElementById(
+                "contenedorTabla"
+            );
+
+
+        const sinViajes =
+            document.getElementById(
+                "sinViajes"
+            );
+
+
+        tbody.innerHTML = "";
+
+
+        // ---------------------------------------------
+        // NO HAY VIAJES
+        // ---------------------------------------------
+
+        if (
+            !Array.isArray(viajes) ||
+            viajes.length === 0
+        )
+        {
+
+            contenedor.style.display =
+                "none";
+
+
+            sinViajes.style.display =
+                "block";
+
+
+            return;
+
+        }
+
+
+        // ---------------------------------------------
+        // HAY VIAJES
+        // ---------------------------------------------
+
+        sinViajes.style.display =
+            "none";
+
+
+        for (const viaje of viajes)
+        {
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${escapar(viaje.logistica)}
+                </td>
+
+                <td>
+                    ${escapar(viaje.productor)}
+                </td>
+
+                <td>
+                    ${escapar(viaje.origen)}
+                </td>
+
+                <td>
+                    ${escapar(viaje.planta)}
+                </td>
+
+                <td>
+                    ${escapar(viaje.destino)}
+                </td>
+
+                <td>
+                    ${escapar(viaje.cereal)}
+                </td>
+
+
+                <td class="importe">
+                    ${formatearNumero(viaje.kms)}
+                </td>
+
+
+                <td class="importe">
+                    ${formatearImporte(viaje.tarifa)}
+                </td>
+
+
+                <td class="centrado">
+                    ${siNo(viaje.batea)}
+                </td>
+
+
+                <td class="centrado">
+                    ${siNo(viaje.corta)}
+                </td>
+
+
+                <td class="centrado">
+                    ${siNo(viaje.larga)}
+                </td>
+
+
+                <td>
+                    ${escapar(
+                        viaje.descripVia ||
+                        viaje.estado
+                    )}
+                </td>
+
+
+                <td class="centrado">
+
+                    <button
+                        type="button"
+                        class="btn-tomar"
+                        onclick="tomarViaje(${viaje.idViaje}, this)">
+
+                        Tomar Viaje
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                tr
+            );
+
+        }
+
+
+        contenedor.style.display =
+            "block";
+
+    }
+
+
+
+    // =================================================
+    // TOMAR VIAJE
+    // =================================================
+
+    async function tomarViaje(idViaje, boton)
+    {
+        if (!idViaje)
+            return;
+
+        const confirmar =
+            window.confirm(
+                "¿Confirma que desea tomar este viaje?"
+            );
+
+        if (!confirmar)
+            return;
+
+        const textoOriginal =
+            boton.textContent;
+
+        try
+        {
+            boton.disabled = true;
+            boton.textContent =
+                "Tomando...";
+
+            const mensaje =
+                document.getElementById(
+                    "mensaje"
+                );
+
+            mensaje.style.display =
+                "none";
+
+            await API.post(
+                `/api/Viajes/${idViaje}/tomar`
+            );
+
+            mensaje.textContent =
+                "Viaje tomado correctamente.";
+
+            mensaje.className =
+                "mensaje mensaje-info";
+
+            mensaje.style.display =
+                "block";
+
+            document.getElementById(
+                "contenedorTabla"
+            ).style.display =
+                "none";
+
+            document.getElementById(
+                "sinViajes"
+            ).style.display =
+                "none";
+
+            mostrarEstado("V");
+
+            setTimeout(
+                () =>
+                {
+                    window.location.href =
+                        "/miviaje.html?v=1";
+                },
+                700
+            );
+        }
+        catch (error)
+        {
+            boton.disabled = false;
+            boton.textContent =
+                textoOriginal;
+
+            mostrarError(
+                error.message ||
+                "No se pudo tomar el viaje."
+            );
+
+            try
+            {
+                const datos =
+                    await API.get(
+                        "/api/Viajes/mi-estado"
+                    );
+
+                mostrarEstado(
+                    datos.estado
+                );
+
+                if (
+                    datos.habilitado &&
+                    datos.estado === "D"
+                )
+                {
+                    await cargarViajes();
+                }
+            }
+            catch
+            {
+                // Conservamos el error original.
+            }
+        }
+    }
+
+
+
+    // =================================================
+    // MOSTRAR ESTADO
+    // =================================================
+
+    function mostrarEstado(estado)
+    {
+
+        const elemento =
+            document.getElementById(
+                "estadoEmpresa"
+            );
+
+
+        if (estado === "D")
+        {
+
+            elemento.textContent =
+                "Disponible";
+
+
+            elemento.className =
+                "estado-disponible";
+
+
+            return;
+
+        }
+
+
+        if (estado === "F")
+        {
+
+            elemento.textContent =
+                "Fuera de Servicio";
+
+
+            elemento.className =
+                "estado-no-disponible";
+
+
+            return;
+
+        }
+
+
+        if (estado === "V")
+        {
+
+            elemento.textContent =
+                "Viajando";
+
+
+            elemento.className =
+                "estado-no-disponible";
+
+
+            return;
+
+        }
+
+
+        elemento.textContent =
+            estado || "-";
+
+
+        elemento.className =
+            "estado-no-disponible";
+
+    }
+
+
+
+    // =================================================
+    // SI / NO
+    // =================================================
+
+    function siNo(valor)
+    {
+
+        return valor
+            ? "Sí"
+            : "No";
+
+    }
+
+
+
+    // =================================================
+    // FORMATEAR KMS
+    // =================================================
+
+    function formatearNumero(valor)
+    {
+
+        const numero =
+            Number(valor);
+
+
+        if (!Number.isFinite(numero))
+            return "-";
+
+
+        return numero.toLocaleString(
+            "es-AR",
+            {
+                maximumFractionDigits: 1
+            }
+        );
+
+    }
+
+
+
+    // =================================================
+    // FORMATEAR TARIFA
+    // =================================================
+
+    function formatearImporte(valor)
+    {
+
+        const numero =
+            Number(valor);
+
+
+        if (!Number.isFinite(numero))
+            return "-";
+
+
+        return numero.toLocaleString(
+            "es-AR",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+    }
+
+
+
+    // =================================================
+    // ESCAPAR HTML
+    // =================================================
+
+    function escapar(valor)
+    {
+
+        if (
+            valor === null ||
+            valor === undefined
+        )
+        {
+            return "";
+        }
+
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.textContent =
+            String(valor);
+
+
+        return div.innerHTML;
+
+    }
+
+
+
+    // =================================================
+    // OCULTAR CARGANDO
+    // =================================================
+
+    function ocultarCargando()
+    {
+
+        document.getElementById(
+            "cargando"
+        ).style.display =
+            "none";
+
+    }
+
+
+
+    // =================================================
+    // MOSTRAR ERROR
+    // =================================================
+
+    function mostrarError(texto)
+    {
+
+        const mensaje =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        mensaje.textContent =
+            texto;
+
+
+        mensaje.className =
+            "mensaje mensaje-error";
+
+
+        mensaje.style.display =
+            "block";
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

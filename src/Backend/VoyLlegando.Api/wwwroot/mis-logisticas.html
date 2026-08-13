@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mis Logísticas - VoyLlegando</title>
+
+    <link rel="stylesheet"
+          href="/css/app.css?v=6">
+
+    <style>
+
+        .pagina
+        {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+
+        .encabezado
+        {
+            margin-bottom: 25px;
+        }
+
+
+        .encabezado h1
+        {
+            margin-bottom: 5px;
+        }
+
+
+        .seccion
+        {
+            margin-bottom: 35px;
+        }
+
+
+        .seccion h2
+        {
+            margin-bottom: 15px;
+        }
+
+
+        .descripcion
+        {
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+
+        .mensaje
+        {
+            display: none;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+
+        .mensaje-ok
+        {
+            display: block;
+            background: #e7f6ec;
+            color: #176b35;
+        }
+
+
+        .mensaje-error
+        {
+            display: block;
+            background: #ffeaea;
+            color: #9d1c1c;
+        }
+
+
+        .cargando
+        {
+            padding: 20px;
+            text-align: center;
+        }
+
+
+        .sin-datos
+        {
+            padding: 20px;
+            text-align: center;
+            background: #f7f7f7;
+            border-radius: 10px;
+        }
+
+
+        .tabla-contenedor
+        {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+
+        table
+        {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+
+        th,
+        td
+        {
+            padding: 11px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+
+        th
+        {
+            font-weight: 600;
+        }
+
+
+        .centrado
+        {
+            text-align: center;
+        }
+
+
+        button
+        {
+            cursor: pointer;
+        }
+
+
+        button:disabled
+        {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+
+        .btn-vincular,
+        .btn-desvincular
+        {
+            border: 0;
+            border-radius: 7px;
+            padding: 8px 14px;
+            font-weight: 600;
+        }
+
+
+        .acciones
+        {
+            margin-top: 20px;
+        }
+
+
+        .btn-volver
+        {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+        }
+
+
+        @media (max-width: 600px)
+        {
+
+            .pagina
+            {
+                padding: 12px;
+            }
+
+
+            .encabezado h1
+            {
+                font-size: 24px;
+            }
+
+
+            table
+            {
+                font-size: 13px;
+            }
+
+
+            th,
+            td
+            {
+                padding: 8px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="pagina">
+
+
+    <!-- ================================================= -->
+    <!-- ENCABEZADO                                        -->
+    <!-- ================================================= -->
+
+    <div class="encabezado">
+
+        <h1>
+            Mis Logísticas
+        </h1>
+
+        <div>
+            Empresa:
+            <strong id="nombreEmpresa">
+                ...
+            </strong>
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- MENSAJES                                          -->
+    <!-- ================================================= -->
+
+    <div id="mensaje"
+         class="mensaje">
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- LOGISTICAS VINCULADAS                             -->
+    <!-- ================================================= -->
+
+    <section class="seccion">
+
+        <h2>
+            Logísticas Vinculadas
+        </h2>
+
+        <div class="descripcion">
+            Estas Logísticas pueden ofrecerle viajes pendientes.
+        </div>
+
+
+        <div id="cargandoVinculadas"
+             class="cargando">
+
+            Cargando Logísticas vinculadas...
+
+        </div>
+
+
+        <div id="sinVinculadas"
+             class="sin-datos"
+             style="display:none;">
+
+            No está vinculado con ninguna Logística.
+
+        </div>
+
+
+        <div id="contenedorVinculadas"
+             class="tabla-contenedor"
+             style="display:none;">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        Logística
+                    </th>
+
+                    <th>
+                        Domicilio
+                    </th>
+
+                    <th>
+                        CUIT
+                    </th>
+
+                    <th class="centrado">
+                        Acción
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody id="tablaVinculadas">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================================================= -->
+    <!-- LOGISTICAS DISPONIBLES                            -->
+    <!-- ================================================= -->
+
+    <section class="seccion">
+
+        <h2>
+            Agregar Logística
+        </h2>
+
+        <div class="descripcion">
+            Seleccione una Logística para comenzar a recibir sus viajes pendientes.
+        </div>
+
+
+        <div id="cargandoDisponibles"
+             class="cargando">
+
+            Cargando Logísticas disponibles...
+
+        </div>
+
+
+        <div id="sinDisponibles"
+             class="sin-datos"
+             style="display:none;">
+
+            No hay otras Logísticas disponibles.
+
+        </div>
+
+
+        <div id="contenedorDisponibles"
+             class="tabla-contenedor"
+             style="display:none;">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        Logística
+                    </th>
+
+                    <th>
+                        Domicilio
+                    </th>
+
+                    <th>
+                        CUIT
+                    </th>
+
+                    <th class="centrado">
+                        Acción
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody id="tablaDisponibles">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================================================= -->
+    <!-- VOLVER                                            -->
+    <!-- ================================================= -->
+
+    <div class="acciones">
+
+        <a href="/empresa.html?v=6"
+           class="btn-volver">
+
+            Volver
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- ===================================================== -->
+<!-- JAVASCRIPT                                            -->
+<!-- ===================================================== -->
+
+<script src="/js/api.js?v=6"></script>
+
+<script src="/js/auth.js?v=6"></script>
+
+
+<script>
+
+    // =====================================================
+    // VARIABLES
+    // =====================================================
+
+    let usuarioActual = null;
+
+
+
+    // =====================================================
+    // INICIO
+    // =====================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        iniciar
+    );
+
+
+    async function iniciar()
+    {
+
+        try
+        {
+
+            usuarioActual =
+                await validarSesion("E");
+
+
+            if (!usuarioActual)
+                return;
+
+
+            document.getElementById(
+                "nombreEmpresa"
+            ).textContent =
+                usuarioActual.nombre || "";
+
+
+            await cargarTodo();
+
+        }
+        catch (error)
+        {
+
+            mostrarError(
+                error.message ||
+                "No se pudo iniciar la pantalla."
+            );
+
+        }
+
+    }
+
+
+
+    // =====================================================
+    // CARGAR TODO
+    // =====================================================
+
+    async function cargarTodo()
+    {
+
+        ocultarMensaje();
+
+
+        await Promise.all(
+            [
+                cargarVinculadas(),
+                cargarDisponibles()
+            ]
+        );
+
+    }
+
+
+
+    // =====================================================
+    // VINCULADAS
+    // =====================================================
+
+    async function cargarVinculadas()
+    {
+
+        const cargando =
+            document.getElementById(
+                "cargandoVinculadas"
+            );
+
+
+        const contenedor =
+            document.getElementById(
+                "contenedorVinculadas"
+            );
+
+
+        const sinDatos =
+            document.getElementById(
+                "sinVinculadas"
+            );
+
+
+        cargando.style.display =
+            "block";
+
+
+        contenedor.style.display =
+            "none";
+
+
+        sinDatos.style.display =
+            "none";
+
+
+        try
+        {
+
+            const logisticas =
+                await API.get(
+                    "/api/LogisticasCamion/vinculadas"
+                );
+
+
+            cargando.style.display =
+                "none";
+
+
+            mostrarVinculadas(
+                logisticas
+            );
+
+        }
+        catch (error)
+        {
+
+            cargando.style.display =
+                "none";
+
+
+            throw error;
+
+        }
+
+    }
+
+
+
+    // =====================================================
+    // MOSTRAR VINCULADAS
+    // =====================================================
+
+    function mostrarVinculadas(logisticas)
+    {
+
+        const tbody =
+            document.getElementById(
+                "tablaVinculadas"
+            );
+
+
+        const contenedor =
+            document.getElementById(
+                "contenedorVinculadas"
+            );
+
+
+        const sinDatos =
+            document.getElementById(
+                "sinVinculadas"
+            );
+
+
+        tbody.innerHTML = "";
+
+
+        if (
+            !Array.isArray(logisticas) ||
+            logisticas.length === 0
+        )
+        {
+
+            contenedor.style.display =
+                "none";
+
+
+            sinDatos.style.display =
+                "block";
+
+
+            return;
+
+        }
+
+
+        sinDatos.style.display =
+            "none";
+
+
+        for (const logistica of logisticas)
+        {
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${escapar(logistica.nombre)}
+                </td>
+
+                <td>
+                    ${escapar(logistica.domicilio)}
+                </td>
+
+                <td>
+                    ${escapar(logistica.cuit)}
+                </td>
+
+                <td class="centrado">
+
+                    <button
+                        type="button"
+                        class="btn-desvincular"
+                        onclick="desvincular(
+                            ${Number(logistica.idTranspor)},
+                            this
+                        )">
+
+                        Desvincular
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                tr
+            );
+
+        }
+
+
+        contenedor.style.display =
+            "block";
+
+    }
+
+
+
+    // =====================================================
+    // DISPONIBLES
+    // =====================================================
+
+    async function cargarDisponibles()
+    {
+
+        const cargando =
+            document.getElementById(
+                "cargandoDisponibles"
+            );
+
+
+        const contenedor =
+            document.getElementById(
+                "contenedorDisponibles"
+            );
+
+
+        const sinDatos =
+            document.getElementById(
+                "sinDisponibles"
+            );
+
+
+        cargando.style.display =
+            "block";
+
+
+        contenedor.style.display =
+            "none";
+
+
+        sinDatos.style.display =
+            "none";
+
+
+        try
+        {
+
+            const logisticas =
+                await API.get(
+                    "/api/LogisticasCamion/disponibles"
+                );
+
+
+            cargando.style.display =
+                "none";
+
+
+            mostrarDisponibles(
+                logisticas
+            );
+
+        }
+        catch (error)
+        {
+
+            cargando.style.display =
+                "none";
+
+
+            throw error;
+
+        }
+
+    }
+
+
+
+    // =====================================================
+    // MOSTRAR DISPONIBLES
+    // =====================================================
+
+    function mostrarDisponibles(logisticas)
+    {
+
+        const tbody =
+            document.getElementById(
+                "tablaDisponibles"
+            );
+
+
+        const contenedor =
+            document.getElementById(
+                "contenedorDisponibles"
+            );
+
+
+        const sinDatos =
+            document.getElementById(
+                "sinDisponibles"
+            );
+
+
+        tbody.innerHTML = "";
+
+
+        if (
+            !Array.isArray(logisticas) ||
+            logisticas.length === 0
+        )
+        {
+
+            contenedor.style.display =
+                "none";
+
+
+            sinDatos.style.display =
+                "block";
+
+
+            return;
+
+        }
+
+
+        sinDatos.style.display =
+            "none";
+
+
+        for (const logistica of logisticas)
+        {
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${escapar(logistica.nombre)}
+                </td>
+
+                <td>
+                    ${escapar(logistica.domicilio)}
+                </td>
+
+                <td>
+                    ${escapar(logistica.cuit)}
+                </td>
+
+                <td class="centrado">
+
+                    <button
+                        type="button"
+                        class="btn-vincular"
+                        onclick="vincular(
+                            ${Number(logistica.idTranspor)},
+                            this
+                        )">
+
+                        Vincular
+
+                    </button>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                tr
+            );
+
+        }
+
+
+        contenedor.style.display =
+            "block";
+
+    }
+
+
+
+    // =====================================================
+    // VINCULAR
+    // =====================================================
+
+    async function vincular(
+        idTranspor,
+        boton)
+    {
+
+        boton.disabled =
+            true;
+
+
+        const textoOriginal =
+            boton.textContent;
+
+
+        boton.textContent =
+            "Vinculando...";
+
+
+        try
+        {
+
+            const resultado =
+                await API.post(
+                    `/api/LogisticasCamion/${idTranspor}/vincular`
+                );
+
+
+            mostrarOk(
+                resultado.mensaje ||
+                "Logística vinculada correctamente."
+            );
+
+
+            await cargarTodo();
+
+        }
+        catch (error)
+        {
+
+            boton.disabled =
+                false;
+
+
+            boton.textContent =
+                textoOriginal;
+
+
+            mostrarError(
+                error.message ||
+                "No se pudo vincular la Logística."
+            );
+
+        }
+
+    }
+
+
+
+    // =====================================================
+    // DESVINCULAR
+    // =====================================================
+
+    async function desvincular(
+        idTranspor,
+        boton)
+    {
+
+        const confirmar =
+            window.confirm(
+                "¿Desea desvincularse de esta Logística?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        boton.disabled =
+            true;
+
+
+        const textoOriginal =
+            boton.textContent;
+
+
+        boton.textContent =
+            "Desvinculando...";
+
+
+        try
+        {
+
+            const resultado =
+                await API.delete(
+                    `/api/LogisticasCamion/${idTranspor}/desvincular`
+                );
+
+
+            mostrarOk(
+                resultado.mensaje ||
+                "Logística desvinculada correctamente."
+            );
+
+
+            await cargarTodo();
+
+        }
+        catch (error)
+        {
+
+            boton.disabled =
+                false;
+
+
+            boton.textContent =
+                textoOriginal;
+
+
+            mostrarError(
+                error.message ||
+                "No se pudo desvincular la Logística."
+            );
+
+        }
+
+    }
+
+
+
+    // =====================================================
+    // MENSAJE OK
+    // =====================================================
+
+    function mostrarOk(texto)
+    {
+
+        const mensaje =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        mensaje.textContent =
+            texto;
+
+
+        mensaje.className =
+            "mensaje mensaje-ok";
+
+
+        mensaje.style.display =
+            "block";
+
+    }
+
+
+
+    // =====================================================
+    // MENSAJE ERROR
+    // =====================================================
+
+    function mostrarError(texto)
+    {
+
+        const mensaje =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        mensaje.textContent =
+            texto;
+
+
+        mensaje.className =
+            "mensaje mensaje-error";
+
+
+        mensaje.style.display =
+            "block";
+
+    }
+
+
+
+    // =====================================================
+    // OCULTAR MENSAJE
+    // =====================================================
+
+    function ocultarMensaje()
+    {
+
+        const mensaje =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        mensaje.style.display =
+            "none";
+
+
+        mensaje.textContent =
+            "";
+
+    }
+
+
+
+    // =====================================================
+    // ESCAPAR HTML
+    // =====================================================
+
+    function escapar(valor)
+    {
+
+        if (
+            valor === null ||
+            valor === undefined
+        )
+        {
+            return "";
+        }
+
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.textContent =
+            String(valor);
+
+
+        return div.innerHTML;
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

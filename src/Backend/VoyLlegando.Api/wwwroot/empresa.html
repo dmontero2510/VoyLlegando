@@ -14,7 +14,7 @@
 
     <link
         rel="stylesheet"
-        href="/css/app.css">
+        href="/css/app.css?v=6">
 </head>
 
 <body>
@@ -52,19 +52,20 @@
 
     <div class="menu-modulos">
 
+        <!-- ========================================= -->
+        <!-- MI VIAJE                                  -->
+        <!-- ========================================= -->
+
         <div
             class="modulo"
-            onclick="
-                window.location.href =
-                '/mapa.html'
-            ">
+            onclick="abrirMiViaje()">
 
             <div class="modulo-icono">
                 🚚
             </div>
 
             <div class="modulo-titulo">
-                Mi viaje
+                Mi Viaje
             </div>
 
             <div class="modulo-descripcion">
@@ -73,19 +74,96 @@
 
         </div>
 
+
+        <!-- ========================================= -->
+        <!-- VIAJES PENDIENTES                         -->
+        <!-- ========================================= -->
+
+        <div
+            class="modulo"
+            onclick="abrirViajesPendientes()">
+
+            <div class="modulo-icono">
+                📋
+            </div>
+
+            <div class="modulo-titulo">
+                Viajes Pendientes
+            </div>
+
+            <div class="modulo-descripcion">
+                Ver viajes disponibles de mis Logísticas
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- MIS LOGISTICAS                            -->
+        <!-- ========================================= -->
+
+        <div
+            class="modulo"
+            onclick="abrirMisLogisticas()">
+
+            <div class="modulo-icono">
+                🔗
+            </div>
+
+            <div class="modulo-titulo">
+                Mis Logísticas
+            </div>
+
+            <div class="modulo-descripcion">
+                Vincularme con empresas de Logística
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- MI PERFIL                                 -->
+        <!-- ========================================= -->
+
+        <div
+            class="modulo"
+            onclick="abrirMiPerfil()">
+
+            <div class="modulo-icono">
+                👤
+            </div>
+
+            <div class="modulo-titulo">
+                Mi Perfil
+            </div>
+
+            <div class="modulo-descripcion">
+                Datos de la empresa y del equipo
+            </div>
+
+        </div>
+
     </div>
 
 </main>
 
-<script src="/js/api.js"></script>
-<script src="/js/auth.js"></script>
+
+<script src="/js/api.js?v=6"></script>
+<script src="/js/auth.js?v=6"></script>
+
 
 <script>
+
+    // =======================================================
+    // INICIO
+    // =======================================================
 
     async function iniciar()
     {
         const perfil =
-            await validarSesion("E");
+            await validarSesion(
+                "E"
+            );
 
         if (!perfil)
             return;
@@ -97,6 +175,55 @@
             .textContent =
                 perfil.nombre;
     }
+
+
+    // =======================================================
+    // MI VIAJE
+    // =======================================================
+
+    function abrirMiViaje()
+    {
+        window.location.href =
+            "/miviaje.html?v=1";
+    }
+
+
+    // =======================================================
+    // VIAJES PENDIENTES
+    // =======================================================
+
+    function abrirViajesPendientes()
+    {
+        window.location.href =
+            "/viajes-pendientes.html";
+    }
+
+
+    // =======================================================
+    // MIS LOGISTICAS
+    // =======================================================
+
+    function abrirMisLogisticas()
+    {
+        window.location.href =
+            "/mis-logisticas.html";
+    }
+
+
+    // =======================================================
+    // MI PERFIL
+    // =======================================================
+
+    function abrirMiPerfil()
+    {
+        window.location.href =
+            "/mi-perfil.html";
+    }
+
+
+    // =======================================================
+    // INICIAR
+    // =======================================================
 
     iniciar();
 
