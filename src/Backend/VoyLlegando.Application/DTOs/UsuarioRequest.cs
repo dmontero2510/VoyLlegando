@@ -36,7 +36,7 @@ public class UsuarioRequest
     // Para E lo maneja el backend:
     // D = Disponible
     // V = Viajando
-    // F = Fuera de Servicio
+    // N = No Disponible
     //
     // No se debe enviar desde el cliente.
     // ---------------------------------------------

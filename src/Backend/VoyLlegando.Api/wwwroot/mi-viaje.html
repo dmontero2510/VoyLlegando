@@ -567,6 +567,68 @@
 
 
         /* =====================================================
+           DOCUMENTACION
+        ===================================================== */
+
+        .documentacion
+        {
+            background: white;
+            border: 1px solid #dce2e8;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .documentacion-titulo
+        {
+            font-weight: bold;
+            color: #0d0d27;
+            margin-bottom: 12px;
+        }
+
+        .documentacion-fila
+        {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .documentacion-archivo
+        {
+            flex: 1;
+            min-width: 180px;
+            color: #555;
+            overflow-wrap: anywhere;
+        }
+
+        .btn-documento
+        {
+            min-height: 42px;
+            padding: 9px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            background: #e3f2fd;
+            border: 1px solid #1565c0;
+            color: #0d47a1;
+        }
+
+        .btn-documento-ver
+        {
+            background: #e8f5e9;
+            border-color: #2e7d32;
+            color: #1b5e20;
+        }
+
+        .btn-documento:disabled
+        {
+            opacity: .55;
+            cursor: wait;
+        }
+
+
+        /* =====================================================
            MENSAJES
         ===================================================== */
 
@@ -1041,6 +1103,35 @@
         </div>
 
 
+        <!-- DOCUMENTACION -->
+
+        <div class="documentacion">
+
+            <div class="documentacion-titulo">
+                Documentación
+            </div>
+
+            <div class="documentacion-fila">
+
+                <button
+                    id="btnVerCP"
+                    type="button"
+                    class="btn-documento btn-documento-ver oculto"
+                    onclick="verCP()">
+                    VER CP
+                </button>
+
+                <div
+                    id="nombreCP"
+                    class="documentacion-archivo">
+                    Sin CP adjunta.
+                </div>
+
+            </div>
+
+        </div>
+
+
         <!-- ACCIONES -->
 
         <div
@@ -1153,6 +1244,10 @@
     // =======================================================
 
     let viajeActual =
+        null;
+
+
+    let documentoCP =
         null;
 
 
@@ -1309,6 +1404,11 @@
 
             mostrarViaje(
                 viajeActual
+            );
+
+
+            cargarDocumentos(
+                viajeActual.idViaje
             );
 
 
@@ -2677,6 +2777,204 @@
         {
             bloquearAcciones(
                 false
+            );
+        }
+    }
+
+
+    // =======================================================
+    // DOCUMENTACION - CP
+    // =======================================================
+
+    async function cargarDocumentos(
+        idViaje
+    )
+    {
+        documentoCP = null;
+
+        try
+        {
+            const documentos =
+                await API.get(
+                    `/api/ViajeDocumentos/viaje/${idViaje}`
+                );
+
+            documentoCP =
+                documentos.find(
+                    documento =>
+                        String(
+                            documento.tipo || ""
+                        )
+                        .toUpperCase() === "CP"
+                ) || null;
+
+            actualizarDocumentacion();
+        }
+        catch (error)
+        {
+            console.error(
+                "Error cargando documentos:",
+                error
+            );
+
+            actualizarDocumentacion();
+        }
+    }
+
+
+    function actualizarDocumentacion()
+    {
+        const btnVer =
+            document.getElementById(
+                "btnVerCP"
+            );
+
+        const nombre =
+            document.getElementById(
+                "nombreCP"
+            );
+
+        if (documentoCP)
+        {
+            btnVer.classList.remove(
+                "oculto"
+            );
+
+            nombre.textContent =
+                documentoCP.nombreArchivo ||
+                "CP adjunta";
+        }
+        else
+        {
+            btnVer.classList.add(
+                "oculto"
+            );
+
+            nombre.textContent =
+                "Sin CP adjunta.";
+        }
+    }
+
+
+    async function verCP()
+    {
+        if (!documentoCP)
+            return;
+
+        const ventana =
+            window.open(
+                "",
+                "_blank"
+            );
+
+        if (!ventana)
+        {
+            mensaje(
+                "El navegador bloqueó la apertura del PDF.",
+                true
+            );
+
+            return;
+        }
+
+        try
+        {
+            mensaje(
+                "Abriendo CP..."
+            );
+
+            ventana.document.write(
+                "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "<meta charset='utf-8'>" +
+                "<title>Cargando CP</title>" +
+                "</head>" +
+                "<body style='font-family:Arial,sans-serif;padding:20px'>" +
+                "Cargando CP..." +
+                "</body>" +
+                "</html>"
+            );
+
+            const token =
+                API.obtenerToken();
+
+            const response =
+                await fetch(
+                    `/api/ViajeDocumentos/${documentoCP.idDocumento}`,
+                    {
+                        headers:
+                        {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+            if (!response.ok)
+            {
+                let texto =
+                    `Error ${response.status}`;
+
+                const contentType =
+                    response.headers.get(
+                        "content-type"
+                    );
+
+                if (
+                    contentType &&
+                    contentType.includes(
+                        "application/json"
+                    )
+                )
+                {
+                    const datos =
+                        await response.json();
+
+                    texto =
+                        datos.mensaje ||
+                        datos.title ||
+                        texto;
+                }
+
+                throw new Error(texto);
+            }
+
+            const blob =
+                await response.blob();
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+            ventana.location.href =
+                url;
+
+            setTimeout(
+                function()
+                {
+                    URL.revokeObjectURL(
+                        url
+                    );
+                },
+                60000
+            );
+
+            mensaje(
+                "CP abierta.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            ventana.close();
+
+            mensaje(
+                error.message ||
+                "No se pudo abrir la CP.",
+                true
             );
         }
     }

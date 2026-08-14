@@ -96,6 +96,8 @@ builder.Services.AddScoped<ICerealRepository,CerealRepository>();
 builder.Services.AddScoped<ILogisticaRepository,LogisticaRepository>();
 builder.Services.AddScoped<ILogisticaCamionRepository,LogisticaCamionRepository>();
 
+builder.Services.AddScoped<IViajeDocumentoRepository,ViajeDocumentoRepository>();
+
 // -------------------------------------------------------
 // MAPAS
 // -------------------------------------------------------

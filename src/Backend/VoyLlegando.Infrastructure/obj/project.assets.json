@@ -3164,11 +3164,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\SIE\\VoyLlegando\\Desarrollo\\src\\Backend\\VoyLlegando.Infrastructure\\VoyLlegando.Infrastructure.csproj",
+      "projectUniqueName": "C:\\sie\\voyllegando\\desarrollo\\src\\Backend\\VoyLlegando.Infrastructure\\VoyLlegando.Infrastructure.csproj",
       "projectName": "VoyLlegando.Infrastructure",
-      "projectPath": "C:\\SIE\\VoyLlegando\\Desarrollo\\src\\Backend\\VoyLlegando.Infrastructure\\VoyLlegando.Infrastructure.csproj",
+      "projectPath": "C:\\sie\\voyllegando\\desarrollo\\src\\Backend\\VoyLlegando.Infrastructure\\VoyLlegando.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\HP PAVILION LAPTOP\\.nuget\\packages\\",
-      "outputPath": "C:\\SIE\\VoyLlegando\\Desarrollo\\src\\Backend\\VoyLlegando.Infrastructure\\obj\\",
+      "outputPath": "C:\\sie\\voyllegando\\desarrollo\\src\\Backend\\VoyLlegando.Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

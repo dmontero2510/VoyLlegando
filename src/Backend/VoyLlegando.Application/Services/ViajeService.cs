@@ -579,7 +579,7 @@ public class ViajeService
         viaje.Estado = "T";
         viaje.FechaTermina = DateTime.UtcNow;
 
-        empresa.Estado = "F";
+        empresa.Estado = "N";
 
         await _usuarioRepository
             .ActualizarAsync(empresa);

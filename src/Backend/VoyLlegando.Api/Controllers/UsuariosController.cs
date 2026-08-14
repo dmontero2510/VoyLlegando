@@ -326,8 +326,8 @@ public async Task<IActionResult> Habilitar(
             });
         }
 
-        // Solamente F -> D
-        if (usuario.Estado != "F")
+        // Solamente N -> D
+        if (usuario.Estado != "N")
             return BadRequest(
                 "La Empresa de Transporte no puede cambiar a disponible desde su estado actual.");
 

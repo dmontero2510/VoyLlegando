@@ -16,6 +16,11 @@
         rel="stylesheet"
         href="/css/app.css">
 
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        crossorigin="">
+
     <style>
 
         /* =====================================================
@@ -402,6 +407,72 @@
         }
 
         /* =====================================================
+           MAPAS EN ALTAS RAPIDAS
+        ===================================================== */
+
+        .modal.modal-mapa {
+            max-width: 760px;
+            max-height: calc(100vh - 30px);
+            overflow-y: auto;
+        }
+
+        .mapa-alta {
+            width: 100%;
+            height: 360px;
+            margin-top: 10px;
+            border: 1px solid var(--borde);
+            border-radius: 9px;
+            overflow: hidden;
+            background: #eef1f4;
+        }
+
+        .mapa-herramientas {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .mapa-ayuda {
+            margin-top: 8px;
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--texto-suave);
+        }
+
+        /* =====================================================
+           DOCUMENTACION DEL VIAJE
+        ===================================================== */
+
+        .documentacion {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--borde);
+        }
+
+        .documentacion-titulo {
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--fondo-oscuro);
+        }
+
+        .documentacion-fila {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .documentacion-archivo {
+            flex: 1;
+            min-width: 180px;
+            font-size: 13px;
+            color: var(--texto-suave);
+            word-break: break-word;
+        }
+
+        /* =====================================================
            TABLET / MOBILE
         ===================================================== */
 
@@ -469,6 +540,26 @@
 
             .barra-botones .btn {
                 flex: 1;
+            }
+
+            .documentacion-fila {
+                align-items: stretch;
+            }
+
+            .documentacion-fila .btn {
+                flex: 1 1 140px;
+            }
+
+            .documentacion-archivo {
+                flex-basis: 100%;
+            }
+
+            .mapa-alta {
+                height: 320px;
+            }
+
+            .modal.modal-mapa {
+                padding: 16px;
             }
         }
 
@@ -965,6 +1056,58 @@
 
 
             <div
+                id="seccionDocumentacion"
+                class="documentacion">
+
+                <div class="documentacion-titulo">
+                    Documentación
+                </div>
+
+                <div class="documentacion-fila">
+
+                    <input
+                        id="archivoCP"
+                        type="file"
+                        accept="application/pdf,.pdf"
+                        class="oculto"
+                        onchange="subirCP(this)">
+
+                    <button
+                        id="btnAdjuntarCP"
+                        type="button"
+                        class="btn btn-principal"
+                        onclick="seleccionarCP()">
+                        ADJUNTAR CP
+                    </button>
+
+                    <button
+                        id="btnVerCP"
+                        type="button"
+                        class="btn btn-secundario oculto"
+                        onclick="verCP()">
+                        VER CP
+                    </button>
+
+                    <button
+                        id="btnQuitarCP"
+                        type="button"
+                        class="btn btn-secundario oculto"
+                        onclick="quitarCP()">
+                        QUITAR CP
+                    </button>
+
+                    <div
+                        id="nombreCP"
+                        class="documentacion-archivo">
+                        Sin CP adjunta.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
                 id="detalleViaje"
                 class="detalle-resumen">
             </div>
@@ -1137,7 +1280,7 @@
     id="modalCampo"
     class="modal-fondo oculto">
 
-    <div class="modal">
+    <div class="modal modal-mapa">
 
         <div class="modal-cabecera">
 
@@ -1186,7 +1329,8 @@
                     class="form-control"
                     type="number"
                     step="any"
-                    inputmode="decimal">
+                    inputmode="decimal"
+                    readonly>
 
             </div>
 
@@ -1201,10 +1345,37 @@
                     class="form-control"
                     type="number"
                     step="any"
-                    inputmode="decimal">
+                    inputmode="decimal"
+                    readonly>
 
             </div>
 
+        </div>
+
+        <div class="mapa-herramientas">
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="usarMiUbicacionCampo()">
+                Mi ubicación
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="limpiarUbicacionCampo()">
+                Quitar ubicación
+            </button>
+        </div>
+
+        <div
+            id="mapaAltaCampo"
+            class="mapa-alta">
+        </div>
+
+        <div class="mapa-ayuda">
+            Los otros campos del productor se muestran como referencia.
+            Tocá o hacé clic en el mapa para ubicar el nuevo campo; luego podés arrastrar el marcador.
         </div>
 
         <div class="modal-acciones">
@@ -1351,7 +1522,7 @@
     id="modalDestino"
     class="modal-fondo oculto">
 
-    <div class="modal">
+    <div class="modal modal-mapa">
 
         <div class="modal-cabecera">
 
@@ -1400,7 +1571,8 @@
                     class="form-control"
                     type="number"
                     step="any"
-                    inputmode="decimal">
+                    inputmode="decimal"
+                    readonly>
 
             </div>
 
@@ -1415,10 +1587,37 @@
                     class="form-control"
                     type="number"
                     step="any"
-                    inputmode="decimal">
+                    inputmode="decimal"
+                    readonly>
 
             </div>
 
+        </div>
+
+        <div class="mapa-herramientas">
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="usarMiUbicacionDestino()">
+                Mi ubicación
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-secundario"
+                onclick="limpiarUbicacionDestino()">
+                Quitar ubicación
+            </button>
+        </div>
+
+        <div
+            id="mapaAltaDestino"
+            class="mapa-alta">
+        </div>
+
+        <div class="mapa-ayuda">
+            Los otros destinos de la planta se muestran como referencia.
+            Tocá o hacé clic en el mapa para ubicar el nuevo destino; luego podés arrastrar el marcador.
         </div>
 
         <div class="modal-acciones">
@@ -1443,11 +1642,13 @@
 
 </div>
 
-
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    crossorigin=""></script>
 <script src="/js/api.js"></script>
 <script src="/js/auth.js"></script>
-<script src="/js/viajes.js"></script>
-
+<script src="/js/viajes.js?v=3"></script>
+<script src="/js/viajes-documentos.js"></script>
 
 </body>
 </html>

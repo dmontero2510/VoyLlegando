@@ -11,6 +11,10 @@ let mapaCampo = null;
 
 let marcadorCampo = null;
 
+// Marcadores de referencia de los demás campos
+// pertenecientes al productor seleccionado.
+let marcadoresCamposProductor = [];
+
 
 // =======================================================
 // INICIO
@@ -24,10 +28,12 @@ async function iniciar()
     if (!perfil)
         return;
 
+
     document
         .getElementById("nombreUsuario")
         .textContent =
             perfil.nombre;
+
 
     inicializarMapa();
 
@@ -50,16 +56,20 @@ function volver()
         "/logistica.html";
 }
 
+
 // =======================================================
-// tipos de iva
+// TIPOS DE IVA
 // =======================================================
+
 async function cargarTiposIva()
 {
     const combo =
         document.getElementById("iva");
 
+
     combo.innerHTML =
         '<option value="">Seleccione...</option>';
+
 
     try
     {
@@ -67,6 +77,7 @@ async function cargarTiposIva()
             await API.get(
                 "/api/TiposIva"
             );
+
 
         tipos.forEach(
             tipo =>
@@ -76,11 +87,14 @@ async function cargarTiposIva()
                         "option"
                     );
 
+
                 option.value =
                     tipo.idIva;
 
+
                 option.textContent =
                     tipo.descripcion;
+
 
                 combo.appendChild(
                     option
@@ -97,6 +111,8 @@ async function cargarTiposIva()
         );
     }
 }
+
+
 // =======================================================
 // MENSAJES
 // =======================================================
@@ -152,6 +168,7 @@ async function cargarProductores()
     catch (error)
     {
         lista.innerHTML = "";
+
 
         mensaje(
             error.message,
@@ -333,6 +350,7 @@ function nuevoProductor()
 
     cancelarCampo();
 
+    limpiarMarcadoresCamposProductor();
 
     mostrarProductores();
 
@@ -364,33 +382,40 @@ async function seleccionarProductor(
         productorSeleccionado =
             productor;
 
-const btnNuevoCampo =
-    document.getElementById(
-        "btnNuevoCampo"
-    );
 
-const aviso =
-    document.getElementById(
-        "avisoProductorDeshabilitado"
-    );
+        const btnNuevoCampo =
+            document.getElementById(
+                "btnNuevoCampo"
+            );
 
 
-if (productor.habilitado)
-{
-    btnNuevoCampo.disabled = false;
+        const aviso =
+            document.getElementById(
+                "avisoProductorDeshabilitado"
+            );
 
-    aviso.classList.add(
-        "oculto"
-    );
-}
-else
-{
-    btnNuevoCampo.disabled = true;
 
-    aviso.classList.remove(
-        "oculto"
-    );
-}
+        if (productor.habilitado)
+        {
+            btnNuevoCampo.disabled =
+                false;
+
+
+            aviso.classList.add(
+                "oculto"
+            );
+        }
+        else
+        {
+            btnNuevoCampo.disabled =
+                true;
+
+
+            aviso.classList.remove(
+                "oculto"
+            );
+        }
+
 
         document
             .getElementById(
@@ -476,9 +501,7 @@ else
 
         cancelarCampo();
 
-
         mostrarProductores();
-
 
         await cargarCampos();
     }
@@ -766,6 +789,7 @@ async function cargarCampos()
                     <div class="campo-botones">
 
                         <button
+                            type="button"
                             class="btn btn-secundario btn-chico"
                             onclick="editarCampo(${campo.idCampo})">
 
@@ -787,6 +811,7 @@ async function cargarCampos()
     {
         lista.innerHTML = "";
 
+
         mensaje(
             error.message,
             true
@@ -799,7 +824,7 @@ async function cargarCampos()
 // NUEVO CAMPO
 // =======================================================
 
-function nuevoCampo()
+async function nuevoCampo()
 {
     if (!productorSeleccionado)
     {
@@ -811,6 +836,7 @@ function nuevoCampo()
         return;
     }
 
+
     if (!productorSeleccionado.habilitado)
     {
         mensaje(
@@ -821,6 +847,7 @@ function nuevoCampo()
         return;
     }
 
+
     document
         .getElementById(
             "seccionCampoEditar"
@@ -829,6 +856,7 @@ function nuevoCampo()
             "oculto"
         );
 
+
     document
         .getElementById(
             "tituloCampo"
@@ -836,11 +864,13 @@ function nuevoCampo()
         .textContent =
             "Nuevo Campo";
 
+
     document
         .getElementById(
             "idCampo"
         )
         .value = "";
+
 
     document
         .getElementById(
@@ -848,7 +878,9 @@ function nuevoCampo()
         )
         .value = "";
 
+
     limpiarUbicacion();
+
 
     document
         .getElementById(
@@ -858,13 +890,20 @@ function nuevoCampo()
             "oculto"
         );
 
+
     setTimeout(
-        () =>
+        async () =>
         {
             mapaCampo.invalidateSize();
+
+            await mostrarCamposProductorEnMapa(
+                null,
+                true
+            );
         },
         100
     );
+
 
     document
         .getElementById(
@@ -872,7 +911,7 @@ function nuevoCampo()
         )
         .focus();
 }
-    // continúa el código que ya tenías...
+
 
 // =======================================================
 // EDITAR CAMPO
@@ -933,9 +972,17 @@ async function editarCampo(
 
 
         setTimeout(
-            () =>
+            async () =>
             {
                 mapaCampo.invalidateSize();
+
+
+                // Mostramos como referencia todos los demás
+                // campos del mismo productor.
+                await mostrarCamposProductorEnMapa(
+                    campo.idCampo,
+                    false
+                );
 
 
                 if (
@@ -952,6 +999,8 @@ async function editarCampo(
                 else
                 {
                     limpiarUbicacion();
+
+                    encuadrarCamposProductor();
                 }
             },
             100
@@ -1071,7 +1120,6 @@ async function guardarCampo()
 
         cancelarCampo();
 
-
         await cargarCampos();
     }
     catch (error)
@@ -1127,7 +1175,6 @@ async function eliminarCampo()
 
         cancelarCampo();
 
-
         await cargarCampos();
     }
     catch (error)
@@ -1170,6 +1217,8 @@ function cancelarCampo()
 
 
     limpiarUbicacion();
+
+    limpiarMarcadoresCamposProductor();
 }
 
 
@@ -1222,7 +1271,238 @@ function inicializarMapa()
 
 
 // =======================================================
-// ESTABLECER UBICACION
+// CAMPOS DEL PRODUCTOR EN EL MAPA
+// =======================================================
+
+async function mostrarCamposProductorEnMapa(
+    idCampoExcluir = null,
+    encuadrar = true
+)
+{
+    limpiarMarcadoresCamposProductor();
+
+
+    if (
+        !productorSeleccionado ||
+        !mapaCampo
+    )
+    {
+        return;
+    }
+
+
+    try
+    {
+        const campos =
+            await API.get(
+                `/api/Campos/productor/${productorSeleccionado.idProductor}`
+            );
+
+
+        if (
+            !campos ||
+            campos.length === 0
+        )
+        {
+            if (encuadrar)
+            {
+                mapaCampo.setView(
+                    [-35.5, -63.0],
+                    6
+                );
+            }
+
+            return;
+        }
+
+
+        campos.forEach(
+            campo =>
+            {
+                // En edición no mostramos el mismo campo
+                // como punto de referencia porque ese campo
+                // tendrá el marcador editable.
+
+                if (
+                    idCampoExcluir != null &&
+                    Number(campo.idCampo) ===
+                    Number(idCampoExcluir)
+                )
+                {
+                    return;
+                }
+
+
+                if (
+                    campo.latitud == null ||
+                    campo.longitud == null
+                )
+                {
+                    return;
+                }
+
+
+                const lat =
+                    Number(campo.latitud);
+
+
+                const lon =
+                    Number(campo.longitud);
+
+
+                if (
+                    !Number.isFinite(lat) ||
+                    !Number.isFinite(lon)
+                )
+                {
+                    return;
+                }
+
+
+                const marcador =
+                    L.marker(
+                        [lat, lon],
+                        {
+                            draggable: false
+                        }
+                    )
+                    .addTo(
+                        mapaCampo
+                    );
+
+
+                // Nombre siempre visible sobre el punto.
+                marcador.bindTooltip(
+                    escapar(campo.descripCampo),
+                    {
+                        permanent: true,
+                        direction: "top",
+                        offset: [0, -8],
+                        opacity: 0.90
+                    }
+                );
+
+
+                // También dejamos un popup por si se toca
+                // el marcador desde el celular.
+                marcador.bindPopup(
+                    `<strong>${escapar(campo.descripCampo)}</strong>`
+                );
+
+
+                marcadoresCamposProductor.push(
+                    marcador
+                );
+            }
+        );
+
+
+        if (encuadrar)
+        {
+            encuadrarCamposProductor();
+        }
+    }
+    catch (error)
+    {
+        console.error(
+            "No se pudieron mostrar los campos en el mapa:",
+            error
+        );
+    }
+}
+
+
+// =======================================================
+// ENCUADRAR CAMPOS DEL PRODUCTOR
+// =======================================================
+
+function encuadrarCamposProductor()
+{
+    if (
+        !mapaCampo ||
+        marcadoresCamposProductor.length === 0
+    )
+    {
+        mapaCampo.setView(
+            [-35.5, -63.0],
+            6
+        );
+
+        return;
+    }
+
+
+    if (
+        marcadoresCamposProductor.length === 1
+    )
+    {
+        const posicion =
+            marcadoresCamposProductor[0]
+                .getLatLng();
+
+
+        mapaCampo.setView(
+            posicion,
+            15
+        );
+
+        return;
+    }
+
+
+    const grupo =
+        L.featureGroup(
+            marcadoresCamposProductor
+        );
+
+
+    mapaCampo.fitBounds(
+        grupo.getBounds(),
+        {
+            padding: [40, 40],
+            maxZoom: 15
+        }
+    );
+}
+
+
+// =======================================================
+// LIMPIAR PUNTOS DE REFERENCIA
+// =======================================================
+
+function limpiarMarcadoresCamposProductor()
+{
+    if (!mapaCampo)
+    {
+        marcadoresCamposProductor = [];
+
+        return;
+    }
+
+
+    marcadoresCamposProductor.forEach(
+        marcador =>
+        {
+            if (
+                mapaCampo.hasLayer(
+                    marcador
+                )
+            )
+            {
+                mapaCampo.removeLayer(
+                    marcador
+                );
+            }
+        }
+    );
+
+
+    marcadoresCamposProductor = [];
+}
+
+
+// =======================================================
+// ESTABLECER UBICACION DEL CAMPO ACTUAL
 // =======================================================
 
 function establecerUbicacion(
@@ -1237,6 +1517,15 @@ function establecerUbicacion(
 
     const lon =
         Number(longitud);
+
+
+    if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lon)
+    )
+    {
+        return;
+    }
 
 
     document
@@ -1306,7 +1595,7 @@ function establecerUbicacion(
 
 
 // =======================================================
-// QUITAR UBICACION
+// QUITAR UBICACION DEL CAMPO ACTUAL
 // =======================================================
 
 function limpiarUbicacion()

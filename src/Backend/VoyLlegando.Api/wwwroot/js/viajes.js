@@ -13,6 +13,15 @@ let empresasDisponibles = [];
 let viajeSeleccionado = null;
 let filtroActual = "TODOS";
 
+// Mapas de altas rápidas dentro de Nuevo Viaje
+let mapaAltaCampo = null;
+let marcadorAltaCampo = null;
+let marcadoresCamposReferencia = [];
+
+let mapaAltaDestino = null;
+let marcadorAltaDestino = null;
+let marcadoresDestinosReferencia = [];
+
 
 // =======================================================
 // INICIO
@@ -789,7 +798,7 @@ async function cambioProductor(
 // ALTA RAPIDA CAMPO
 // =======================================================
 
-function abrirAltaCampo()
+async function abrirAltaCampo()
 {
     const comboProductor =
         document.getElementById(
@@ -865,16 +874,424 @@ function abrirAltaCampo()
 
 
     setTimeout(
-        () =>
+        async () =>
         {
+            inicializarMapaAltaCampo();
+
+            if (mapaAltaCampo)
+                mapaAltaCampo.invalidateSize();
+
+            await mostrarCamposReferenciaAlta(
+                idProductor
+            );
+
             document
                 .getElementById(
                     "nuevoCampoDescripcion"
                 )
                 .focus();
         },
-        50
+        80
     );
+}
+
+
+function inicializarMapaAltaCampo()
+{
+    if (mapaAltaCampo)
+        return;
+
+
+    const contenedor =
+        document.getElementById(
+            "mapaAltaCampo"
+        );
+
+
+    if (!contenedor || typeof L === "undefined")
+        return;
+
+
+    mapaAltaCampo =
+        L.map(
+            contenedor
+        );
+
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap"
+        }
+    )
+    .addTo(
+        mapaAltaCampo
+    );
+
+
+    mapaAltaCampo.on(
+        "click",
+        evento =>
+        {
+            establecerUbicacionCampo(
+                evento.latlng.lat,
+                evento.latlng.lng,
+                true
+            );
+        }
+    );
+
+
+    mapaAltaCampo.setView(
+        [-35.5, -63],
+        6
+    );
+}
+
+
+async function mostrarCamposReferenciaAlta(
+    idProductor
+)
+{
+    limpiarMarcadoresCamposReferencia();
+
+
+    if (!mapaAltaCampo || !idProductor)
+        return;
+
+
+    try
+    {
+        const campos =
+            await API.get(
+                `/api/Campos/productor/${idProductor}`
+            );
+
+
+        campos.forEach(
+            campo =>
+            {
+                if (
+                    campo.latitud === null ||
+                    campo.latitud === undefined ||
+                    campo.latitud === "" ||
+                    campo.longitud === null ||
+                    campo.longitud === undefined ||
+                    campo.longitud === ""
+                )
+                    return;
+
+                const latitud = Number(campo.latitud);
+                const longitud = Number(campo.longitud);
+
+
+                if (
+                    !Number.isFinite(latitud) ||
+                    !Number.isFinite(longitud)
+                )
+                    return;
+
+
+                const marcador =
+                    L.marker(
+                        [latitud, longitud],
+                        {
+                            draggable: false
+                        }
+                    )
+                    .addTo(
+                        mapaAltaCampo
+                    );
+
+
+                const nombre =
+                    campo.descripCampo ||
+                    `Campo ${campo.idCampo}`;
+
+
+                marcador.bindTooltip(
+                    nombre,
+                    {
+                        permanent: true,
+                        direction: "top",
+                        offset: [0, -8]
+                    }
+                );
+
+
+                marcador.bindPopup(
+                    nombre
+                );
+
+
+                marcadoresCamposReferencia.push(
+                    marcador
+                );
+            }
+        );
+
+
+        encuadrarCamposReferenciaAlta();
+    }
+    catch (error)
+    {
+        mensajeAlta(
+            "modalCampo",
+            "No se pudieron mostrar los campos existentes en el mapa: " +
+            error.message,
+            true
+        );
+
+        mapaAltaCampo.setView(
+            [-35.5, -63],
+            6
+        );
+    }
+}
+
+
+function encuadrarCamposReferenciaAlta()
+{
+    if (!mapaAltaCampo)
+        return;
+
+
+    if (marcadoresCamposReferencia.length === 0)
+    {
+        mapaAltaCampo.setView(
+            [-35.5, -63],
+            6
+        );
+
+        return;
+    }
+
+
+    if (marcadoresCamposReferencia.length === 1)
+    {
+        mapaAltaCampo.setView(
+            marcadoresCamposReferencia[0]
+                .getLatLng(),
+            15
+        );
+
+        return;
+    }
+
+
+    const grupo =
+        L.featureGroup(
+            marcadoresCamposReferencia
+        );
+
+
+    mapaAltaCampo.fitBounds(
+        grupo.getBounds(),
+        {
+            padding: [30, 30],
+            maxZoom: 15
+        }
+    );
+}
+
+
+function limpiarMarcadoresCamposReferencia()
+{
+    marcadoresCamposReferencia.forEach(
+        marcador =>
+        {
+            if (mapaAltaCampo)
+                mapaAltaCampo.removeLayer(
+                    marcador
+                );
+        }
+    );
+
+
+    marcadoresCamposReferencia = [];
+}
+
+
+function establecerUbicacionCampo(
+    latitud,
+    longitud,
+    centrar = false
+)
+{
+    if (
+        !Number.isFinite(Number(latitud)) ||
+        !Number.isFinite(Number(longitud))
+    )
+        return;
+
+
+    latitud = Number(latitud);
+    longitud = Number(longitud);
+
+
+    document
+        .getElementById(
+            "nuevoCampoLatitud"
+        )
+        .value =
+            latitud.toFixed(8);
+
+
+    document
+        .getElementById(
+            "nuevoCampoLongitud"
+        )
+        .value =
+            longitud.toFixed(8);
+
+
+    if (!mapaAltaCampo)
+        return;
+
+
+    if (!marcadorAltaCampo)
+    {
+        marcadorAltaCampo =
+            L.marker(
+                [latitud, longitud],
+                {
+                    draggable: true
+                }
+            )
+            .addTo(
+                mapaAltaCampo
+            );
+
+
+        marcadorAltaCampo.bindTooltip(
+            "Nuevo campo",
+            {
+                permanent: true,
+                direction: "top",
+                offset: [0, -8]
+            }
+        );
+
+
+        marcadorAltaCampo.on(
+            "dragend",
+            () =>
+            {
+                const posicion =
+                    marcadorAltaCampo.getLatLng();
+
+                establecerUbicacionCampo(
+                    posicion.lat,
+                    posicion.lng,
+                    false
+                );
+            }
+        );
+    }
+    else
+    {
+        marcadorAltaCampo.setLatLng(
+            [latitud, longitud]
+        );
+    }
+
+
+    if (centrar)
+    {
+        mapaAltaCampo.setView(
+            [latitud, longitud],
+            Math.max(
+                mapaAltaCampo.getZoom(),
+                15
+            )
+        );
+    }
+}
+
+
+function usarMiUbicacionCampo()
+{
+    if (!navigator.geolocation)
+    {
+        mensajeAlta(
+            "modalCampo",
+            "El navegador no permite obtener la ubicación.",
+            true
+        );
+
+        return;
+    }
+
+
+    mensajeAlta(
+        "modalCampo",
+        "Obteniendo ubicación..."
+    );
+
+
+    navigator.geolocation.getCurrentPosition(
+        posicion =>
+        {
+            mensajeAlta(
+                "modalCampo",
+                ""
+            );
+
+            establecerUbicacionCampo(
+                posicion.coords.latitude,
+                posicion.coords.longitude,
+                true
+            );
+        },
+        error =>
+        {
+            mensajeAlta(
+                "modalCampo",
+                "No se pudo obtener la ubicación: " +
+                error.message,
+                true
+            );
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 12000,
+            maximumAge: 30000
+        }
+    );
+}
+
+
+function limpiarUbicacionCampo()
+{
+    document
+        .getElementById(
+            "nuevoCampoLatitud"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "nuevoCampoLongitud"
+        )
+        .value = "";
+
+
+    if (
+        mapaAltaCampo &&
+        marcadorAltaCampo
+    )
+    {
+        mapaAltaCampo.removeLayer(
+            marcadorAltaCampo
+        );
+
+        marcadorAltaCampo = null;
+    }
+
+
+    encuadrarCamposReferenciaAlta();
 }
 
 
@@ -888,6 +1305,17 @@ function cerrarAltaCampo()
         "modalCampo",
         ""
     );
+
+
+    if (mapaAltaCampo)
+    {
+        mapaAltaCampo.remove();
+        mapaAltaCampo = null;
+    }
+
+
+    marcadorAltaCampo = null;
+    marcadoresCamposReferencia = [];
 
 
     document
@@ -1525,7 +1953,7 @@ async function cambioPlanta(
 // ALTA RAPIDA DESTINO
 // =======================================================
 
-function abrirAltaDestino()
+async function abrirAltaDestino()
 {
     const comboPlanta =
         document.getElementById(
@@ -1601,16 +2029,424 @@ function abrirAltaDestino()
 
 
     setTimeout(
-        () =>
+        async () =>
         {
+            inicializarMapaAltaDestino();
+
+            if (mapaAltaDestino)
+                mapaAltaDestino.invalidateSize();
+
+            await mostrarDestinosReferenciaAlta(
+                idPlanta
+            );
+
             document
                 .getElementById(
                     "nuevoDestinoDescripcion"
                 )
                 .focus();
         },
-        50
+        80
     );
+}
+
+
+function inicializarMapaAltaDestino()
+{
+    if (mapaAltaDestino)
+        return;
+
+
+    const contenedor =
+        document.getElementById(
+            "mapaAltaDestino"
+        );
+
+
+    if (!contenedor || typeof L === "undefined")
+        return;
+
+
+    mapaAltaDestino =
+        L.map(
+            contenedor
+        );
+
+
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap"
+        }
+    )
+    .addTo(
+        mapaAltaDestino
+    );
+
+
+    mapaAltaDestino.on(
+        "click",
+        evento =>
+        {
+            establecerUbicacionDestino(
+                evento.latlng.lat,
+                evento.latlng.lng,
+                true
+            );
+        }
+    );
+
+
+    mapaAltaDestino.setView(
+        [-35.5, -63],
+        6
+    );
+}
+
+
+async function mostrarDestinosReferenciaAlta(
+    idPlanta
+)
+{
+    limpiarMarcadoresDestinosReferencia();
+
+
+    if (!mapaAltaDestino || !idPlanta)
+        return;
+
+
+    try
+    {
+        const destinos =
+            await API.get(
+                `/api/Destinos/planta/${idPlanta}`
+            );
+
+
+        destinos.forEach(
+            destino =>
+            {
+                if (
+                    destino.latitud === null ||
+                    destino.latitud === undefined ||
+                    destino.latitud === "" ||
+                    destino.longitud === null ||
+                    destino.longitud === undefined ||
+                    destino.longitud === ""
+                )
+                    return;
+
+                const latitud = Number(destino.latitud);
+                const longitud = Number(destino.longitud);
+
+
+                if (
+                    !Number.isFinite(latitud) ||
+                    !Number.isFinite(longitud)
+                )
+                    return;
+
+
+                const marcador =
+                    L.marker(
+                        [latitud, longitud],
+                        {
+                            draggable: false
+                        }
+                    )
+                    .addTo(
+                        mapaAltaDestino
+                    );
+
+
+                const nombre =
+                    destino.descripDestino ||
+                    `Destino ${destino.idDestino}`;
+
+
+                marcador.bindTooltip(
+                    nombre,
+                    {
+                        permanent: true,
+                        direction: "top",
+                        offset: [0, -8]
+                    }
+                );
+
+
+                marcador.bindPopup(
+                    nombre
+                );
+
+
+                marcadoresDestinosReferencia.push(
+                    marcador
+                );
+            }
+        );
+
+
+        encuadrarDestinosReferenciaAlta();
+    }
+    catch (error)
+    {
+        mensajeAlta(
+            "modalDestino",
+            "No se pudieron mostrar los destinos existentes en el mapa: " +
+            error.message,
+            true
+        );
+
+        mapaAltaDestino.setView(
+            [-35.5, -63],
+            6
+        );
+    }
+}
+
+
+function encuadrarDestinosReferenciaAlta()
+{
+    if (!mapaAltaDestino)
+        return;
+
+
+    if (marcadoresDestinosReferencia.length === 0)
+    {
+        mapaAltaDestino.setView(
+            [-35.5, -63],
+            6
+        );
+
+        return;
+    }
+
+
+    if (marcadoresDestinosReferencia.length === 1)
+    {
+        mapaAltaDestino.setView(
+            marcadoresDestinosReferencia[0]
+                .getLatLng(),
+            15
+        );
+
+        return;
+    }
+
+
+    const grupo =
+        L.featureGroup(
+            marcadoresDestinosReferencia
+        );
+
+
+    mapaAltaDestino.fitBounds(
+        grupo.getBounds(),
+        {
+            padding: [30, 30],
+            maxZoom: 15
+        }
+    );
+}
+
+
+function limpiarMarcadoresDestinosReferencia()
+{
+    marcadoresDestinosReferencia.forEach(
+        marcador =>
+        {
+            if (mapaAltaDestino)
+                mapaAltaDestino.removeLayer(
+                    marcador
+                );
+        }
+    );
+
+
+    marcadoresDestinosReferencia = [];
+}
+
+
+function establecerUbicacionDestino(
+    latitud,
+    longitud,
+    centrar = false
+)
+{
+    if (
+        !Number.isFinite(Number(latitud)) ||
+        !Number.isFinite(Number(longitud))
+    )
+        return;
+
+
+    latitud = Number(latitud);
+    longitud = Number(longitud);
+
+
+    document
+        .getElementById(
+            "nuevoDestinoLatitud"
+        )
+        .value =
+            latitud.toFixed(8);
+
+
+    document
+        .getElementById(
+            "nuevoDestinoLongitud"
+        )
+        .value =
+            longitud.toFixed(8);
+
+
+    if (!mapaAltaDestino)
+        return;
+
+
+    if (!marcadorAltaDestino)
+    {
+        marcadorAltaDestino =
+            L.marker(
+                [latitud, longitud],
+                {
+                    draggable: true
+                }
+            )
+            .addTo(
+                mapaAltaDestino
+            );
+
+
+        marcadorAltaDestino.bindTooltip(
+            "Nuevo destino",
+            {
+                permanent: true,
+                direction: "top",
+                offset: [0, -8]
+            }
+        );
+
+
+        marcadorAltaDestino.on(
+            "dragend",
+            () =>
+            {
+                const posicion =
+                    marcadorAltaDestino.getLatLng();
+
+                establecerUbicacionDestino(
+                    posicion.lat,
+                    posicion.lng,
+                    false
+                );
+            }
+        );
+    }
+    else
+    {
+        marcadorAltaDestino.setLatLng(
+            [latitud, longitud]
+        );
+    }
+
+
+    if (centrar)
+    {
+        mapaAltaDestino.setView(
+            [latitud, longitud],
+            Math.max(
+                mapaAltaDestino.getZoom(),
+                15
+            )
+        );
+    }
+}
+
+
+function usarMiUbicacionDestino()
+{
+    if (!navigator.geolocation)
+    {
+        mensajeAlta(
+            "modalDestino",
+            "El navegador no permite obtener la ubicación.",
+            true
+        );
+
+        return;
+    }
+
+
+    mensajeAlta(
+        "modalDestino",
+        "Obteniendo ubicación..."
+    );
+
+
+    navigator.geolocation.getCurrentPosition(
+        posicion =>
+        {
+            mensajeAlta(
+                "modalDestino",
+                ""
+            );
+
+            establecerUbicacionDestino(
+                posicion.coords.latitude,
+                posicion.coords.longitude,
+                true
+            );
+        },
+        error =>
+        {
+            mensajeAlta(
+                "modalDestino",
+                "No se pudo obtener la ubicación: " +
+                error.message,
+                true
+            );
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 12000,
+            maximumAge: 30000
+        }
+    );
+}
+
+
+function limpiarUbicacionDestino()
+{
+    document
+        .getElementById(
+            "nuevoDestinoLatitud"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "nuevoDestinoLongitud"
+        )
+        .value = "";
+
+
+    if (
+        mapaAltaDestino &&
+        marcadorAltaDestino
+    )
+    {
+        mapaAltaDestino.removeLayer(
+            marcadorAltaDestino
+        );
+
+        marcadorAltaDestino = null;
+    }
+
+
+    encuadrarDestinosReferenciaAlta();
 }
 
 
@@ -1624,6 +2460,17 @@ function cerrarAltaDestino()
         "modalDestino",
         ""
     );
+
+
+    if (mapaAltaDestino)
+    {
+        mapaAltaDestino.remove();
+        mapaAltaDestino = null;
+    }
+
+
+    marcadorAltaDestino = null;
+    marcadoresDestinosReferencia = [];
 
 
     document
@@ -2666,12 +3513,6 @@ function validarViaje(
     if (!datos.idCereal)
     {
         return "Seleccione un cereal.";
-    }
-
-
-    if (!datos.ctg)
-    {
-        return "Ingrese el CTG.";
     }
 
 

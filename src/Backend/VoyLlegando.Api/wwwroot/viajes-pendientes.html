@@ -658,11 +658,11 @@
                 ocultarCargando();
 
 
-                if (datos.estado === "F")
+                if (datos.estado === "N")
                 {
 
                     mostrarError(
-                        "La Empresa de Transporte está Fuera de Servicio y no puede tomar viajes."
+                        "La Empresa de Transporte está No Disponible y no puede tomar viajes."
                     );
 
                 }
@@ -973,7 +973,7 @@
                 () =>
                 {
                     window.location.href =
-                        "/miviaje.html?v=1";
+                        "/mi-viaje.html?v=1";
                 },
                 700
             );
@@ -1046,11 +1046,11 @@
         }
 
 
-        if (estado === "F")
+        if (estado === "N")
         {
 
             elemento.textContent =
-                "Fuera de Servicio";
+                "No Disponible";
 
 
             elemento.className =

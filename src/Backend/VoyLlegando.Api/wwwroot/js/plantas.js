@@ -11,6 +11,10 @@ let mapaDestino = null;
 
 let marcadorDestino = null;
 
+// Marcadores de referencia de los demás destinos
+// pertenecientes a la planta seleccionada.
+let marcadoresDestinosPlanta = [];
+
 
 // =======================================================
 // INICIO
@@ -242,7 +246,9 @@ function mostrarPlantas()
             item.innerHTML =
                 `
                 <div class="planta-nombre">
+
                     ${escapar(planta.nombre)}
+
                 </div>
 
                 <div class="planta-detalle">
@@ -353,6 +359,7 @@ function nuevaPlanta()
 
     cancelarDestino();
 
+    limpiarMarcadoresDestinosPlanta();
 
     mostrarPlantas();
 
@@ -808,6 +815,7 @@ async function cargarDestinos()
                     <div class="destino-botones">
 
                         <button
+                            type="button"
                             class="btn btn-secundario btn-chico"
                             onclick="editarDestino(${destino.idDestino})">
 
@@ -842,7 +850,7 @@ async function cargarDestinos()
 // NUEVO DESTINO
 // =======================================================
 
-function nuevoDestino()
+async function nuevoDestino()
 {
     if (!plantaSeleccionada)
     {
@@ -910,9 +918,15 @@ function nuevoDestino()
 
 
     setTimeout(
-        () =>
+        async () =>
         {
             mapaDestino.invalidateSize();
+
+
+            await mostrarDestinosPlantaEnMapa(
+                null,
+                true
+            );
         },
         100
     );
@@ -985,9 +999,17 @@ async function editarDestino(
 
 
         setTimeout(
-            () =>
+            async () =>
             {
                 mapaDestino.invalidateSize();
+
+
+                // Mostramos los demás destinos de la planta
+                // como referencia.
+                await mostrarDestinosPlantaEnMapa(
+                    destino.idDestino,
+                    false
+                );
 
 
                 if (
@@ -1004,6 +1026,8 @@ async function editarDestino(
                 else
                 {
                     limpiarUbicacion();
+
+                    encuadrarDestinosPlanta();
                 }
             },
             100
@@ -1233,6 +1257,8 @@ function cancelarDestino()
 
 
     limpiarUbicacion();
+
+    limpiarMarcadoresDestinosPlanta();
 }
 
 
@@ -1283,7 +1309,240 @@ function inicializarMapa()
 
 
 // =======================================================
-// ESTABLECER UBICACION
+// DESTINOS DE LA PLANTA EN EL MAPA
+// =======================================================
+
+async function mostrarDestinosPlantaEnMapa(
+    idDestinoExcluir = null,
+    encuadrar = true
+)
+{
+    limpiarMarcadoresDestinosPlanta();
+
+
+    if (
+        !plantaSeleccionada ||
+        !mapaDestino
+    )
+    {
+        return;
+    }
+
+
+    try
+    {
+        const destinos =
+            await API.get(
+                `/api/Destinos/planta/${plantaSeleccionada.idPlanta}`
+            );
+
+
+        if (
+            !destinos ||
+            destinos.length === 0
+        )
+        {
+            if (encuadrar)
+            {
+                mapaDestino.setView(
+                    [-35.5, -63.0],
+                    6
+                );
+            }
+
+            return;
+        }
+
+
+        destinos.forEach(
+            destino =>
+            {
+                // En edición excluimos el destino actual,
+                // porque ese tendrá el marcador editable.
+
+                if (
+                    idDestinoExcluir != null &&
+                    Number(destino.idDestino) ===
+                    Number(idDestinoExcluir)
+                )
+                {
+                    return;
+                }
+
+
+                if (
+                    destino.latitud == null ||
+                    destino.longitud == null
+                )
+                {
+                    return;
+                }
+
+
+                const lat =
+                    Number(destino.latitud);
+
+
+                const lon =
+                    Number(destino.longitud);
+
+
+                if (
+                    !Number.isFinite(lat) ||
+                    !Number.isFinite(lon)
+                )
+                {
+                    return;
+                }
+
+
+                const marcador =
+                    L.marker(
+                        [lat, lon],
+                        {
+                            draggable: false
+                        }
+                    )
+                    .addTo(
+                        mapaDestino
+                    );
+
+
+                // Nombre siempre visible.
+                marcador.bindTooltip(
+                    escapar(destino.descripDestino),
+                    {
+                        permanent: true,
+                        direction: "top",
+                        offset: [0, -8],
+                        opacity: 0.90
+                    }
+                );
+
+
+                // Popup útil especialmente en celular.
+                marcador.bindPopup(
+                    `<strong>${escapar(destino.descripDestino)}</strong>`
+                );
+
+
+                marcadoresDestinosPlanta.push(
+                    marcador
+                );
+            }
+        );
+
+
+        if (encuadrar)
+        {
+            encuadrarDestinosPlanta();
+        }
+    }
+    catch (error)
+    {
+        console.error(
+            "No se pudieron mostrar los destinos en el mapa:",
+            error
+        );
+    }
+}
+
+
+// =======================================================
+// ENCUADRAR DESTINOS DE LA PLANTA
+// =======================================================
+
+function encuadrarDestinosPlanta()
+{
+    if (!mapaDestino)
+        return;
+
+
+    if (
+        marcadoresDestinosPlanta.length === 0
+    )
+    {
+        mapaDestino.setView(
+            [-35.5, -63.0],
+            6
+        );
+
+        return;
+    }
+
+
+    if (
+        marcadoresDestinosPlanta.length === 1
+    )
+    {
+        const posicion =
+            marcadoresDestinosPlanta[0]
+                .getLatLng();
+
+
+        mapaDestino.setView(
+            posicion,
+            15
+        );
+
+        return;
+    }
+
+
+    const grupo =
+        L.featureGroup(
+            marcadoresDestinosPlanta
+        );
+
+
+    mapaDestino.fitBounds(
+        grupo.getBounds(),
+        {
+            padding: [40, 40],
+
+            maxZoom: 15
+        }
+    );
+}
+
+
+// =======================================================
+// LIMPIAR DESTINOS DE REFERENCIA
+// =======================================================
+
+function limpiarMarcadoresDestinosPlanta()
+{
+    if (!mapaDestino)
+    {
+        marcadoresDestinosPlanta = [];
+
+        return;
+    }
+
+
+    marcadoresDestinosPlanta.forEach(
+        marcador =>
+        {
+            if (
+                mapaDestino.hasLayer(
+                    marcador
+                )
+            )
+            {
+                mapaDestino.removeLayer(
+                    marcador
+                );
+            }
+        }
+    );
+
+
+    marcadoresDestinosPlanta = [];
+}
+
+
+// =======================================================
+// ESTABLECER UBICACION DEL DESTINO ACTUAL
 // =======================================================
 
 function establecerUbicacion(
@@ -1298,6 +1557,15 @@ function establecerUbicacion(
 
     const lon =
         Number(longitud);
+
+
+    if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lon)
+    )
+    {
+        return;
+    }
 
 
     document
@@ -1322,8 +1590,7 @@ function establecerUbicacion(
             L.marker(
                 [lat, lon],
                 {
-                    draggable:
-                        true
+                    draggable: true
                 }
             )
             .addTo(
@@ -1368,7 +1635,7 @@ function establecerUbicacion(
 
 
 // =======================================================
-// LIMPIAR UBICACION
+// LIMPIAR UBICACION DEL DESTINO ACTUAL
 // =======================================================
 
 function limpiarUbicacion()

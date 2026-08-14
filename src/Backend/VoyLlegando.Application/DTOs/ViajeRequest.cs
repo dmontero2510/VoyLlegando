@@ -20,7 +20,7 @@ public string Origen { get; set; } = "";
 
 public string Destino { get; set; } = "";
 
-public string Ctg { get; set; } = "";
+public string? Ctg { get; set; } = "";
 
 public decimal Kms { get; set; }
 

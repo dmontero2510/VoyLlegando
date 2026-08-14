@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VoyLlegando.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+214bee4c9ab5c0b7f0230d1fe0a7411dcdee87e6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+087d6fb8b4d92e8b07183c08e576f5c858fc5287")]
 [assembly: System.Reflection.AssemblyProductAttribute("VoyLlegando.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VoyLlegando.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

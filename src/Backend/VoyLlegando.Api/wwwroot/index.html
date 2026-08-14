@@ -12,7 +12,7 @@
 
     <link
         rel="stylesheet"
-        href="/css/app.css">
+        href="/css/app.css?v=200">
 </head>
 
 <body>
@@ -78,6 +78,44 @@
 
         </button>
 
+
+        <!-- =====================================================
+             REGISTRO EMPRESA
+        ====================================================== -->
+
+        <div
+            style="
+                text-align: center;
+                margin-top: 22px;
+            ">
+
+            <div
+                style="
+                    color: #666;
+                    font-size: 14px;
+                    margin-bottom: 8px;
+                ">
+
+                ¿Es una empresa nueva?
+
+            </div>
+
+            <a
+                href="/registro.html"
+                style="
+                    color: #159dcc;
+                    font-size: 15px;
+                    font-weight: bold;
+                    text-decoration: none;
+                ">
+
+                Registrarse
+
+            </a>
+
+        </div>
+
+
         <div
             id="mensaje"
             class="mensaje">
@@ -87,16 +125,21 @@
 
 </div>
 
-<script src="/js/api.js"></script>
-<script src="/js/auth.js"></script>
 
-<script>
-    redirigirSiYaEstaLogueado();
-    configurarEnterLogin();
-</script>
+<!-- =========================================================
+     SCRIPTS
+========================================================== -->
 
 <script src="/js/api.js?v=200"></script>
 <script src="/js/auth.js?v=200"></script>
+
+<script>
+
+    redirigirSiYaEstaLogueado();
+
+    configurarEnterLogin();
+
+</script>
 
 </body>
 

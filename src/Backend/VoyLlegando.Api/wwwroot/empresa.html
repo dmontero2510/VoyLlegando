@@ -117,7 +117,7 @@
         }
 
 
-        .estado-fuera
+        .estado-no-disponible
         {
             background: #fff3e0;
 
@@ -500,13 +500,13 @@
 
 
             // ------------------------------------------------
-            // SOLO F = FUERA DE SERVICIO
+            // SOLO N = NO DISPONIBLE
             // PUEDE VOLVER A DISPONIBLE
             // ------------------------------------------------
 
             if (
                 datos.habilitado &&
-                estadoActualEmpresa === "F"
+                estadoActualEmpresa === "N"
             )
             {
                 btnDisponible
@@ -540,7 +540,7 @@
 
 
             estadoElemento.className =
-                "estado-badge estado-fuera";
+                "estado-badge estado-no-disponible";
 
 
             btnDisponible
@@ -603,13 +603,13 @@
                 break;
 
 
-            case "F":
+            case "N":
 
                 elemento.textContent =
-                    "Fuera de Servicio";
+                    "No Disponible";
 
                 elemento.classList.add(
-                    "estado-fuera"
+                    "estado-no-disponible"
                 );
 
                 break;
@@ -622,7 +622,7 @@
                     "Sin estado";
 
                 elemento.classList.add(
-                    "estado-fuera"
+                    "estado-no-disponible"
                 );
 
                 break;
@@ -637,7 +637,7 @@
     async function ponerDisponible()
     {
         if (
-            estadoActualEmpresa !== "F"
+            estadoActualEmpresa !== "N"
         )
         {
             return;
@@ -788,7 +788,7 @@
     function abrirMiViaje()
     {
         window.location.href =
-            "/miviaje.html?v=10";
+            "/mi-viaje.html?v=10";
     }
 
 
