@@ -3126,6 +3126,231 @@ function nuevoViaje()
 
 
 // =======================================================
+// CP OPCIONAL AL CREAR VIAJE
+// =======================================================
+
+function actualizarOpcionCPNueva()
+{
+    const ctg =
+        document.getElementById(
+            "ctg"
+        );
+
+    const seccion =
+        document.getElementById(
+            "seccionCPNuevo"
+        );
+
+    const archivo =
+        document.getElementById(
+            "archivoCPNuevo"
+        );
+
+    const estado =
+        document.getElementById(
+            "estadoCPNuevo"
+        );
+
+
+    if (!ctg || !seccion)
+        return;
+
+
+    const tieneCtg =
+        ctg.value.trim() !== "";
+
+
+    seccion.classList.toggle(
+        "oculto",
+        !tieneCtg
+    );
+
+
+    if (!tieneCtg)
+    {
+        if (archivo)
+            archivo.value = "";
+
+        if (estado)
+        {
+            estado.textContent =
+                "Adjuntar Carta de Porte es opcional. Máximo 2 MB.";
+        }
+    }
+}
+
+
+function cambioArchivoCPNuevo()
+{
+    const input =
+        document.getElementById(
+            "archivoCPNuevo"
+        );
+
+    const estado =
+        document.getElementById(
+            "estadoCPNuevo"
+        );
+
+
+    if (
+        !input ||
+        !input.files ||
+        input.files.length === 0
+    )
+    {
+        if (estado)
+        {
+            estado.textContent =
+                "Adjuntar Carta de Porte es opcional. Máximo 2 MB.";
+        }
+
+        return;
+    }
+
+
+    const archivo =
+        input.files[0];
+
+
+    if (
+        !archivo.name
+            .toLowerCase()
+            .endsWith(".pdf")
+    )
+    {
+        mensaje(
+            "Solamente se permiten archivos PDF para la Carta de Porte.",
+            true
+        );
+
+        input.value = "";
+
+        if (estado)
+        {
+            estado.textContent =
+                "Adjuntar Carta de Porte es opcional. Máximo 2 MB.";
+        }
+
+        return;
+    }
+
+
+    if (
+        archivo.size >
+        2 * 1024 * 1024
+    )
+    {
+        mensaje(
+            "La Carta de Porte no puede superar los 2 MB.",
+            true
+        );
+
+        input.value = "";
+
+        if (estado)
+        {
+            estado.textContent =
+                "Adjuntar Carta de Porte es opcional. Máximo 2 MB.";
+        }
+
+        return;
+    }
+
+
+    if (estado)
+    {
+        estado.textContent =
+            `CP seleccionada: ${archivo.name}`;
+    }
+}
+
+
+async function subirCPNuevo(
+    idViaje,
+    archivo
+)
+{
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "archivo",
+        archivo
+    );
+
+
+    formData.append(
+        "tipo",
+        "CP"
+    );
+
+
+    const token =
+        API.obtenerToken();
+
+
+    const respuesta =
+        await fetch(
+            `/api/ViajeDocumentos/${idViaje}`,
+            {
+                method:
+                    "POST",
+
+                headers:
+                {
+                    Authorization:
+                        `Bearer ${token}`
+                },
+
+                body:
+                    formData
+            }
+        );
+
+
+    if (!respuesta.ok)
+    {
+        let texto =
+            "No se pudo adjuntar la Carta de Porte.";
+
+
+        try
+        {
+            const datosError =
+                await respuesta.json();
+
+            texto =
+                datosError.message ||
+                datosError.mensaje ||
+                texto;
+        }
+        catch
+        {
+            try
+            {
+                const detalle =
+                    await respuesta.text();
+
+                if (detalle)
+                    texto = detalle;
+            }
+            catch
+            {
+                // Conservamos el mensaje original.
+            }
+        }
+
+
+        throw new Error(
+            texto
+        );
+    }
+}
+
+
+// =======================================================
 // LIMPIAR FORMULARIO
 // =======================================================
 
@@ -3224,6 +3449,21 @@ function limpiarFormulario()
         .value = "";
 
 
+    const archivoCPNuevo =
+        document.getElementById(
+            "archivoCPNuevo"
+        );
+
+
+    if (archivoCPNuevo)
+    {
+        archivoCPNuevo.value = "";
+    }
+
+
+    actualizarOpcionCPNueva();
+
+
     document
         .getElementById(
             "kms"
@@ -3308,6 +3548,52 @@ async function guardarViaje()
         comboDestino.options[
             comboDestino.selectedIndex
         ];
+
+
+    const inputCPNuevo =
+        document.getElementById(
+            "archivoCPNuevo"
+        );
+
+
+    const archivoCPNuevo =
+        inputCPNuevo &&
+        inputCPNuevo.files &&
+        inputCPNuevo.files.length > 0
+            ? inputCPNuevo.files[0]
+            : null;
+
+
+    if (archivoCPNuevo)
+    {
+        if (
+            !archivoCPNuevo.name
+                .toLowerCase()
+                .endsWith(".pdf")
+        )
+        {
+            mensaje(
+                "Solamente se permiten archivos PDF para la Carta de Porte.",
+                true
+            );
+
+            return;
+        }
+
+
+        if (
+            archivoCPNuevo.size >
+            2 * 1024 * 1024
+        )
+        {
+            mensaje(
+                "La Carta de Porte no puede superar los 2 MB.",
+                true
+            );
+
+            return;
+        }
+    }
 
 
     const datos =
@@ -3451,6 +3737,42 @@ async function guardarViaje()
             respuesta.id;
 
 
+        let mensajeFinal =
+            `Viaje #${idViaje} creado correctamente.`;
+
+        let cpConError =
+            false;
+
+
+        if (archivoCPNuevo)
+        {
+            try
+            {
+                mensaje(
+                    `Viaje #${idViaje} creado. Adjuntando CP...`
+                );
+
+
+                await subirCPNuevo(
+                    idViaje,
+                    archivoCPNuevo
+                );
+
+
+                mensajeFinal =
+                    `Viaje #${idViaje} creado y CP adjuntada correctamente.`;
+            }
+            catch (errorCP)
+            {
+                cpConError =
+                    true;
+
+                mensajeFinal =
+                    `Viaje #${idViaje} creado, pero no se pudo adjuntar la CP: ${errorCP.message}`;
+            }
+        }
+
+
         limpiarFormulario();
 
 
@@ -3459,13 +3781,14 @@ async function guardarViaje()
         await cargarViajes();
 
 
-        mensaje(
-            `Viaje #${idViaje} creado correctamente.`
+        await seleccionarViaje(
+            idViaje
         );
 
 
-        await seleccionarViaje(
-            idViaje
+        mensaje(
+            mensajeFinal,
+            cpConError
         );
     }
     catch (error)

@@ -1,0 +1,3145 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        VoyLlegando - Seguimiento
+    </title>
+
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css?v=4" />
+
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        crossorigin=""
+    />
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                var(
+                    --fondo-pagina,
+                    #f4f7fa
+                );
+
+            color:
+                var(
+                    --texto,
+                    #202334
+                );
+        }
+
+
+        .contenedor {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header-logistica {
+            background:
+                #0d0d27;
+
+            border-bottom:
+                4px solid #28b5e5;
+
+            min-height:
+                72px;
+
+            padding:
+                12px 24px;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 2fr 1fr;
+
+            align-items:
+                center;
+
+            gap:
+                20px;
+
+            box-shadow:
+                0 2px 10px
+                rgba(
+                    13,
+                    13,
+                    39,
+                    .20
+                );
+        }
+
+
+        .header-marca {
+            justify-self:
+                start;
+
+            color:
+                white;
+
+            font-size:
+                22px;
+
+            font-weight:
+                bold;
+
+            white-space:
+                nowrap;
+
+            letter-spacing:
+                .8px;
+        }
+
+
+        .header-marca::before {
+            content:
+                "■";
+
+            color:
+                #28b5e5;
+
+            margin-right:
+                9px;
+        }
+
+
+        .header-empresa {
+            justify-self:
+                center;
+
+            text-align:
+                center;
+
+            color:
+                #28b5e5;
+
+            font-size:
+                20px;
+
+            font-weight:
+                bold;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .5px;
+        }
+
+
+        .header-derecha {
+            justify-self:
+                end;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                14px;
+        }
+
+
+        .header-usuario {
+            color:
+                white;
+
+            font-size:
+                14px;
+
+            white-space:
+                nowrap;
+        }
+
+
+        .btn-salir {
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .45
+                );
+
+            background:
+                transparent;
+
+            color:
+                white;
+
+            padding:
+                8px 13px;
+
+            border-radius:
+                7px;
+
+            cursor:
+                pointer;
+
+            font-weight:
+                bold;
+        }
+
+
+        .btn-salir:hover {
+            background:
+                rgba(
+                    255,
+                    255,
+                    255,
+                    .10
+                );
+        }
+
+
+        /* =====================================================
+           CABECERA
+        ===================================================== */
+
+        .cabecera {
+            background:
+                white;
+
+            padding:
+                18px 22px;
+
+            border-bottom:
+                1px solid
+                var(
+                    --borde,
+                    #dce2e8
+                );
+        }
+
+
+        .cabecera-superior {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                15px;
+
+            flex-wrap:
+                wrap;
+
+            margin-bottom:
+                14px;
+        }
+
+
+        .cabecera h1 {
+            margin:
+                0;
+
+            font-size:
+                27px;
+
+            color:
+                #0d0d27;
+        }
+
+
+        .cabecera h1::after {
+            content:
+                "";
+
+            display:
+                block;
+
+            width:
+                55px;
+
+            height:
+                4px;
+
+            margin-top:
+                8px;
+
+            border-radius:
+                4px;
+
+            background:
+                #28b5e5;
+        }
+
+
+        .datos {
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    3,
+                    minmax(
+                        150px,
+                        1fr
+                    )
+                );
+
+            gap:
+                12px;
+        }
+
+
+        .dato {
+            background:
+                #f7fafc;
+
+            border:
+                1px solid
+                var(
+                    --borde,
+                    #dce2e8
+                );
+
+            border-radius:
+                9px;
+
+            padding:
+                10px 12px;
+
+            font-size:
+                14px;
+        }
+
+
+        .dato strong {
+            display:
+                block;
+
+            margin-bottom:
+                4px;
+
+            color:
+                #0d0d27;
+
+            font-size:
+                12px;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .3px;
+        }
+
+
+        /* =====================================================
+           ACCIONES
+        ===================================================== */
+
+        .login {
+            background:
+                white;
+
+            padding:
+                12px 22px;
+
+            border-bottom:
+                1px solid
+                var(
+                    --borde,
+                    #dce2e8
+                );
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            flex-wrap:
+                wrap;
+
+            gap:
+                9px;
+        }
+
+
+        .login input,
+        .login select {
+            padding:
+                9px 10px;
+
+            border:
+                1px solid
+                var(
+                    --borde,
+                    #dce2e8
+                );
+
+            border-radius:
+                7px;
+
+            background:
+                white;
+        }
+
+
+        .login button {
+            border:
+                none;
+
+            border-radius:
+                8px;
+
+            padding:
+                9px 13px;
+
+            cursor:
+                pointer;
+
+            font-weight:
+                bold;
+        }
+
+
+        #btnActualizar,
+        #btnVerTodos,
+        #btnActualizarEmpresa,
+        #btnMiUbicacion {
+            background:
+                #28b5e5;
+
+            color:
+                #0d0d27;
+        }
+
+
+        .btn-volver {
+            background:
+                #eef1f4 !important;
+
+            color:
+                #202334 !important;
+        }
+
+
+        #mensaje {
+            font-size:
+                13px;
+
+            color:
+                #6c7280;
+
+            margin-left:
+                4px;
+        }
+
+
+        /* =====================================================
+           CUERPO
+        ===================================================== */
+
+        .cuerpo {
+            display:
+                flex;
+
+            flex:
+                1;
+
+            min-height:
+                600px;
+        }
+
+
+        .panel-viajes {
+            width:
+                360px;
+
+            background:
+                white;
+
+            border-right:
+                1px solid
+                var(
+                    --borde,
+                    #dce2e8
+                );
+
+            overflow-y:
+                auto;
+
+            padding:
+                16px;
+        }
+
+
+        .panel-viajes h2 {
+            margin-top:
+                0;
+
+            font-size:
+                18px;
+
+            color:
+                #0d0d27;
+        }
+
+
+        /* =====================================================
+           TARJETAS DE VIAJES
+        ===================================================== */
+
+        .viaje {
+            border:
+                1px solid
+                var(
+                    --borde,
+                    #dce2e8
+                );
+
+            border-radius:
+                9px;
+
+            padding:
+                12px;
+
+            margin-bottom:
+                10px;
+
+            cursor:
+                pointer;
+
+            background:
+                white;
+
+            transition:
+                border-color .15s,
+                background .15s,
+                transform .15s;
+        }
+
+
+        .viaje:hover {
+            background:
+                #f7fbfd;
+
+            border-color:
+                #28b5e5;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        .viaje.seleccionado {
+            border:
+                2px solid
+                #28b5e5;
+
+            background:
+                #dff6ff;
+        }
+
+
+        .viaje-id {
+            font-weight:
+                bold;
+
+            color:
+                #0d0d27;
+
+            margin-bottom:
+                5px;
+        }
+
+
+        .viaje-ruta {
+            font-size:
+                14px;
+
+            margin-bottom:
+                6px;
+
+            line-height:
+                1.4;
+        }
+
+
+        .viaje-estado {
+            font-size:
+                13px;
+
+            font-weight:
+                bold;
+        }
+
+
+        /* =====================================================
+           ESTADO + EMPRESA
+        ===================================================== */
+
+        .viaje-estado-linea {
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                flex-start;
+
+            gap:
+                12px;
+
+            width:
+                100%;
+        }
+
+
+        .viaje-empresa {
+            margin-left:
+                auto;
+
+            text-align:
+                right;
+
+            font-weight:
+                bold;
+
+            color:
+                #202334;
+
+            overflow-wrap:
+                anywhere;
+        }
+
+
+        /* =====================================================
+           VIAJE PENDIENTE
+           TODO EL TEXTO EN ROJO
+        ===================================================== */
+
+        .viaje-pendiente,
+        .viaje-pendiente .viaje-id,
+        .viaje-pendiente .viaje-ruta,
+        .viaje-pendiente .viaje-estado,
+        .viaje-pendiente .viaje-empresa {
+            color:
+                #c62828 !important;
+        }
+
+
+        .viaje-pendiente {
+            border-color:
+                #ef9a9a;
+        }
+
+
+        /* =====================================================
+           EMPRESA
+        ===================================================== */
+
+        .estado-empresa {
+            padding:
+                10px;
+
+            margin-bottom:
+                15px;
+
+            border:
+                1px solid
+                var(
+                    --borde,
+                    #dce2e8
+                );
+
+            border-radius:
+                8px;
+
+            background:
+                #f7f7f7;
+        }
+
+
+        .acciones-empresa {
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                10px;
+
+            margin-top:
+                15px;
+        }
+
+
+        .acciones-empresa button {
+            width:
+                100%;
+
+            padding:
+                12px;
+
+            font-size:
+                15px;
+
+            font-weight:
+                bold;
+        }
+
+
+        .boton-rechazar {
+            background:
+                #fff3e0;
+
+            border:
+                1px solid
+                #ef6c00;
+        }
+
+
+        .boton-finalizar {
+            background:
+                #e8f5e9;
+
+            border:
+                1px solid
+                #2e7d32;
+        }
+
+
+        .boton-disponible {
+            background:
+                #e3f2fd;
+
+            border:
+                1px solid
+                #1565c0;
+        }
+
+
+        .boton-ubicacion {
+            background:
+                #fffde7;
+
+            border:
+                1px solid
+                #f9a825;
+        }
+
+
+        /* =====================================================
+           MAPA
+        ===================================================== */
+
+        #map {
+            flex:
+                1;
+
+            min-height:
+                600px;
+        }
+
+
+        .etiqueta-viaje {
+            color:
+                white;
+
+            padding:
+                4px 8px;
+
+            border-radius:
+                5px;
+
+            font-weight:
+                bold;
+
+            font-size:
+                13px;
+
+            white-space:
+                nowrap;
+
+            border:
+                2px solid white;
+
+            box-shadow:
+                0 1px 5px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    .45
+                );
+        }
+
+
+        .camion-icono {
+            font-size:
+                30px;
+
+            line-height:
+                30px;
+
+            text-align:
+                center;
+
+            filter:
+                drop-shadow(
+                    1px
+                    2px
+                    2px
+                    rgba(
+                        0,
+                        0,
+                        0,
+                        .45
+                    )
+                );
+        }
+
+
+        .oculto-real {
+            display:
+                none !important;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .header-logistica {
+                grid-template-columns:
+                    1fr auto;
+
+                padding:
+                    11px 14px;
+
+                gap:
+                    8px;
+            }
+
+
+            .header-marca {
+                grid-column:
+                    1;
+
+                grid-row:
+                    1;
+
+                font-size:
+                    18px;
+            }
+
+
+            .header-derecha {
+                grid-column:
+                    2;
+
+                grid-row:
+                    1;
+
+                gap:
+                    8px;
+            }
+
+
+            .header-usuario {
+                font-size:
+                    12px;
+            }
+
+
+            .header-empresa {
+                grid-column:
+                    1 / -1;
+
+                grid-row:
+                    2;
+
+                width:
+                    100%;
+
+                font-size:
+                    15px;
+
+                padding-top:
+                    5px;
+            }
+
+
+            .cabecera {
+                padding:
+                    15px 12px;
+            }
+
+
+            .cabecera h1 {
+                font-size:
+                    23px;
+            }
+
+
+            .datos {
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .login {
+                padding:
+                    10px 12px;
+            }
+
+
+            .login button,
+            .login select {
+                flex:
+                    1 1 auto;
+            }
+
+
+            .cuerpo {
+                flex-direction:
+                    column;
+
+                min-height:
+                    0;
+            }
+
+
+            .panel-viajes {
+                width:
+                    100%;
+
+                height:
+                    330px;
+
+                border-right:
+                    none;
+
+                border-bottom:
+                    1px solid
+                    var(
+                        --borde,
+                        #dce2e8
+                    );
+            }
+
+
+            .viaje-estado-linea {
+                gap:
+                    8px;
+            }
+
+
+            .viaje-empresa {
+                max-width:
+                    62%;
+
+                font-size:
+                    12px;
+            }
+
+
+            #map {
+                min-height:
+                    430px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="contenedor">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header-logistica">
+
+
+        <div class="header-marca">
+            VoyLlegando
+        </div>
+
+
+        <div
+            id="nombreLogistica"
+            class="header-empresa">
+
+            Logística
+
+        </div>
+
+
+        <div class="header-derecha">
+
+
+            <div
+                id="nombreUsuario"
+                class="header-usuario">
+            </div>
+
+
+            <button
+                type="button"
+                class="btn-salir"
+                onclick="logout()">
+
+                Salir
+
+            </button>
+
+
+        </div>
+
+
+    </header>
+
+
+    <!-- =====================================================
+         CABECERA
+    ====================================================== -->
+
+    <div class="cabecera">
+
+
+        <div class="cabecera-superior">
+
+
+            <h1>
+                Seguimiento
+            </h1>
+
+
+            <button
+                type="button"
+                class="btn-volver"
+                onclick="
+                    window.location.href =
+                    '/logistica.html'
+                ">
+
+                ← Volver
+
+            </button>
+
+
+        </div>
+
+
+        <div class="datos">
+
+
+            <div class="dato">
+
+                <strong>
+                    Viaje
+                </strong>
+
+                <span id="idViaje">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>
+                    Distancia
+                </strong>
+
+                <span id="distancia">
+                    -
+                </span>
+
+            </div>
+
+
+            <div class="dato">
+
+                <strong>
+                    Duración estimada
+                </strong>
+
+                <span id="duracion">
+                    -
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <span
+            id="usuarioActual"
+            class="oculto-real">
+
+            No autenticado
+
+        </span>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         BARRA DE ACCIONES
+    ====================================================== -->
+
+    <div class="login">
+
+
+        <input
+            id="celular"
+            class="oculto-real"
+            type="text"
+            autocomplete="off" />
+
+
+        <input
+            id="clave"
+            class="oculto-real"
+            type="password"
+            autocomplete="off" />
+
+
+        <button
+            id="btnActualizar"
+            onclick="cargarViajes()"
+            style="display:none;">
+
+            Actualizar viajes
+
+        </button>
+
+
+        <button
+            id="btnVerTodos"
+            onclick="verTodos()"
+            style="display:none;">
+
+            Ver todos
+
+        </button>
+
+
+        <span
+            id="zonaLimite"
+            style="display:none;">
+
+            Mostrar:
+
+            <select id="limiteViajes">
+
+                <option
+                    value="5"
+                    selected>
+
+                    5 viajes
+
+                </option>
+
+                <option value="10">
+
+                    10 viajes
+
+                </option>
+
+            </select>
+
+        </span>
+
+
+        <button
+            id="btnActualizarEmpresa"
+            onclick="cargarEmpresa()"
+            style="display:none;">
+
+            Actualizar
+
+        </button>
+
+
+        <button
+            id="btnMiUbicacion"
+            onclick="actualizarMiUbicacion()"
+            style="display:none;">
+
+            ACTUALIZAR MI UBICACIÓN
+
+        </button>
+
+
+        <span id="mensaje">
+        </span>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         CUERPO
+    ====================================================== -->
+
+    <div class="cuerpo">
+
+
+        <!-- LOGISTICA -->
+
+        <div
+            id="panelLogistica"
+            class="panel-viajes"
+            style="display:none;">
+
+
+            <h2>
+                Mis viajes
+            </h2>
+
+
+            <div id="listaViajes">
+
+                Inicie sesión para consultar viajes.
+
+            </div>
+
+
+        </div>
+
+
+        <!-- EMPRESA -->
+
+        <div
+            id="panelEmpresa"
+            class="panel-viajes"
+            style="display:none;">
+
+
+            <h2>
+                Mi viaje
+            </h2>
+
+
+            <div
+                id="estadoEmpresa"
+                class="estado-empresa">
+
+                Estado: -
+
+            </div>
+
+
+            <div
+                id="ultimaUbicacion"
+                class="estado-empresa">
+
+                Ubicación: sin informar
+
+            </div>
+
+
+            <div id="viajeEmpresa">
+
+                No hay viaje asignado.
+
+            </div>
+
+
+            <div
+                id="accionesEmpresa"
+                class="acciones-empresa"
+                style="display:none;">
+
+
+                <button
+                    id="btnRechazar"
+                    class="boton-rechazar"
+                    onclick="rechazarViaje()">
+
+                    RECHAZAR VIAJE
+
+                </button>
+
+
+                <button
+                    id="btnFinalizar"
+                    class="boton-finalizar"
+                    onclick="finalizarViaje()">
+
+                    FINALIZAR VIAJE
+
+                </button>
+
+
+                <button
+                    class="boton-ubicacion"
+                    onclick="actualizarMiUbicacion()">
+
+                    ACTUALIZAR MI UBICACIÓN
+
+                </button>
+
+
+            </div>
+
+
+            <div
+                id="zonaDisponible"
+                class="acciones-empresa"
+                style="display:none;">
+
+
+                <button
+                    class="boton-disponible"
+                    onclick="ponerDisponible()">
+
+                    PONERME DISPONIBLE
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+        <div id="map">
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script src="/js/api.js?v=4"></script>
+<script src="/js/auth.js?v=4"></script>
+
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    crossorigin="">
+</script>
+
+
+<script>
+
+    // =======================================================
+    // VARIABLES GENERALES
+    // =======================================================
+
+    let viajeActualEmpresa =
+        null;
+
+
+    let empresasSeguimiento =
+        {};
+
+
+    // =======================================================
+    // GPS EMPRESA
+    // =======================================================
+
+    let watchGpsId =
+        null;
+
+    let ultimaUbicacionEnviada =
+        null;
+
+    let ultimoEnvioUbicacion =
+        0;
+
+
+    // =======================================================
+    // SEGUIMIENTO LOGISTICA
+    // =======================================================
+
+    let intervaloSeguimientoLogistica =
+        null;
+
+    let viajeSeguimientoLogistica =
+        null;
+
+
+    // =======================================================
+    // MAPA
+    // =======================================================
+
+    const map =
+        L.map(
+            "map"
+        );
+
+
+    L.tileLayer(
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom:
+                19,
+
+            attribution:
+                '&copy; OpenStreetMap'
+        }
+    )
+    .addTo(
+        map
+    );
+
+
+    map.setView(
+        [
+            -35.5,
+            -62.5
+        ],
+        7
+    );
+
+
+    let marcadorOrigen =
+        null;
+
+    let marcadorDestino =
+        null;
+
+    let lineaRuta =
+        null;
+
+    let marcadorCamion =
+        null;
+
+
+    let lineasTodas =
+        [];
+
+    let marcadoresTodos =
+        [];
+
+    let etiquetasTodas =
+        [];
+
+
+    // =======================================================
+    // TOKEN
+    // =======================================================
+
+    function obtenerToken()
+    {
+        return localStorage.getItem(
+            "voyllegando_token"
+        );
+    }
+
+
+    // =======================================================
+    // MOSTRAR USUARIO
+    // =======================================================
+
+    function mostrarUsuario()
+    {
+        const usuarioJson =
+            localStorage.getItem(
+                "voyllegando_usuario"
+            );
+
+
+        if (!usuarioJson)
+        {
+            ocultarPaneles();
+
+            return;
+        }
+
+
+        const usuario =
+            JSON.parse(
+                usuarioJson
+            );
+
+
+        const usuarioActual =
+            document.getElementById(
+                "usuarioActual"
+            );
+
+
+        if (usuarioActual)
+        {
+            usuarioActual.textContent =
+                `${usuario.nombre} (${usuario.rol})`;
+        }
+
+
+        const nombreUsuario =
+            document.getElementById(
+                "nombreUsuario"
+            );
+
+
+        if (nombreUsuario)
+        {
+            nombreUsuario.textContent =
+                usuario.nombre ||
+                "";
+        }
+
+
+        const nombreLogistica =
+            document.getElementById(
+                "nombreLogistica"
+            );
+
+
+        if (nombreLogistica)
+        {
+            nombreLogistica.textContent =
+                usuario.nombreLogistica ||
+                "Logística";
+        }
+
+
+        if (
+            usuario.rol ===
+            "L"
+        )
+        {
+            document
+                .getElementById(
+                    "panelLogistica"
+                )
+                .style.display =
+                    "block";
+
+
+            document
+                .getElementById(
+                    "panelEmpresa"
+                )
+                .style.display =
+                    "none";
+
+
+            document
+                .getElementById(
+                    "btnActualizar"
+                )
+                .style.display =
+                    "inline-block";
+
+
+            document
+                .getElementById(
+                    "btnVerTodos"
+                )
+                .style.display =
+                    "inline-block";
+
+
+            document
+                .getElementById(
+                    "zonaLimite"
+                )
+                .style.display =
+                    "inline-block";
+
+
+            document
+                .getElementById(
+                    "btnActualizarEmpresa"
+                )
+                .style.display =
+                    "none";
+
+
+            document
+                .getElementById(
+                    "btnMiUbicacion"
+                )
+                .style.display =
+                    "none";
+        }
+        else if (
+            usuario.rol ===
+            "E"
+        )
+        {
+            document
+                .getElementById(
+                    "panelLogistica"
+                )
+                .style.display =
+                    "none";
+
+
+            document
+                .getElementById(
+                    "panelEmpresa"
+                )
+                .style.display =
+                    "block";
+
+
+            document
+                .getElementById(
+                    "btnActualizar"
+                )
+                .style.display =
+                    "none";
+
+
+            document
+                .getElementById(
+                    "btnVerTodos"
+                )
+                .style.display =
+                    "none";
+
+
+            document
+                .getElementById(
+                    "zonaLimite"
+                )
+                .style.display =
+                    "none";
+
+
+            document
+                .getElementById(
+                    "btnActualizarEmpresa"
+                )
+                .style.display =
+                    "inline-block";
+
+
+            document
+                .getElementById(
+                    "btnMiUbicacion"
+                )
+                .style.display =
+                    "inline-block";
+        }
+        else
+        {
+            ocultarPaneles();
+        }
+    }
+
+
+    // =======================================================
+    // OCULTAR PANELES
+    // =======================================================
+
+    function ocultarPaneles()
+    {
+        document
+            .getElementById(
+                "panelLogistica"
+            )
+            .style.display =
+                "none";
+
+
+        document
+            .getElementById(
+                "panelEmpresa"
+            )
+            .style.display =
+                "none";
+
+
+        document
+            .getElementById(
+                "btnActualizar"
+            )
+            .style.display =
+                "none";
+
+
+        document
+            .getElementById(
+                "btnVerTodos"
+            )
+            .style.display =
+                "none";
+
+
+        document
+            .getElementById(
+                "zonaLimite"
+            )
+            .style.display =
+                "none";
+
+
+        document
+            .getElementById(
+                "btnActualizarEmpresa"
+            )
+            .style.display =
+                "none";
+
+
+        document
+            .getElementById(
+                "btnMiUbicacion"
+            )
+            .style.display =
+                "none";
+    }
+
+
+    // =======================================================
+    // CARGAR NOMBRES DE EMPRESAS
+    // =======================================================
+
+    async function cargarNombresEmpresas(
+        viajes
+    )
+    {
+        empresasSeguimiento =
+            {};
+
+
+        const token =
+            obtenerToken();
+
+
+        if (
+            !token ||
+            !viajes
+        )
+        {
+            return;
+        }
+
+
+        const ids =
+            [
+                ...new Set(
+                    viajes
+                        .filter(
+                            viaje =>
+                                viaje.idCamionero
+                        )
+                        .map(
+                            viaje =>
+                                Number(
+                                    viaje.idCamionero
+                                )
+                        )
+                )
+            ];
+
+
+        await Promise.all(
+            ids.map(
+                async idEmpresa =>
+                {
+                    try
+                    {
+                        const response =
+                            await fetch(
+                                `/api/Viajes/empresa/${idEmpresa}`,
+                                {
+                                    headers:
+                                    {
+                                        "Authorization":
+                                            `Bearer ${token}`
+                                    }
+                                }
+                            );
+
+
+                        if (!response.ok)
+                            return;
+
+
+                        const empresa =
+                            await response.json();
+
+
+                        empresasSeguimiento[
+                            idEmpresa
+                        ] =
+                            empresa.nombre ||
+                            "";
+                    }
+                    catch
+                    {
+                    }
+                }
+            )
+        );
+    }
+
+
+    // =======================================================
+    // NOMBRE EMPRESA
+    // =======================================================
+
+    function nombreEmpresaSeguimiento(
+        idCamionero
+    )
+    {
+        if (!idCamionero)
+        {
+            return "";
+        }
+
+
+        return (
+            empresasSeguimiento[
+                Number(
+                    idCamionero
+                )
+            ]
+            ||
+            ""
+        );
+    }
+
+
+    // =======================================================
+    // LOGISTICA - CARGAR VIAJES
+    // =======================================================
+
+    async function cargarViajes()
+    {
+        const token =
+            obtenerToken();
+
+
+        const mensaje =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        const lista =
+            document.getElementById(
+                "listaViajes"
+            );
+
+
+        if (!token)
+        {
+            mensaje.textContent =
+                "Debe iniciar sesión.";
+
+            return;
+        }
+
+
+        lista.innerHTML =
+            "Cargando viajes...";
+
+
+        try
+        {
+            const response =
+                await fetch(
+                    "/api/Viajes",
+                    {
+                        headers:
+                        {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!response.ok)
+            {
+                throw new Error(
+                    `Error ${response.status}`
+                );
+            }
+
+
+            const viajes =
+                await response.json();
+
+
+            await cargarNombresEmpresas(
+                viajes
+            );
+
+
+            mostrarListaViajes(
+                viajes
+            );
+
+
+            mensaje.textContent =
+                `${viajes.length} viaje(s).`;
+        }
+        catch (error)
+        {
+            lista.innerHTML =
+                "";
+
+
+            mensaje.textContent =
+                "Error: " +
+                error.message;
+        }
+    }
+
+
+    // =======================================================
+    // MOSTRAR LISTA
+    // =======================================================
+
+    function mostrarListaViajes(
+        viajes
+    )
+    {
+        const lista =
+            document.getElementById(
+                "listaViajes"
+            );
+
+
+        lista.innerHTML =
+            "";
+
+
+        if (
+            !viajes ||
+            viajes.length === 0
+        )
+        {
+            lista.innerHTML =
+                "No hay viajes.";
+
+            return;
+        }
+
+
+        viajes.forEach(
+            viaje =>
+            {
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "viaje";
+
+
+                if (
+                    viaje.estado ===
+                    "P"
+                )
+                {
+                    item.classList.add(
+                        "viaje-pendiente"
+                    );
+                }
+
+
+                item.dataset.id =
+                    viaje.idViaje;
+
+
+                const nombreEmpresa =
+                    viaje.idCamionero
+                        ?
+                        nombreEmpresaSeguimiento(
+                            viaje.idCamionero
+                        )
+                        :
+                        "";
+
+
+                item.innerHTML =
+                    `
+                    <div class="viaje-id">
+
+                        Viaje #${viaje.idViaje}
+
+                    </div>
+
+
+                    <div class="viaje-ruta">
+
+                        ${viaje.origen}
+
+                        <br>
+
+                        ↓
+
+                        <br>
+
+                        ${viaje.destino}
+
+                    </div>
+
+
+                    <div
+                        class="
+                            viaje-estado
+                            viaje-estado-linea
+                        ">
+
+                        <span>
+
+                            ${descripcionEstadoViaje(
+                                viaje.estado
+                            )}
+
+                        </span>
+
+
+                        ${
+                            viaje.estado === "A"
+                            &&
+                            nombreEmpresa
+                                ?
+                                `
+                                <span
+                                    class="viaje-empresa">
+
+                                    ${nombreEmpresa}
+
+                                </span>
+                                `
+                                :
+                                ""
+                        }
+
+                    </div>
+                    `;
+
+
+                item.onclick =
+                    function()
+                    {
+                        seleccionarViaje(
+                            viaje.idViaje,
+                            item
+                        );
+                    };
+
+
+                lista.appendChild(
+                    item
+                );
+            }
+        );
+    }
+
+
+    // =======================================================
+    // SELECCIONAR VIAJE
+    // =======================================================
+
+    async function seleccionarViaje(
+        idViaje,
+        elemento
+    )
+    {
+        document
+            .querySelectorAll(
+                ".viaje"
+            )
+            .forEach(
+                x =>
+                    x.classList.remove(
+                        "seleccionado"
+                    )
+            );
+
+
+        elemento.classList.add(
+            "seleccionado"
+        );
+
+
+        await cargarRecorrido(
+            idViaje
+        );
+
+
+        iniciarSeguimientoLogistica(
+            idViaje
+        );
+    }
+
+
+    // =======================================================
+    // VER TODOS
+    // =======================================================
+
+    async function verTodos()
+    {
+        detenerSeguimientoLogistica();
+
+
+        const token =
+            obtenerToken();
+
+
+        const mensaje =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        const limite =
+            parseInt(
+                document
+                    .getElementById(
+                        "limiteViajes"
+                    )
+                    .value
+            );
+
+
+        mensaje.textContent =
+            "Cargando recorridos...";
+
+
+        try
+        {
+            const response =
+                await fetch(
+                    "/api/Viajes",
+                    {
+                        headers:
+                        {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!response.ok)
+            {
+                throw new Error(
+                    "No se pudieron obtener los viajes."
+                );
+            }
+
+
+            const viajes =
+                await response.json();
+
+
+            const viajesConCoordenadas =
+                viajes
+                    .filter(
+                        v =>
+                            v.latitudOrigen != null &&
+                            v.longitudOrigen != null &&
+                            v.latitudDestino != null &&
+                            v.longitudDestino != null
+                    )
+                    .slice(
+                        0,
+                        limite
+                    );
+
+
+            if (
+                viajesConCoordenadas.length ===
+                0
+            )
+            {
+                mensaje.textContent =
+                    "No hay viajes con coordenadas.";
+
+                return;
+            }
+
+
+            limpiarMapa();
+            limpiarTodos();
+            limpiarCamion();
+
+
+            const colores =
+            [
+                "#1565c0",
+                "#d32f2f",
+                "#2e7d32",
+                "#f57c00",
+                "#7b1fa2",
+                "#00838f",
+                "#5d4037",
+                "#455a64",
+                "#c2185b",
+                "#6a1b9a"
+            ];
+
+
+            const limites =
+                [];
+
+
+            let cantidadMostrada =
+                0;
+
+
+            for (
+                let i = 0;
+                i < viajesConCoordenadas.length;
+                i++
+            )
+            {
+                const viaje =
+                    viajesConCoordenadas[i];
+
+
+                try
+                {
+                    const responseRuta =
+                        await fetch(
+                            `/api/Viajes/${viaje.idViaje}/recorrido`,
+                            {
+                                headers:
+                                {
+                                    "Authorization":
+                                        `Bearer ${token}`
+                                }
+                            }
+                        );
+
+
+                    if (!responseRuta.ok)
+                        continue;
+
+
+                    const recorrido =
+                        await responseRuta.json();
+
+
+                    const puntos =
+                        recorrido.ruta.map(
+                            p =>
+                            [
+                                p.latitud,
+                                p.longitud
+                            ]
+                        );
+
+
+                    if (
+                        puntos.length ===
+                        0
+                    )
+                    {
+                        continue;
+                    }
+
+
+                    const color =
+                        colores[
+                            i %
+                            colores.length
+                        ];
+
+
+                    const linea =
+                        L.polyline(
+                            puntos,
+                            {
+                                color:
+                                    color,
+
+                                weight:
+                                    5,
+
+                                opacity:
+                                    0.85
+                            }
+                        )
+                        .addTo(
+                            map
+                        );
+
+
+                    linea.bindPopup(
+                        `
+                        <b>
+                            Viaje #${viaje.idViaje}
+                        </b>
+
+                        <br><br>
+
+                        ${viaje.origen}
+
+                        <br>
+
+                        ↓
+
+                        <br>
+
+                        ${viaje.destino}
+
+                        <br><br>
+
+                        ${recorrido.distanciaKm} km
+                        `
+                    );
+
+
+                    lineasTodas.push(
+                        linea
+                    );
+
+
+                    const indiceMedio =
+                        Math.floor(
+                            puntos.length /
+                            2
+                        );
+
+
+                    const puntoEtiqueta =
+                        puntos[
+                            indiceMedio
+                        ];
+
+
+                    const iconoEtiqueta =
+                        L.divIcon(
+                            {
+                                className:
+                                    "",
+
+                                html:
+                                    `
+                                    <div
+                                        class="etiqueta-viaje"
+                                        style="
+                                            background:${color};
+                                        ">
+
+                                        Viaje ${viaje.idViaje}
+
+                                    </div>
+                                    `,
+
+                                iconSize:
+                                    null,
+
+                                iconAnchor:
+                                    [
+                                        30,
+                                        15
+                                    ]
+                            }
+                        );
+
+
+                    const etiqueta =
+                        L.marker(
+                            puntoEtiqueta,
+                            {
+                                icon:
+                                    iconoEtiqueta,
+
+                                interactive:
+                                    false
+                            }
+                        )
+                        .addTo(
+                            map
+                        );
+
+
+                    etiquetasTodas.push(
+                        etiqueta
+                    );
+
+
+                    const markerOrigen =
+                        L.circleMarker(
+                            [
+                                recorrido
+                                    .origen
+                                    .latitud,
+
+                                recorrido
+                                    .origen
+                                    .longitud
+                            ],
+                            {
+                                radius:
+                                    7,
+
+                                color:
+                                    color,
+
+                                fillColor:
+                                    color,
+
+                                fillOpacity:
+                                    1
+                            }
+                        )
+                        .addTo(
+                            map
+                        );
+
+
+                    const markerDestino =
+                        L.circleMarker(
+                            [
+                                recorrido
+                                    .destino
+                                    .latitud,
+
+                                recorrido
+                                    .destino
+                                    .longitud
+                            ],
+                            {
+                                radius:
+                                    7,
+
+                                color:
+                                    color,
+
+                                fillColor:
+                                    color,
+
+                                fillOpacity:
+                                    1
+                            }
+                        )
+                        .addTo(
+                            map
+                        );
+
+
+                    marcadoresTodos.push(
+                        markerOrigen
+                    );
+
+
+                    marcadoresTodos.push(
+                        markerDestino
+                    );
+
+
+                    limites.push(
+                        ...puntos
+                    );
+
+
+                    cantidadMostrada++;
+                }
+                catch
+                {
+                }
+            }
+
+
+            if (
+                limites.length >
+                0
+            )
+            {
+                map.fitBounds(
+                    limites,
+                    {
+                        padding:
+                            [
+                                40,
+                                40
+                            ]
+                    }
+                );
+            }
+
+
+            document
+                .getElementById(
+                    "idViaje"
+                )
+                .textContent =
+                    "Todos";
+
+
+            document
+                .getElementById(
+                    "distancia"
+                )
+                .textContent =
+                    "-";
+
+
+            document
+                .getElementById(
+                    "duracion"
+                )
+                .textContent =
+                    "-";
+
+
+            mensaje.textContent =
+                `${cantidadMostrada} recorrido(s) mostrados.`;
+        }
+        catch (error)
+        {
+            mensaje.textContent =
+                "Error: " +
+                error.message;
+        }
+    }
+
+
+    // =======================================================
+    // CARGAR RECORRIDO
+    // =======================================================
+
+    async function cargarRecorrido(
+        idViaje
+    )
+    {
+        const token =
+            obtenerToken();
+
+
+        const mensaje =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        mensaje.textContent =
+            "Calculando recorrido...";
+
+
+        try
+        {
+            const response =
+                await fetch(
+                    `/api/Viajes/${idViaje}/recorrido`,
+                    {
+                        headers:
+                        {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (!response.ok)
+            {
+                throw new Error(
+                    "No se pudo obtener el recorrido."
+                );
+            }
+
+
+            const datos =
+                await response.json();
+
+
+            limpiarMapa();
+
+
+            const puntos =
+                datos.ruta.map(
+                    punto =>
+                    [
+                        punto.latitud,
+                        punto.longitud
+                    ]
+                );
+
+
+            if (
+                puntos.length ===
+                0
+            )
+            {
+                mensaje.textContent =
+                    "El viaje no tiene recorrido.";
+
+                return;
+            }
+
+
+            lineaRuta =
+                L.polyline(
+                    puntos,
+                    {
+                        color:
+                            "#1565c0",
+
+                        weight:
+                            5,
+
+                        opacity:
+                            0.85
+                    }
+                )
+                .addTo(
+                    map
+                );
+
+
+            marcadorOrigen =
+                L.marker(
+                    [
+                        datos.origen.latitud,
+                        datos.origen.longitud
+                    ]
+                )
+                .addTo(
+                    map
+                )
+                .bindPopup(
+                    "<b>Origen</b>"
+                );
+
+
+            marcadorDestino =
+                L.marker(
+                    [
+                        datos.destino.latitud,
+                        datos.destino.longitud
+                    ]
+                )
+                .addTo(
+                    map
+                )
+                .bindPopup(
+                    "<b>Destino</b>"
+                );
+
+
+            map.fitBounds(
+                puntos,
+                {
+                    padding:
+                        [
+                            40,
+                            40
+                        ]
+                }
+            );
+
+
+            document
+                .getElementById(
+                    "idViaje"
+                )
+                .textContent =
+                    idViaje;
+
+
+            document
+                .getElementById(
+                    "distancia"
+                )
+                .textContent =
+                    `${datos.distanciaKm} km`;
+
+
+            document
+                .getElementById(
+                    "duracion"
+                )
+                .textContent =
+                    datos.duracionMinutos
+                        ?
+                        `${datos.duracionMinutos} min`
+                        :
+                        "-";
+
+
+            mensaje.textContent =
+                "Recorrido cargado.";
+        }
+        catch (error)
+        {
+            mensaje.textContent =
+                "Error: " +
+                error.message;
+        }
+    }
+
+
+    // =======================================================
+    // SEGUIMIENTO LOGISTICA
+    // =======================================================
+
+    function iniciarSeguimientoLogistica(
+        idViaje
+    )
+    {
+        detenerSeguimientoLogistica();
+
+
+        viajeSeguimientoLogistica =
+            idViaje;
+
+
+        actualizarCamionLogistica(
+            idViaje
+        );
+
+
+        intervaloSeguimientoLogistica =
+            setInterval(
+                () =>
+                {
+                    actualizarCamionLogistica(
+                        idViaje
+                    );
+                },
+                10000
+            );
+    }
+
+
+    function detenerSeguimientoLogistica()
+    {
+        if (
+            intervaloSeguimientoLogistica !==
+            null
+        )
+        {
+            clearInterval(
+                intervaloSeguimientoLogistica
+            );
+
+
+            intervaloSeguimientoLogistica =
+                null;
+        }
+
+
+        viajeSeguimientoLogistica =
+            null;
+    }
+
+
+    // =======================================================
+    // POSICION CAMION
+    // =======================================================
+
+    async function actualizarCamionLogistica(
+        idViaje
+    )
+    {
+        const token =
+            obtenerToken();
+
+
+        if (!token)
+            return;
+
+
+        try
+        {
+            const response =
+                await fetch(
+                    `/api/Viajes/${idViaje}/ubicacion`,
+                    {
+                        headers:
+                        {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+
+            if (
+                response.status ===
+                404
+            )
+            {
+                limpiarCamion();
+
+                return;
+            }
+
+
+            if (!response.ok)
+                return;
+
+
+            const datos =
+                await response.json();
+
+
+            const fecha =
+                datos.fechaUbicacion
+                    ?
+                    new Date(
+                        datos.fechaUbicacion
+                    )
+                    :
+                    null;
+
+
+            let popup =
+                "<b>Empresa de Transporte</b>";
+
+
+            if (fecha)
+            {
+                popup +=
+                    "<br>Última posición: " +
+                    fecha.toLocaleString();
+            }
+
+
+            mostrarCamion(
+                datos.latitud,
+                datos.longitud,
+                popup
+            );
+        }
+        catch
+        {
+        }
+    }
+
+
+    // =======================================================
+    // MOSTRAR CAMION
+    // =======================================================
+
+    function mostrarCamion(
+        latitud,
+        longitud,
+        popup =
+            "<b>Posición actual</b>"
+    )
+    {
+        const posicion =
+        [
+            latitud,
+            longitud
+        ];
+
+
+        if (marcadorCamion)
+        {
+            marcadorCamion
+                .setLatLng(
+                    posicion
+                );
+
+
+            marcadorCamion
+                .bindPopup(
+                    popup
+                );
+
+
+            return;
+        }
+
+
+        const iconoCamion =
+            L.divIcon(
+                {
+                    className:
+                        "",
+
+                    html:
+                        `
+                        <div class="camion-icono">
+                            🚚
+                        </div>
+                        `,
+
+                    iconSize:
+                        [
+                            36,
+                            36
+                        ],
+
+                    iconAnchor:
+                        [
+                            18,
+                            18
+                        ],
+
+                    popupAnchor:
+                        [
+                            0,
+                            -18
+                        ]
+                }
+            );
+
+
+        marcadorCamion =
+            L.marker(
+                posicion,
+                {
+                    icon:
+                        iconoCamion,
+
+                    zIndexOffset:
+                        1000
+                }
+            )
+            .addTo(
+                map
+            )
+            .bindPopup(
+                popup
+            );
+    }
+
+
+    // =======================================================
+    // LIMPIAR MAPA
+    // =======================================================
+
+    function limpiarMapa()
+    {
+        if (marcadorOrigen)
+        {
+            map.removeLayer(
+                marcadorOrigen
+            );
+
+            marcadorOrigen =
+                null;
+        }
+
+
+        if (marcadorDestino)
+        {
+            map.removeLayer(
+                marcadorDestino
+            );
+
+            marcadorDestino =
+                null;
+        }
+
+
+        if (lineaRuta)
+        {
+            map.removeLayer(
+                lineaRuta
+            );
+
+            lineaRuta =
+                null;
+        }
+    }
+
+
+    function limpiarCamion()
+    {
+        if (marcadorCamion)
+        {
+            map.removeLayer(
+                marcadorCamion
+            );
+
+            marcadorCamion =
+                null;
+        }
+    }
+
+
+    function limpiarTodos()
+    {
+        lineasTodas.forEach(
+            linea =>
+                map.removeLayer(
+                    linea
+                )
+        );
+
+
+        marcadoresTodos.forEach(
+            marcador =>
+                map.removeLayer(
+                    marcador
+                )
+        );
+
+
+        etiquetasTodas.forEach(
+            etiqueta =>
+                map.removeLayer(
+                    etiqueta
+                )
+        );
+
+
+        lineasTodas =
+            [];
+
+        marcadoresTodos =
+            [];
+
+        etiquetasTodas =
+            [];
+    }
+
+
+    // =======================================================
+    // DESCRIPCION ESTADO VIAJE
+    // =======================================================
+
+    function descripcionEstadoViaje(
+        estado
+    )
+    {
+        switch (estado)
+        {
+            case "P":
+                return "Pendiente";
+
+            case "A":
+                return "Asignado";
+
+            case "V":
+                return "Iniciado";
+
+            case "O":
+                return "En origen";
+
+            case "R":
+                return "En ruta";
+
+            case "D":
+                return "En destino";
+
+            case "T":
+                return "Terminado";
+
+            case "I":
+                return "Informado";
+
+            default:
+                return estado || "-";
+        }
+    }
+
+
+    // =======================================================
+    // LOGOUT
+    // =======================================================
+
+    function logout()
+    {
+        detenerSeguimientoLogistica();
+
+
+        localStorage.removeItem(
+            "voyllegando_token"
+        );
+
+
+        localStorage.removeItem(
+            "voyllegando_usuario"
+        );
+
+
+        window.location.href =
+            "/index.html";
+    }
+
+
+    // =======================================================
+    // INICIO
+    // =======================================================
+
+    async function iniciarPagina()
+    {
+        const perfil =
+            await validarSesion(
+                "L"
+            );
+
+
+        if (!perfil)
+            return;
+
+
+        mostrarUsuario();
+
+
+        await cargarViajes();
+    }
+
+
+    iniciarPagina();
+
+</script>
+
+
+</body>
+
+</html>

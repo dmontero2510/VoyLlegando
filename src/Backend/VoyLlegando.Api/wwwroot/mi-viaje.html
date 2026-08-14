@@ -3019,11 +3019,16 @@
             );
 
 
+        // Para VoyLlegando usamos una velocidad promedio realista
+        // de camión de 65 km/h. La distancia sigue viniendo de OSRM;
+        // solamente recalculamos la duración estimada.
+        const VELOCIDAD_PROMEDIO_CAMION_KMH =
+            65;
+
+
         const minutos =
             Math.round(
-                Number(
-                    duracionMinutos
-                )
+                (distancia / VELOCIDAD_PROMEDIO_CAMION_KMH) * 60
             );
 
 

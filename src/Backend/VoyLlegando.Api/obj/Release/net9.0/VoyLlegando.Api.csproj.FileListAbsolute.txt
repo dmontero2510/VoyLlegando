@@ -59,7 +59,6 @@ C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\Voy
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\VoyLlegando.Api.genruntimeconfig.cache
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\ref\VoyLlegando.Api.dll
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\vxsn80qip5-{0}-avw4xtmdfi-avw4xtmdfi.gz
-C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\5c6ijd4yqh-{0}-gqsnvlidbz-gqsnvlidbz.gz
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\at4e1gepiq-{0}-t35l9nrx2v-t35l9nrx2v.gz
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\2luhncujdk-{0}-zjceyxvd20-zjceyxvd20.gz
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\nupyepst0h-{0}-28jkaqzvmv-28jkaqzvmv.gz
@@ -71,10 +70,12 @@ C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\com
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\zp79evg6ou-{0}-pu1ch0ttu8-pu1ch0ttu8.gz
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\rpndmq83e6-{0}-huvdtqikhn-huvdtqikhn.gz
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\frm0t3mqjq-{0}-6z0tszbwjh-6z0tszbwjh.gz
-C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\7l4s1qxnjm-{0}-uulivnjndy-uulivnjndy.gz
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\q8ictnqk3m-{0}-hrjxki36yo-hrjxki36yo.gz
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\v16hmyq17m-{0}-90ovv4sjwn-90ovv4sjwn.gz
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\oj7uaex7kp-{0}-482m8xmnnt-482m8xmnnt.gz
 C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\fl7fvt2zny-{0}-cu8d3148vf-cu8d3148vf.gz
-C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\6bj2zidfjt-{0}-7bbuo41j0x-7bbuo41j0x.gz
-C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\7049kj4eda-{0}-rbmyqqebaq-rbmyqqebaq.gz
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\7049kj4eda-{0}-fhx5u8q4wy-fhx5u8q4wy.gz
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\6bj2zidfjt-{0}-vb4gjfajag-vb4gjfajag.gz
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\ask9c5quqo-{0}-gqsnvlidbz-gqsnvlidbz.gz
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\5c6ijd4yqh-{0}-gqa6t8kn9z-gqa6t8kn9z.gz
+C:\SIE\VoyLlegando\Desarrollo\src\Backend\VoyLlegando.Api\obj\Release\net9.0\compressed\7l4s1qxnjm-{0}-2ml0yv01xg-2ml0yv01xg.gz
