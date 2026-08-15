@@ -413,7 +413,7 @@ public class ViajeRepository : IViajeRepository
                 ON lc.id_transpor = v.id_transpor
 
             WHERE lc.id_usuario = @IdUsuario
-              AND lc.habilitado = TRUE
+              AND lc.estado = 'A'
               AND v.estado = 'P'
 
             ORDER BY
@@ -587,16 +587,16 @@ public async Task TomarPendienteAsync(
         // 5. VERIFICAR VINCULO CON LOGISTICA
         // ---------------------------------------------------
 
-        const string sqlVinculo = """
-            SELECT EXISTS
-            (
-                SELECT 1
-                FROM public.logiscamion
-                WHERE id_transpor = @IdTranspor
-                  AND id_usuario = @IdEmpresa
-                  AND habilitado = TRUE
-            );
-            """;
+const string sqlVinculo = """
+    SELECT EXISTS
+    (
+        SELECT 1
+        FROM public.logiscamion
+        WHERE id_transpor = @IdTranspor
+          AND id_usuario = @IdEmpresa
+          AND estado = 'A'
+    );
+    """;
 
         var vinculado =
             await connection

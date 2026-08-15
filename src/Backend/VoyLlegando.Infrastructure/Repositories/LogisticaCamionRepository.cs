@@ -31,7 +31,7 @@ public class LogisticaCamionRepository
 
 
     // -------------------------------------------------------
-    // OBTENER LOGISTICAS VINCULADAS
+    // OBTENER LOGISTICAS VINCULADAS / ACEPTADAS
     // -------------------------------------------------------
 
     public async Task<IEnumerable<Logistica>>
@@ -54,7 +54,7 @@ public class LogisticaCamionRepository
             INNER JOIN public.logiscamion lc
                 ON lc.id_transpor = l.id_transpor
             WHERE lc.id_usuario = @IdUsuario
-              AND lc.habilitado = TRUE
+              AND lc.estado = 'A'
             ORDER BY l.nombre;
             """;
 
@@ -70,7 +70,7 @@ public class LogisticaCamionRepository
 
 
     // -------------------------------------------------------
-    // OBTENER LOGISTICAS DISPONIBLES
+    // OBTENER LOGISTICAS DISPONIBLES PARA SOLICITAR
     // -------------------------------------------------------
 
     public async Task<IEnumerable<Logistica>>
@@ -97,7 +97,7 @@ public class LogisticaCamionRepository
                   FROM public.logiscamion lc
                   WHERE lc.id_transpor = l.id_transpor
                     AND lc.id_usuario = @IdUsuario
-                    AND lc.habilitado = TRUE
+                    AND lc.estado IN ('P', 'A')
               )
             ORDER BY l.nombre;
             """;
@@ -114,7 +114,7 @@ public class LogisticaCamionRepository
 
 
     // -------------------------------------------------------
-    // VINCULAR
+    // SOLICITAR VINCULACION
     // -------------------------------------------------------
 
     public async Task VincularAsync(
@@ -131,14 +131,14 @@ public class LogisticaCamionRepository
                 id_transpor,
                 id_usuario,
                 fecha_vinculacion,
-                habilitado
+                estado
             )
             VALUES
             (
                 @IdTranspor,
                 @IdUsuario,
                 CURRENT_TIMESTAMP,
-                TRUE
+                'P'
             )
             ON CONFLICT
             (
@@ -147,8 +147,9 @@ public class LogisticaCamionRepository
             )
             DO UPDATE
             SET
-                habilitado = TRUE,
-                fecha_vinculacion = CURRENT_TIMESTAMP;
+                estado = 'P',
+                fecha_vinculacion = CURRENT_TIMESTAMP
+            WHERE public.logiscamion.estado IN ('R', 'B');
             """;
 
 
@@ -177,9 +178,10 @@ public class LogisticaCamionRepository
         const string sql = """
             UPDATE public.logiscamion
             SET
-                habilitado = FALSE
+                estado = 'B'
             WHERE id_transpor = @IdTranspor
-              AND id_usuario = @IdUsuario;
+              AND id_usuario = @IdUsuario
+              AND estado = 'A';
             """;
 
 
@@ -194,7 +196,7 @@ public class LogisticaCamionRepository
 
 
     // -------------------------------------------------------
-    // ESTA VINCULADO
+    // ESTA VINCULADO / ACEPTADO
     // -------------------------------------------------------
 
     public async Task<bool> EstaVinculadoAsync(
@@ -212,7 +214,7 @@ public class LogisticaCamionRepository
                 FROM public.logiscamion
                 WHERE id_transpor = @IdTranspor
                   AND id_usuario = @IdUsuario
-                  AND habilitado = TRUE
+                  AND estado = 'A'
             );
             """;
 
@@ -226,4 +228,283 @@ public class LogisticaCamionRepository
                     IdUsuario = idUsuario
                 });
     }
+// -------------------------------------------------------
+// SOLICITUDES PENDIENTES DE UNA LOGISTICA
+// -------------------------------------------------------
+
+public async Task<IEnumerable<Usuario>>
+    ObtenerSolicitudesPendientesAsync(
+        int idTranspor)
+{
+    using var connection =
+        CrearConexion();
+
+
+    const string sql = """
+        SELECT
+            u.id_usuario AS IdUsuario,
+            u.nombre     AS Nombre,
+            u.domicilio  AS Domicilio,
+            u.iva        AS Iva,
+            u.cuit       AS Cuit,
+            u.celular    AS Celular,
+            u.email      AS Email,
+            u.rol        AS Rol,
+            u.habilitado AS Habilitado,
+            u.estado     AS Estado
+        FROM public.logiscamion lc
+        INNER JOIN public.usuarios u
+            ON u.id_usuario = lc.id_usuario
+        WHERE lc.id_transpor = @IdTranspor
+          AND lc.estado = 'P'
+          AND u.rol = 'E'
+        ORDER BY
+            lc.fecha_vinculacion,
+            u.nombre;
+        """;
+
+
+    return await connection
+        .QueryAsync<Usuario>(
+            sql,
+            new
+            {
+                IdTranspor = idTranspor
+            });
+}
+
+
+// -------------------------------------------------------
+// ACEPTAR SOLICITUD
+// -------------------------------------------------------
+
+public async Task AceptarSolicitudAsync(
+    int idTranspor,
+    int idUsuario)
+{
+    using var connection =
+        CrearConexion();
+
+
+    const string sql = """
+        UPDATE public.logiscamion
+        SET estado = 'A'
+        WHERE id_transpor = @IdTranspor
+          AND id_usuario = @IdUsuario
+          AND estado = 'P';
+        """;
+
+
+    await connection.ExecuteAsync(
+        sql,
+        new
+        {
+            IdTranspor = idTranspor,
+            IdUsuario = idUsuario
+        });
+}
+
+
+// -------------------------------------------------------
+// RECHAZAR SOLICITUD
+// -------------------------------------------------------
+
+public async Task RechazarSolicitudAsync(
+    int idTranspor,
+    int idUsuario)
+{
+    using var connection =
+        CrearConexion();
+
+
+    const string sql = """
+        UPDATE public.logiscamion
+        SET estado = 'R'
+        WHERE id_transpor = @IdTranspor
+          AND id_usuario = @IdUsuario
+          AND estado = 'P';
+        """;
+
+
+    await connection.ExecuteAsync(
+        sql,
+        new
+        {
+            IdTranspor = idTranspor,
+            IdUsuario = idUsuario
+        });
+}
+// -------------------------------------------------------
+// EMPRESAS ACEPTADAS Y DISPONIBLES DE UNA LOGISTICA
+// -------------------------------------------------------
+
+public async Task<IEnumerable<Usuario>>
+    ObtenerEmpresasAceptadasDisponiblesAsync(
+        int idTranspor)
+{
+    using var connection =
+        CrearConexion();
+
+
+    const string sql = """
+        SELECT
+            u.id_usuario AS IdUsuario,
+            u.nombre     AS Nombre,
+            u.domicilio  AS Domicilio,
+            u.iva        AS Iva,
+            u.cuit       AS Cuit,
+            u.celular    AS Celular,
+            u.email      AS Email,
+            u.rol        AS Rol,
+            u.habilitado AS Habilitado,
+            u.estado     AS Estado
+        FROM public.usuarios u
+        INNER JOIN public.logiscamion lc
+            ON lc.id_usuario = u.id_usuario
+        WHERE lc.id_transpor = @IdTranspor
+          AND lc.estado = 'A'
+          AND u.rol = 'E'
+          AND u.habilitado = TRUE
+          AND u.estado = 'D'
+        ORDER BY u.nombre;
+        """;
+
+
+    return await connection
+        .QueryAsync<Usuario>(
+            sql,
+            new
+            {
+                IdTranspor = idTranspor
+            });
+}
+
+
+// -------------------------------------------------------
+// RELACIONES DE UNA LOGISTICA
+// A = ACEPTADA
+// R = RECHAZADA
+// B = BAJA / BLOQUEADA
+// -------------------------------------------------------
+
+public async Task<IEnumerable<LogisticaCamionRelacion>>
+    ObtenerRelacionesAsync(
+        int idTranspor)
+{
+    using var connection =
+        CrearConexion();
+
+
+    const string sql = """
+        SELECT
+            u.id_usuario             AS IdUsuario,
+            u.nombre                 AS Nombre,
+            u.cuit                   AS Cuit,
+            u.celular                AS Celular,
+            u.email                  AS Email,
+            u.habilitado             AS Habilitado,
+            u.estado                 AS EstadoEmpresa,
+            lc.estado                AS EstadoRelacion,
+            COALESCE(er.descripcion, lc.estado)
+                                     AS DescripcionEstado,
+            lc.fecha_vinculacion     AS FechaVinculacion
+        FROM public.logiscamion lc
+        INNER JOIN public.usuarios u
+            ON u.id_usuario = lc.id_usuario
+        LEFT JOIN public.estarela er
+            ON er.codigo = lc.estado
+        WHERE lc.id_transpor = @IdTranspor
+          AND u.rol = 'E'
+          AND lc.estado IN ('A', 'R', 'B')
+        ORDER BY
+            CASE lc.estado
+                WHEN 'A' THEN 1
+                WHEN 'B' THEN 2
+                WHEN 'R' THEN 3
+                ELSE 4
+            END,
+            u.nombre;
+        """;
+
+
+    return await connection
+        .QueryAsync<LogisticaCamionRelacion>(
+            sql,
+            new
+            {
+                IdTranspor = idTranspor
+            });
+}
+
+
+// -------------------------------------------------------
+// BLOQUEAR RELACION
+// A -> B
+// -------------------------------------------------------
+
+public async Task<bool> BloquearRelacionAsync(
+    int idTranspor,
+    int idUsuario)
+{
+    using var connection =
+        CrearConexion();
+
+
+    const string sql = """
+        UPDATE public.logiscamion
+        SET estado = 'B'
+        WHERE id_transpor = @IdTranspor
+          AND id_usuario = @IdUsuario
+          AND estado = 'A';
+        """;
+
+
+    var filas =
+        await connection.ExecuteAsync(
+            sql,
+            new
+            {
+                IdTranspor = idTranspor,
+                IdUsuario = idUsuario
+            });
+
+
+    return filas > 0;
+}
+
+
+// -------------------------------------------------------
+// REHABILITAR RELACION
+// R/B -> A
+// -------------------------------------------------------
+
+public async Task<bool> RehabilitarRelacionAsync(
+    int idTranspor,
+    int idUsuario)
+{
+    using var connection =
+        CrearConexion();
+
+
+    const string sql = """
+        UPDATE public.logiscamion
+        SET estado = 'A'
+        WHERE id_transpor = @IdTranspor
+          AND id_usuario = @IdUsuario
+          AND estado IN ('R', 'B');
+        """;
+
+
+    var filas =
+        await connection.ExecuteAsync(
+            sql,
+            new
+            {
+                IdTranspor = idTranspor,
+                IdUsuario = idUsuario
+            });
+
+
+    return filas > 0;
+}
 }

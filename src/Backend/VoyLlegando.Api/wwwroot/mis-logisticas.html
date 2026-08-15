@@ -145,15 +145,35 @@
         }
 
 
-        .btn-vincular,
-        .btn-desvincular
-        {
-            border: 0;
-            border-radius: 7px;
-            padding: 8px 14px;
-            font-weight: 600;
-        }
+       .btn-vincular,
+       .btn-desvincular
+       {
+           border: 0;
+           border-radius: 7px;
+           padding: 8px 14px;
+           font-weight: 600;
+           color: white;
+       }
 
+       .btn-vincular
+       {
+           background: #0d6efd;
+       }
+
+       .btn-vincular:hover
+       {
+           background: #0b5ed7;
+       }
+
+       .btn-desvincular
+       {
+           background: #dc3545;
+       }
+
+       .btn-desvincular:hover
+       {
+           background: #bb2d3b;
+       }
 
         .acciones
         {
@@ -205,6 +225,22 @@
 
 
 <body>
+
+<header class="app-header">
+
+    <div class="app-logo">
+        VoyLlegando
+    </div>
+
+    <div>
+        <a href="/empresa.html?v=10"
+           class="btn btn-secundario"
+           style="text-decoration:none;">
+            Volver
+        </a>
+    </div>
+
+</header>
 
 
 <div class="pagina">
@@ -389,20 +425,6 @@
 
 
 
-    <!-- ================================================= -->
-    <!-- VOLVER                                            -->
-    <!-- ================================================= -->
-
-    <div class="acciones">
-
-        <a href="/empresa.html?v=6"
-           class="btn-volver">
-
-            Volver
-
-        </a>
-
-    </div>
 
 
 </div>
@@ -827,7 +849,7 @@
                             this
                         )">
 
-                        Vincular
+                        Solicitar Vínculo
 
                     </button>
 
@@ -868,7 +890,7 @@
 
 
         boton.textContent =
-            "Vinculando...";
+            "Solicitando...";
 
 
         try
@@ -882,7 +904,7 @@
 
             mostrarOk(
                 resultado.mensaje ||
-                "Logística vinculada correctamente."
+                "Solicitud de vínculo enviada correctamente."
             );
 
 
@@ -902,7 +924,7 @@
 
             mostrarError(
                 error.message ||
-                "No se pudo vincular la Logística."
+                "No se pudo enviar la solicitud de vínculo."
             );
 
         }

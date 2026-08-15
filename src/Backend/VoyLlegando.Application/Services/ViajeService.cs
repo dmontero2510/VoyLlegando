@@ -9,6 +9,7 @@ public class ViajeService
     private readonly IViajeRepository _viajeRepository;
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IViajeEventoRepository _viajeEventoRepository;
+    private readonly ILogisticaCamionRepository _logisticaCamionRepository;
 
     public ViajeService(
         IViajeRepository viajeRepository,
@@ -121,6 +122,18 @@ public class ViajeService
             throw new InvalidOperationException(
                 "La Empresa de Transporte no está disponible.");
 
+       var vinculada =
+           await _logisticaCamionRepository
+               .EstaVinculadoAsync(
+                   idTranspor,
+                   empresa.IdUsuario);
+
+       if (!vinculada)
+       {
+           throw new InvalidOperationException(
+               "La Empresa de Transporte no tiene una vinculación aceptada con esta Logística.");
+       }
+
         // --------------------------------------------------
         // ASIGNACIÓN
         // --------------------------------------------------
@@ -194,6 +207,18 @@ public class ViajeService
         if (empresa.Estado != "D")
             throw new InvalidOperationException(
                 "La Empresa de Transporte no está disponible.");
+
+var vinculada =
+    await _logisticaCamionRepository
+        .EstaVinculadoAsync(
+            idTranspor,
+            empresa.IdUsuario);
+
+if (!vinculada)
+{
+    throw new InvalidOperationException(
+        "La Empresa de Transporte no tiene una vinculación aceptada con esta Logística.");
+}
 
         // --------------------------------------------------
         // ASIGNACIÓN

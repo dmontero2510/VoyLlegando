@@ -16,18 +16,22 @@ public class ViajesController : ControllerBase
     private readonly ViajeService _viajeService;
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly RutaService _rutaService;
+    private readonly ILogisticaCamionRepository _logisticaCamionRepository;
 
-    public ViajesController(
-        IViajeRepository viajeRepository,
-        ViajeService viajeService,
-        IUsuarioRepository usuarioRepository,
-        RutaService rutaService)
-    {
-        _viajeRepository = viajeRepository;
-        _viajeService = viajeService;
-        _usuarioRepository = usuarioRepository;
-        _rutaService = rutaService;
-    }
+public ViajesController(
+    IViajeRepository viajeRepository,
+    ViajeService viajeService,
+    IUsuarioRepository usuarioRepository,
+    RutaService rutaService,
+    ILogisticaCamionRepository logisticaCamionRepository)
+{
+    _viajeRepository = viajeRepository;
+    _viajeService = viajeService;
+    _usuarioRepository = usuarioRepository;
+    _rutaService = rutaService;
+    _logisticaCamionRepository =
+        logisticaCamionRepository;
+}
 
 // -------------------------------------------------------
 // GET /api/Viajes/empresa/{idEmpresa}
@@ -239,42 +243,58 @@ public async Task<IActionResult> ObtenerEmpresa(
         return Ok(terminados);
     }
 
-    // -------------------------------------------------------
-    // GET /api/Viajes/empresas-disponibles
-    // LOGISTICA
-    // -------------------------------------------------------
+// -------------------------------------------------------
+// GET /api/Viajes/empresas-disponibles
+// LOGISTICA
+// SOLO EMPRESAS CON VINCULACION ACEPTADA
+// -------------------------------------------------------
 
-    [HttpGet("empresas-disponibles")]
-    public async Task<IActionResult> EmpresasDisponibles()
+[HttpGet("empresas-disponibles")]
+public async Task<IActionResult> EmpresasDisponibles()
+{
+    var usuario =
+        await ObtenerUsuarioActual();
+
+
+    if (usuario == null)
+        return Unauthorized();
+
+
+    if (usuario.Rol != "L")
+        return Forbid();
+
+
+    if (!usuario.Habilitado)
     {
-        var usuario = await ObtenerUsuarioActual();
-
-        if (usuario == null)
-            return Unauthorized();
-
-        if (usuario.Rol != "L")
-            return Forbid();
-
-        var usuarios = await _usuarioRepository
-            .ObtenerTodosAsync();
-
-        var empresas = usuarios
-            .Where(u =>
-                u.Rol == "E" &&
-                u.Habilitado &&
-                u.Estado == "D")
-            .Select(u => new
-            {
-                idUsuario = u.IdUsuario,
-                nombre = u.Nombre,
-                celular = u.Celular,
-                email = u.Email,
-                cuit = u.Cuit,
-                estado = u.Estado
-            });
-
-        return Ok(empresas);
+        return BadRequest(
+            "La Logística está deshabilitada.");
     }
+
+
+    if (usuario.IdTranspor == null)
+    {
+        return BadRequest(
+            "La logística no tiene una empresa asociada.");
+    }
+
+
+    var empresas =
+        await _logisticaCamionRepository
+            .ObtenerEmpresasAceptadasDisponiblesAsync(
+                usuario.IdTranspor.Value);
+
+
+    return Ok(
+        empresas.Select(u => new
+        {
+            idUsuario = u.IdUsuario,
+            nombre = u.Nombre,
+            celular = u.Celular,
+            email = u.Email,
+            cuit = u.Cuit,
+            estado = u.Estado
+        }));
+}
 
     // -------------------------------------------------------
     // GET /api/Viajes/mis-viajes

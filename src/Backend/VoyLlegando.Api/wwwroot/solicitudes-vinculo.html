@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1">
+
+    <title>
+        VoyLlegando - Solicitudes de Vínculo
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/app.css?v=3">
+
+    <style>
+
+        /* =============================================
+           HEADER LOGISTICA
+        ============================================= */
+
+        .header-logistica
+        {
+            background: #0d0d27;
+            border-bottom: 4px solid #28b5e5;
+
+            min-height: 72px;
+
+            padding: 12px 24px;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 2fr 1fr;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        .header-marca
+        {
+            justify-self: start;
+
+            color: white;
+
+            font-size: 22px;
+            font-weight: bold;
+
+            white-space: nowrap;
+        }
+
+
+        .header-marca::before
+        {
+            content: "■";
+
+            color: #28b5e5;
+
+            margin-right: 9px;
+        }
+
+
+        .header-empresa
+        {
+            justify-self: center;
+
+            text-align: center;
+
+            color: #28b5e5;
+
+            font-size: 20px;
+            font-weight: bold;
+
+            text-transform: uppercase;
+
+            letter-spacing: .5px;
+        }
+
+
+        .header-derecha
+        {
+            justify-self: end;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .header-usuario
+        {
+            color: white;
+
+            font-size: 14px;
+
+            white-space: nowrap;
+        }
+
+
+        .btn-volver
+        {
+            border:
+                1px solid
+                rgba(255,255,255,.45);
+
+            background:
+                transparent;
+
+            color:
+                white;
+
+            padding:
+                8px 13px;
+
+            border-radius:
+                7px;
+
+            cursor:
+                pointer;
+
+            font-weight:
+                bold;
+        }
+
+
+        .btn-volver:hover
+        {
+            background:
+                rgba(255,255,255,.10);
+        }
+
+
+        /* =============================================
+           CONTENIDO
+        ============================================= */
+
+        .contenido
+        {
+            padding: 26px;
+
+            max-width: 1300px;
+
+            margin: 0 auto;
+        }
+
+
+        .titulo-logistica
+        {
+            margin: 0 0 25px 0;
+
+            font-size: 27px;
+
+            color: #0d0d27;
+        }
+
+
+        .titulo-logistica::after
+        {
+            content: "";
+
+            display: block;
+
+            margin-top: 8px;
+
+            width: 55px;
+
+            height: 4px;
+
+            border-radius: 4px;
+
+            background: #28b5e5;
+        }
+
+
+        .descripcion
+        {
+            margin-bottom: 20px;
+
+            color: #6c7280;
+
+            font-size: 14px;
+        }
+
+
+        .mensaje
+        {
+            display: none;
+
+            padding: 12px 15px;
+
+            margin-bottom: 20px;
+
+            border-radius: 8px;
+        }
+
+
+        .mensaje-ok
+        {
+            display: block;
+
+            background: #e7f6ec;
+
+            color: #176b35;
+        }
+
+
+        .mensaje-error
+        {
+            display: block;
+
+            background: #ffeaea;
+
+            color: #9d1c1c;
+        }
+
+
+        .cargando,
+        .sin-datos
+        {
+            padding: 22px;
+
+            text-align: center;
+
+            background: white;
+
+            border:
+                1px solid #dce2e8;
+
+            border-radius: 10px;
+        }
+
+
+        .tabla-contenedor
+        {
+            width: 100%;
+
+            overflow-x: auto;
+
+            background: white;
+
+            border:
+                1px solid #dce2e8;
+
+            border-radius: 10px;
+        }
+
+
+        table
+        {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 760px;
+        }
+
+
+        th,
+        td
+        {
+            padding: 12px;
+
+            border-bottom:
+                1px solid #e5e8ec;
+
+            text-align: left;
+
+            vertical-align: middle;
+        }
+
+
+        th
+        {
+            color: #0d0d27;
+
+            font-weight: bold;
+
+            background: #f7f9fb;
+        }
+
+
+        tr:last-child td
+        {
+            border-bottom: 0;
+        }
+
+
+        .centrado
+        {
+            text-align: center;
+        }
+
+
+        .acciones
+        {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .btn-aceptar,
+        .btn-rechazar
+        {
+            border: 0;
+
+            border-radius: 7px;
+
+            padding: 8px 14px;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .btn-aceptar
+        {
+            background: #198754;
+        }
+
+
+        .btn-aceptar:hover
+        {
+            background: #157347;
+        }
+
+
+        .btn-rechazar
+        {
+            background: #dc3545;
+        }
+
+
+        .btn-rechazar:hover
+        {
+            background: #bb2d3b;
+        }
+
+
+        .btn-aceptar:disabled,
+        .btn-rechazar:disabled
+        {
+            opacity: .6;
+
+            cursor: wait;
+        }
+
+
+
+        .seccion-relaciones
+        {
+            margin-top: 34px;
+        }
+
+        .subtitulo
+        {
+            margin: 0 0 8px 0;
+            font-size: 21px;
+            color: #0d0d27;
+        }
+
+        .estado-relacion
+        {
+            display: inline-block;
+            min-width: 92px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .estado-A
+        {
+            background: #e7f6ec;
+            color: #176b35;
+        }
+
+        .estado-R
+        {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .estado-B
+        {
+            background: #eceff3;
+            color: #495057;
+        }
+
+        .btn-bloquear,
+        .btn-rehabilitar
+        {
+            border: 0;
+            border-radius: 7px;
+            padding: 8px 14px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-bloquear
+        {
+            background: #dc3545;
+        }
+
+        .btn-bloquear:hover
+        {
+            background: #bb2d3b;
+        }
+
+        .btn-rehabilitar
+        {
+            background: #198754;
+        }
+
+        .btn-rehabilitar:hover
+        {
+            background: #157347;
+        }
+
+        .btn-bloquear:disabled,
+        .btn-rehabilitar:disabled
+        {
+            opacity: .6;
+            cursor: wait;
+        }
+
+        /* =============================================
+           CELULAR
+        ============================================= */
+
+        @media (max-width: 700px)
+        {
+            .header-logistica
+            {
+                grid-template-columns:
+                    1fr auto;
+
+                padding: 8px 12px;
+
+                gap: 5px;
+
+                min-height: 58px;
+            }
+
+
+            .header-marca
+            {
+                grid-column: 1;
+
+                grid-row: 1;
+
+                font-size: 17px;
+            }
+
+
+            .header-derecha
+            {
+                grid-column: 2;
+
+                grid-row: 1;
+
+                gap: 6px;
+            }
+
+
+            .header-usuario
+            {
+                display: none;
+            }
+
+
+            .btn-volver
+            {
+                padding: 6px 9px;
+
+                font-size: 12px;
+            }
+
+
+            .header-empresa
+            {
+                grid-column:
+                    1 / -1;
+
+                grid-row: 2;
+
+                width: 100%;
+
+                font-size: 14px;
+
+                padding-top: 2px;
+            }
+
+
+            .contenido
+            {
+                padding: 12px;
+            }
+
+
+            .titulo-logistica
+            {
+                font-size: 21px;
+
+                margin-bottom: 12px;
+            }
+
+
+            .descripcion
+            {
+                font-size: 13px;
+            }
+
+
+            table
+            {
+                font-size: 13px;
+            }
+
+
+            th,
+            td
+            {
+                padding: 9px;
+            }
+
+
+            .btn-aceptar,
+            .btn-rechazar
+            {
+                padding: 7px 10px;
+
+                font-size: 12px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header-logistica">
+
+    <div class="header-marca">
+        VoyLlegando
+    </div>
+
+
+    <div
+        id="nombreLogistica"
+        class="header-empresa">
+
+        Logística
+
+    </div>
+
+
+    <div class="header-derecha">
+
+        <div
+            id="nombreUsuario"
+            class="header-usuario">
+        </div>
+
+
+        <button
+            type="button"
+            class="btn-volver"
+            onclick="volver()">
+
+            Volver
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     CONTENIDO
+===================================================== -->
+
+<main class="contenido">
+
+
+    <h1 class="titulo-logistica">
+        Solicitudes de Vínculo
+    </h1>
+
+
+    <div class="descripcion">
+        Empresas de Transporte que solicitaron vincularse con esta Logística.
+    </div>
+
+
+    <div
+        id="mensaje"
+        class="mensaje">
+    </div>
+
+
+    <div
+        id="cargando"
+        class="cargando">
+
+        Cargando solicitudes pendientes...
+
+    </div>
+
+
+    <div
+        id="sinDatos"
+        class="sin-datos"
+        style="display:none;">
+
+        No hay solicitudes de vínculo pendientes.
+
+    </div>
+
+
+    <div
+        id="contenedorTabla"
+        class="tabla-contenedor"
+        style="display:none;">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Empresa
+                    </th>
+
+                    <th>
+                        CUIT
+                    </th>
+
+                    <th>
+                        Celular
+                    </th>
+
+                    <th>
+                        Email
+                    </th>
+
+                    <th class="centrado">
+                        Acción
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="tablaSolicitudes">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <section class="seccion-relaciones">
+
+        <h2 class="subtitulo">
+            Empresas relacionadas
+        </h2>
+
+        <div class="descripcion">
+            Empresas aceptadas, rechazadas o bloqueadas para esta Logística.
+        </div>
+
+        <div
+            id="cargandoRelaciones"
+            class="cargando">
+
+            Cargando relaciones...
+
+        </div>
+
+        <div
+            id="sinRelaciones"
+            class="sin-datos"
+            style="display:none;">
+
+            No hay Empresas de Transporte relacionadas.
+
+        </div>
+
+        <div
+            id="contenedorRelaciones"
+            class="tabla-contenedor"
+            style="display:none;">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Empresa</th>
+                        <th>CUIT</th>
+                        <th>Celular</th>
+                        <th>Email</th>
+                        <th class="centrado">Estado</th>
+                        <th class="centrado">Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tablaRelaciones">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script src="/js/api.js?v=3"></script>
+
+<script src="/js/auth.js?v=3"></script>
+
+
+<script>
+
+    // =====================================================
+    // VARIABLES
+    // =====================================================
+
+    let usuarioActual = null;
+
+
+    // =====================================================
+    // INICIO
+    // =====================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        iniciar
+    );
+
+
+    async function iniciar()
+    {
+        try
+        {
+            usuarioActual =
+                await validarSesion(
+                    "L"
+                );
+
+
+            if (!usuarioActual)
+                return;
+
+
+            document
+                .getElementById(
+                    "nombreUsuario"
+                )
+                .textContent =
+                    usuarioActual.nombre ||
+                    "";
+
+
+            document
+                .getElementById(
+                    "nombreLogistica"
+                )
+                .textContent =
+                    usuarioActual.nombreLogistica ||
+                    "Logística";
+
+
+            await Promise.all([
+                cargarSolicitudes(),
+                cargarRelaciones()
+            ]);
+        }
+        catch (error)
+        {
+            mostrarError(
+                error.message ||
+                "No se pudo iniciar la pantalla."
+            );
+        }
+    }
+
+
+    // =====================================================
+    // CARGAR SOLICITUDES
+    // =====================================================
+
+    async function cargarSolicitudes()
+    {
+        const cargando =
+            document.getElementById(
+                "cargando"
+            );
+
+
+        const contenedor =
+            document.getElementById(
+                "contenedorTabla"
+            );
+
+
+        const sinDatos =
+            document.getElementById(
+                "sinDatos"
+            );
+
+
+        cargando.style.display =
+            "block";
+
+
+        contenedor.style.display =
+            "none";
+
+
+        sinDatos.style.display =
+            "none";
+
+
+        try
+        {
+            const solicitudes =
+                await API.get(
+                    "/api/LogisticaCamion/solicitudes-pendientes"
+                );
+
+
+            cargando.style.display =
+                "none";
+
+
+            mostrarSolicitudes(
+                solicitudes
+            );
+        }
+        catch (error)
+        {
+            cargando.style.display =
+                "none";
+
+
+            mostrarError(
+                error.message ||
+                "No se pudieron cargar las solicitudes."
+            );
+        }
+    }
+
+
+    // =====================================================
+    // MOSTRAR SOLICITUDES
+    // =====================================================
+
+    function mostrarSolicitudes(
+        solicitudes
+    )
+    {
+        const tbody =
+            document.getElementById(
+                "tablaSolicitudes"
+            );
+
+
+        const contenedor =
+            document.getElementById(
+                "contenedorTabla"
+            );
+
+
+        const sinDatos =
+            document.getElementById(
+                "sinDatos"
+            );
+
+
+        tbody.innerHTML =
+            "";
+
+
+        if (
+            !Array.isArray(
+                solicitudes
+            ) ||
+            solicitudes.length === 0
+        )
+        {
+            contenedor.style.display =
+                "none";
+
+
+            sinDatos.style.display =
+                "block";
+
+
+            return;
+        }
+
+
+        sinDatos.style.display =
+            "none";
+
+
+        for (
+            const empresa
+            of solicitudes
+        )
+        {
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${escapar(
+                        empresa.nombre
+                    )}
+                </td>
+
+                <td>
+                    ${escapar(
+                        empresa.cuit
+                    )}
+                </td>
+
+                <td>
+                    ${escapar(
+                        empresa.celular
+                    )}
+                </td>
+
+                <td>
+                    ${escapar(
+                        empresa.email
+                    )}
+                </td>
+
+                <td class="centrado">
+
+                    <div class="acciones">
+
+                        <button
+                            type="button"
+                            class="btn-aceptar"
+                            onclick="aceptarSolicitud(
+                                ${Number(
+                                    empresa.idUsuario
+                                )},
+                                this
+                            )">
+
+                            Aceptar
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn-rechazar"
+                            onclick="rechazarSolicitud(
+                                ${Number(
+                                    empresa.idUsuario
+                                )},
+                                this
+                            )">
+
+                            Rechazar
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                tr
+            );
+        }
+
+
+        contenedor.style.display =
+            "block";
+    }
+
+
+    // =====================================================
+    // ACEPTAR
+    // =====================================================
+
+    async function aceptarSolicitud(
+        idUsuario,
+        boton
+    )
+    {
+        const confirmar =
+            window.confirm(
+                "¿Desea aceptar esta solicitud de vínculo?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        const fila =
+            boton.closest(
+                "tr"
+            );
+
+
+        deshabilitarFila(
+            fila,
+            true
+        );
+
+
+        boton.textContent =
+            "Aceptando...";
+
+
+        try
+        {
+            const resultado =
+                await API.post(
+                    `/api/LogisticaCamion/solicitudes/${idUsuario}/aceptar`
+                );
+
+
+            mostrarOk(
+                resultado.mensaje ||
+                "Solicitud aceptada correctamente."
+            );
+
+
+            await Promise.all([
+                cargarSolicitudes(),
+                cargarRelaciones()
+            ]);
+        }
+        catch (error)
+        {
+            deshabilitarFila(
+                fila,
+                false
+            );
+
+
+            boton.textContent =
+                "Aceptar";
+
+
+            mostrarError(
+                error.message ||
+                "No se pudo aceptar la solicitud."
+            );
+        }
+    }
+
+
+    // =====================================================
+    // RECHAZAR
+    // =====================================================
+
+    async function rechazarSolicitud(
+        idUsuario,
+        boton
+    )
+    {
+        const confirmar =
+            window.confirm(
+                "¿Desea rechazar esta solicitud de vínculo?"
+            );
+
+
+        if (!confirmar)
+            return;
+
+
+        const fila =
+            boton.closest(
+                "tr"
+            );
+
+
+        deshabilitarFila(
+            fila,
+            true
+        );
+
+
+        boton.textContent =
+            "Rechazando...";
+
+
+        try
+        {
+            const resultado =
+                await API.post(
+                    `/api/LogisticaCamion/solicitudes/${idUsuario}/rechazar`
+                );
+
+
+            mostrarOk(
+                resultado.mensaje ||
+                "Solicitud rechazada correctamente."
+            );
+
+
+            await Promise.all([
+                cargarSolicitudes(),
+                cargarRelaciones()
+            ]);
+        }
+        catch (error)
+        {
+            deshabilitarFila(
+                fila,
+                false
+            );
+
+
+            boton.textContent =
+                "Rechazar";
+
+
+            mostrarError(
+                error.message ||
+                "No se pudo rechazar la solicitud."
+            );
+        }
+    }
+
+
+    // =====================================================
+    // CARGAR RELACIONES
+    // =====================================================
+
+    async function cargarRelaciones()
+    {
+        const cargando =
+            document.getElementById(
+                "cargandoRelaciones"
+            );
+
+        const contenedor =
+            document.getElementById(
+                "contenedorRelaciones"
+            );
+
+        const sinDatos =
+            document.getElementById(
+                "sinRelaciones"
+            );
+
+        cargando.style.display = "block";
+        contenedor.style.display = "none";
+        sinDatos.style.display = "none";
+
+        try
+        {
+            const relaciones =
+                await API.get(
+                    "/api/LogisticaCamion/relaciones"
+                );
+
+            cargando.style.display = "none";
+
+            mostrarRelaciones(
+                relaciones
+            );
+        }
+        catch (error)
+        {
+            cargando.style.display = "none";
+
+            mostrarError(
+                error.message ||
+                "No se pudieron cargar las relaciones."
+            );
+        }
+    }
+
+
+    // =====================================================
+    // MOSTRAR RELACIONES
+    // =====================================================
+
+    function mostrarRelaciones(
+        relaciones
+    )
+    {
+        const tbody =
+            document.getElementById(
+                "tablaRelaciones"
+            );
+
+        const contenedor =
+            document.getElementById(
+                "contenedorRelaciones"
+            );
+
+        const sinDatos =
+            document.getElementById(
+                "sinRelaciones"
+            );
+
+        tbody.innerHTML = "";
+
+        if (
+            !Array.isArray(relaciones) ||
+            relaciones.length === 0
+        )
+        {
+            contenedor.style.display = "none";
+            sinDatos.style.display = "block";
+            return;
+        }
+
+        sinDatos.style.display = "none";
+
+        for (const empresa of relaciones)
+        {
+            const estado =
+                empresa.estadoRelacion || "";
+
+            let accion = "";
+
+            if (estado === "A")
+            {
+                accion = `
+                    <button
+                        type="button"
+                        class="btn-bloquear"
+                        onclick="bloquearRelacion(
+                            ${Number(empresa.idUsuario)},
+                            this
+                        )">
+                        Bloquear
+                    </button>
+                `;
+            }
+            else if (
+                estado === "R" ||
+                estado === "B"
+            )
+            {
+                accion = `
+                    <button
+                        type="button"
+                        class="btn-rehabilitar"
+                        onclick="rehabilitarRelacion(
+                            ${Number(empresa.idUsuario)},
+                            this
+                        )">
+                        Rehabilitar
+                    </button>
+                `;
+            }
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+            tr.innerHTML = `
+                <td>${escapar(empresa.nombre)}</td>
+                <td>${escapar(empresa.cuit)}</td>
+                <td>${escapar(empresa.celular)}</td>
+                <td>${escapar(empresa.email)}</td>
+
+                <td class="centrado">
+                    <span class="estado-relacion estado-${escapar(estado)}">
+                        ${escapar(
+                            empresa.descripcionEstado ||
+                            descripcionEstado(estado)
+                        )}
+                    </span>
+                </td>
+
+                <td class="centrado">
+                    <div class="acciones">
+                        ${accion}
+                    </div>
+                </td>
+            `;
+
+            tbody.appendChild(tr);
+        }
+
+        contenedor.style.display = "block";
+    }
+
+
+    function descripcionEstado(
+        estado
+    )
+    {
+        switch (estado)
+        {
+            case "A":
+                return "Aceptada";
+
+            case "R":
+                return "Rechazada";
+
+            case "B":
+                return "Baja";
+
+            default:
+                return estado || "";
+        }
+    }
+
+
+    // =====================================================
+    // BLOQUEAR RELACION
+    // A -> B
+    // =====================================================
+
+    async function bloquearRelacion(
+        idUsuario,
+        boton
+    )
+    {
+        if (
+            !window.confirm(
+                "¿Desea bloquear esta Empresa de Transporte para esta Logística?"
+            )
+        )
+        {
+            return;
+        }
+
+        const fila =
+            boton.closest("tr");
+
+        deshabilitarFila(
+            fila,
+            true
+        );
+
+        boton.textContent =
+            "Bloqueando...";
+
+        try
+        {
+            const resultado =
+                await API.post(
+                    `/api/LogisticaCamion/relaciones/${idUsuario}/bloquear`
+                );
+
+            mostrarOk(
+                resultado.mensaje ||
+                "Empresa bloqueada correctamente."
+            );
+
+            await cargarRelaciones();
+        }
+        catch (error)
+        {
+            deshabilitarFila(
+                fila,
+                false
+            );
+
+            boton.textContent =
+                "Bloquear";
+
+            mostrarError(
+                error.message ||
+                "No se pudo bloquear la Empresa."
+            );
+        }
+    }
+
+
+    // =====================================================
+    // REHABILITAR RELACION
+    // R/B -> A
+    // =====================================================
+
+    async function rehabilitarRelacion(
+        idUsuario,
+        boton
+    )
+    {
+        if (
+            !window.confirm(
+                "¿Desea rehabilitar esta Empresa de Transporte para esta Logística?"
+            )
+        )
+        {
+            return;
+        }
+
+        const fila =
+            boton.closest("tr");
+
+        deshabilitarFila(
+            fila,
+            true
+        );
+
+        boton.textContent =
+            "Rehabilitando...";
+
+        try
+        {
+            const resultado =
+                await API.post(
+                    `/api/LogisticaCamion/relaciones/${idUsuario}/rehabilitar`
+                );
+
+            mostrarOk(
+                resultado.mensaje ||
+                "Empresa rehabilitada correctamente."
+            );
+
+            await cargarRelaciones();
+        }
+        catch (error)
+        {
+            deshabilitarFila(
+                fila,
+                false
+            );
+
+            boton.textContent =
+                "Rehabilitar";
+
+            mostrarError(
+                error.message ||
+                "No se pudo rehabilitar la Empresa."
+            );
+        }
+    }
+
+
+    // =====================================================
+    // DESHABILITAR BOTONES DE FILA
+    // =====================================================
+
+    function deshabilitarFila(
+        fila,
+        deshabilitado
+    )
+    {
+        if (!fila)
+            return;
+
+
+        const botones =
+            fila.querySelectorAll(
+                "button"
+            );
+
+
+        botones.forEach(
+            boton =>
+            {
+                boton.disabled =
+                    deshabilitado;
+            }
+        );
+    }
+
+
+    // =====================================================
+    // MENSAJES
+    // =====================================================
+
+    function mostrarOk(
+        texto
+    )
+    {
+        const mensaje =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        mensaje.textContent =
+            texto;
+
+
+        mensaje.className =
+            "mensaje mensaje-ok";
+
+
+        mensaje.style.display =
+            "block";
+    }
+
+
+    function mostrarError(
+        texto
+    )
+    {
+        const mensaje =
+            document.getElementById(
+                "mensaje"
+            );
+
+
+        mensaje.textContent =
+            texto;
+
+
+        mensaje.className =
+            "mensaje mensaje-error";
+
+
+        mensaje.style.display =
+            "block";
+    }
+
+
+    // =====================================================
+    // ESCAPAR HTML
+    // =====================================================
+
+    function escapar(
+        valor
+    )
+    {
+        if (
+            valor === null ||
+            valor === undefined
+        )
+        {
+            return "";
+        }
+
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.textContent =
+            String(
+                valor
+            );
+
+
+        return div.innerHTML;
+    }
+
+
+    // =====================================================
+    // VOLVER
+    // =====================================================
+
+    function volver()
+    {
+        window.location.href =
+            "/logistica.html";
+    }
+
+</script>
+
+
+</body>
+
+</html>
