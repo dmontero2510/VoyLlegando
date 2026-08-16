@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VoyLlegando.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b18a94e98767d32b33f9f893ab9097ab6a5b002d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1d8d22812b93faf75281fcf9c6708399e563c3be")]
 [assembly: System.Reflection.AssemblyProductAttribute("VoyLlegando.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VoyLlegando.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
