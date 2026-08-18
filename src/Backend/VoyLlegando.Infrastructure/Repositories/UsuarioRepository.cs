@@ -27,6 +27,7 @@ SELECT
     cuit AS Cuit,
     celular AS Celular,
     clave AS Clave,
+    debe_cambiar_clave AS DebeCambiarClave,
     email AS Email,
     rol AS Rol,
     habilitado AS Habilitado,
@@ -79,6 +80,7 @@ public async Task<IEnumerable<Usuario>> ObtenerTodosAsync()
             id_usuario  AS IdUsuario,
             celular     AS Celular,
             clave       AS Clave,
+            debe_cambiar_clave AS DebeCambiarClave,
             nombre      AS Nombre,
             domicilio   AS Domicilio,
             iva         AS Iva,
@@ -118,6 +120,7 @@ SELECT
     cuit AS Cuit,
     celular AS Celular,
     clave AS Clave,
+    debe_cambiar_clave AS DebeCambiarClave,
     email AS Email,
     rol AS Rol,
     habilitado AS Habilitado,
@@ -241,12 +244,26 @@ WHERE id_usuario = @IdUsuario;
             new { id });
     }
 
-    public async Task ActualizarClaveAsync(int idUsuario, string hash)
+    public async Task ActualizarClaveAsync(
+        int idUsuario,
+        string hash,
+        bool debeCambiarClave = false)
     {
         using var connection = _factory.CreateConnection();
 
         await connection.ExecuteAsync(
-            "UPDATE usuarios SET clave=@hash WHERE id_usuario=@idUsuario",
-            new { idUsuario, hash });
+            """
+            UPDATE usuarios
+            SET
+                clave = @hash,
+                debe_cambiar_clave = @debeCambiarClave
+            WHERE id_usuario = @idUsuario;
+            """,
+            new
+            {
+                idUsuario,
+                hash,
+                debeCambiarClave
+            });
     }
 }

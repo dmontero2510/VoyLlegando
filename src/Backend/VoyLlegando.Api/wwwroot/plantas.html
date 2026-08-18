@@ -933,6 +933,37 @@
                     type="hidden">
 
 
+                <!-- PEGAR COORDENADAS -->
+
+                <div class="form-grupo">
+
+                    <label for="coordenadasPegadas">
+                        Pegar coordenadas
+                    </label>
+
+                    <div class="acciones">
+
+                        <input
+                            id="coordenadasPegadas"
+                            class="form-control"
+                            placeholder="Ej.: -35.48658449, -62.99693620"
+                            autocomplete="off"
+                            onkeydown="if (event.key === 'Enter') { event.preventDefault(); ubicarCoordenadasPegadas(); }">
+
+                        <button
+                            type="button"
+                            class="btn btn-secundario"
+                            onclick="ubicarCoordenadasPegadas()">
+
+                            Ubicar
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
                 <!-- UBICACION -->
 
                 <div class="acciones">

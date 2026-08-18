@@ -20,6 +20,8 @@ public class UsuarioResponse
 
     public bool Habilitado { get; set; }
 
+    public bool DebeCambiarClave { get; set; }
+
     public int? IdTranspor { get; set; }
 
     public int? IdPlanta { get; set; }

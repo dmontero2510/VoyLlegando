@@ -70,7 +70,13 @@ public async Task<IActionResult> ObtenerEmpresa(
             empresa.IdUsuario,
 
         nombre =
-            empresa.Nombre
+            empresa.Nombre,
+
+        patChasis =
+            empresa.PatChasis,
+
+        patAcopla =
+            empresa.PatAcopla
     });
 }
 
@@ -958,8 +964,7 @@ public async Task<IActionResult> PendientesEmpresa()
 
         if (!viaje.IdCamionero.HasValue)
         {
-            return NotFound(
-                "El viaje no tiene una Empresa de Transporte asignada.");
+            return NoContent();
         }
 
         var empresa =
@@ -979,8 +984,7 @@ public async Task<IActionResult> PendientesEmpresa()
         if (!empresa.LatitudActual.HasValue ||
             !empresa.LongitudActual.HasValue)
         {
-            return NotFound(
-                "La Empresa todavía no informó su ubicación.");
+            return NoContent();
         }
 
         return Ok(new

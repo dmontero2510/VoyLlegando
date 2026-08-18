@@ -106,6 +106,12 @@ builder.Services.AddHttpClient<RutaService>(client =>
 {
 client.BaseAddress =
 new Uri("https://router.project-osrm.org/");
+
+client.DefaultRequestHeaders.UserAgent.ParseAdd(
+    "VoyLlegando/1.0");
+
+client.Timeout =
+TimeSpan.FromSeconds(20);
 });
 
 // -------------------------------------------------------

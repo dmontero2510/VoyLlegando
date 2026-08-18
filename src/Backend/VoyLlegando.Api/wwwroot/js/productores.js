@@ -1544,6 +1544,14 @@ function establecerUbicacion(
             lon.toFixed(8);
 
 
+    document
+        .getElementById(
+            "coordenadasPegadas"
+        )
+        .value =
+            `${lat.toFixed(8)}, ${lon.toFixed(8)}`;
+
+
     if (!marcadorCampo)
     {
         marcadorCampo =
@@ -1609,6 +1617,13 @@ function limpiarUbicacion()
 
     document
         .getElementById(
+            "coordenadasPegadas"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
             "longitud"
         )
         .value = "";
@@ -1627,6 +1642,75 @@ function limpiarUbicacion()
         marcadorCampo =
             null;
     }
+}
+
+
+// =======================================================
+// UBICAR COORDENADAS PEGADAS
+// =======================================================
+
+function ubicarCoordenadasPegadas()
+{
+    const texto =
+        document
+            .getElementById(
+                "coordenadasPegadas"
+            )
+            .value
+            .trim();
+
+
+    const coincidencia =
+        texto.match(
+            /^\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))\s*[,;]\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))\s*$/
+        );
+
+
+    if (!coincidencia)
+    {
+        mensaje(
+            "Pegue las coordenadas con el formato latitud, longitud.",
+            true
+        );
+
+        return;
+    }
+
+
+    const latitud =
+        Number(coincidencia[1]);
+
+
+    const longitud =
+        Number(coincidencia[2]);
+
+
+    if (
+        latitud < -90 ||
+        latitud > 90 ||
+        longitud < -180 ||
+        longitud > 180
+    )
+    {
+        mensaje(
+            "La latitud debe estar entre -90 y 90 y la longitud entre -180 y 180.",
+            true
+        );
+
+        return;
+    }
+
+
+    establecerUbicacion(
+        latitud,
+        longitud,
+        true
+    );
+
+
+    mensaje(
+        "Ubicación seleccionada."
+    );
 }
 
 

@@ -13,19 +13,118 @@
     <link
         rel="stylesheet"
         href="/css/app.css?v=200">
+
+    <style>
+        .login-card-inicio {
+            max-width: 380px;
+            padding: 0 24px 9px;
+            border-radius: 14px;
+        }
+
+        .login-card-inicio .logo-bloque {
+            margin: 0 -24px 12px;
+            padding: 23px 16px 20px;
+        }
+
+        .login-card-inicio .logo-icono {
+            display: block;
+            width: 46px;
+            height: 56px;
+            margin-bottom: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .login-card-inicio .login-titulo {
+            font-size: 28px;
+        }
+
+        .login-card-inicio .login-subtitulo {
+            margin-top: 4px;
+            font-size: 13px;
+        }
+
+        .login-card-inicio .form-grupo {
+            margin-bottom: 9px;
+        }
+
+        .login-card-inicio .form-grupo label {
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .login-card-inicio .form-control {
+            padding: 9px 11px;
+            font-size: 15px;
+        }
+
+        .login-card-inicio .btn {
+            padding: 10px 14px;
+        }
+
+        .registro-inicio {
+            margin-top: 9px;
+            text-align: center;
+        }
+
+        .registro-inicio-texto {
+            margin-bottom: 2px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .registro-inicio-enlace {
+            color: #159dcc;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .login-card-inicio .mensaje:empty {
+            display: none;
+        }
+
+        @media (max-width: 700px) {
+            .login-pagina {
+                padding: 12px;
+            }
+
+            .login-card-inicio {
+                max-width: 360px;
+                padding: 0 18px 7px;
+            }
+
+            .login-card-inicio .logo-bloque {
+                margin: 0 -18px 10px;
+                padding: 20px 12px 17px;
+            }
+
+            .login-card-inicio .logo-icono {
+                width: 42px;
+                height: 51px;
+            }
+
+            .login-card-inicio .login-titulo {
+                font-size: 27px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="login-pagina">
 
-    <div class="login-card">
+    <div class="login-card login-card-inicio">
 
         <div class="logo-bloque">
 
-            <div class="logo-icono">
-                🚚
-            </div>
+            <img
+                class="logo-icono"
+                src="/img/icono-origen-destino.png"
+                alt="Origen y destino">
 
             <h1 class="login-titulo">
                 VoyLlegando
@@ -83,18 +182,9 @@
              REGISTRO EMPRESA
         ====================================================== -->
 
-        <div
-            style="
-                text-align: center;
-                margin-top: 22px;
-            ">
+        <div class="registro-inicio">
 
-            <div
-                style="
-                    color: #666;
-                    font-size: 14px;
-                    margin-bottom: 8px;
-                ">
+            <div class="registro-inicio-texto">
 
                 ¿Es una empresa nueva?
 
@@ -102,12 +192,7 @@
 
             <a
                 href="/registro.html"
-                style="
-                    color: #159dcc;
-                    font-size: 15px;
-                    font-weight: bold;
-                    text-decoration: none;
-                ">
+                class="registro-inicio-enlace">
 
                 Registrarse
 
@@ -116,10 +201,7 @@
         </div>
 
 
-        <div
-            id="mensaje"
-            class="mensaje">
-        </div>
+        <div id="mensaje" class="mensaje"></div>
 
     </div>
 
@@ -131,7 +213,7 @@
 ========================================================== -->
 
 <script src="/js/api.js?v=200"></script>
-<script src="/js/auth.js?v=200"></script>
+<script src="/js/auth.js?v=201"></script>
 
 <script>
 

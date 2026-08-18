@@ -672,6 +672,16 @@
         <button
             type="button"
             class="btn-salir"
+            onclick="window.location.href='/cambiar-clave.html'">
+
+            Cambiar clave
+
+        </button>
+
+
+        <button
+            type="button"
+            class="btn-salir"
             onclick="logout()">
 
             Salir
@@ -792,37 +802,6 @@
 
 
         <!-- =============================================
-             CEREALES
-        ============================================== -->
-
-        <div
-            class="menu-item"
-            onclick="
-                window.location.href =
-                '/cereales.html'
-            ">
-
-            <div class="menu-icono">
-                🌽
-            </div>
-
-
-            <div class="menu-texto">
-
-                <div class="menu-titulo">
-                    Cereales
-                </div>
-
-                <div class="menu-descripcion">
-                    Administrar tipos de cereales
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- =============================================
              SOLICITUDES DE VINCULO
         ============================================== -->
 
@@ -894,7 +873,7 @@
 
 <script src="/js/api.js"></script>
 
-<script src="/js/auth.js"></script>
+<script src="/js/auth.js?v=5"></script>
 
 
 <script>
@@ -940,8 +919,6 @@
     iniciar();
 
 </script>
-<script src="/js/api.js?v=3"></script>
-<script src="/js/auth.js?v=3"></script>
 
 </body>
 

@@ -12,6 +12,8 @@ public class PerfilResponse
 
     public string Rol { get; set; } = string.Empty;
 
+    public bool DebeCambiarClave { get; set; }
+
     public string? PatChasis { get; set; }
 
     public string? PatAcoplado { get; set; }

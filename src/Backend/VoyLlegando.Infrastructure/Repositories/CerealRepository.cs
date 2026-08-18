@@ -41,6 +41,7 @@ public class CerealRepository
             SELECT
                 id_cereal      AS IdCereal,
                 nombre_cereal  AS NombreCereal,
+                categoria      AS Categoria,
                 habilitado     AS Habilitado
             FROM public.cereales
             ORDER BY nombre_cereal;
@@ -65,6 +66,7 @@ public class CerealRepository
             SELECT
                 id_cereal      AS IdCereal,
                 nombre_cereal  AS NombreCereal,
+                categoria      AS Categoria,
                 habilitado     AS Habilitado
             FROM public.cereales
             WHERE habilitado = true
@@ -91,6 +93,7 @@ public class CerealRepository
             SELECT
                 id_cereal      AS IdCereal,
                 nombre_cereal  AS NombreCereal,
+                categoria      AS Categoria,
                 habilitado     AS Habilitado
             FROM public.cereales
             WHERE id_cereal = @IdCereal;
@@ -121,12 +124,14 @@ public class CerealRepository
             (
                 id_cereal,
                 nombre_cereal,
+                categoria,
                 habilitado
             )
             VALUES
             (
                 @IdCereal,
                 @NombreCereal,
+                @Categoria,
                 @Habilitado
             );
             """;
@@ -150,6 +155,7 @@ public class CerealRepository
             UPDATE public.cereales
             SET
                 nombre_cereal = @NombreCereal,
+                categoria     = @Categoria,
                 habilitado    = @Habilitado
             WHERE id_cereal = @IdCereal;
             """;

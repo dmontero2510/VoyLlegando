@@ -55,6 +55,9 @@ public class CerealesController
                     nombre =
                         c.NombreCereal,
 
+                    categoria =
+                        c.Categoria,
+
                     habilitado =
                         c.Habilitado
                 }
@@ -90,7 +93,10 @@ public class CerealesController
                         c.IdCereal,
 
                     nombre =
-                        c.NombreCereal
+                        c.NombreCereal,
+
+                    categoria =
+                        c.Categoria
                 }
             )
         );
@@ -126,6 +132,9 @@ public class CerealesController
 
             nombre =
                 cereal.NombreCereal,
+
+            categoria =
+                cereal.Categoria,
 
             habilitado =
                 cereal.Habilitado
@@ -166,6 +175,14 @@ public class CerealesController
         }
 
 
+        if (request.Categoria?.Trim().Length > 40)
+        {
+            return BadRequest(
+                "La categoría no puede superar los 40 caracteres."
+            );
+        }
+
+
         var existente =
             await _cerealRepository
                 .ObtenerPorIdAsync(
@@ -190,6 +207,10 @@ public class CerealesController
                 NombreCereal =
                     request.Nombre
                         .Trim(),
+
+                Categoria =
+                    request.Categoria?
+                        .Trim() ?? "",
 
                 Habilitado =
                     true
@@ -250,9 +271,22 @@ public class CerealesController
         }
 
 
+        if (request.Categoria?.Trim().Length > 40)
+        {
+            return BadRequest(
+                "La categoría no puede superar los 40 caracteres."
+            );
+        }
+
+
         cereal.NombreCereal =
             request.Nombre
                 .Trim();
+
+
+        cereal.Categoria =
+            request.Categoria?
+                .Trim() ?? "";
 
 
         cereal.Habilitado =

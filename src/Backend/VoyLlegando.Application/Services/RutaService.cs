@@ -43,15 +43,42 @@ public async Task<RutaResponse> CalcularAsync(
         $"{lonDestino},{latDestino}" +
         "?overview=full&geometries=geojson";
 
-    var respuesta =
-        await _httpClient.GetFromJsonAsync<OsrmResponse>(url);
+    OsrmResponse? respuesta;
+
+    try
+    {
+        respuesta =
+            await _httpClient.GetFromJsonAsync<OsrmResponse>(url);
+    }
+    catch (HttpRequestException)
+    {
+        return CrearRecorridoAproximado(
+            idViaje,
+            latitudOrigen,
+            longitudOrigen,
+            latitudDestino,
+            longitudDestino);
+    }
+    catch (TaskCanceledException)
+    {
+        return CrearRecorridoAproximado(
+            idViaje,
+            latitudOrigen,
+            longitudOrigen,
+            latitudDestino,
+            longitudDestino);
+    }
 
     if (respuesta == null ||
         respuesta.Code != "Ok" ||
         respuesta.Routes.Count == 0)
     {
-        throw new InvalidOperationException(
-            "No se pudo calcular el recorrido.");
+        return CrearRecorridoAproximado(
+            idViaje,
+            latitudOrigen,
+            longitudOrigen,
+            latitudDestino,
+            longitudDestino);
     }
 
     var ruta = respuesta.Routes[0];
@@ -88,8 +115,102 @@ public async Task<RutaResponse> CalcularAsync(
         DuracionMinutos =
             Math.Round((decimal)ruta.Duration / 60m, 1),
 
+        EsAproximada = false,
+
         Ruta = puntos
     };
+}
+
+private static RutaResponse CrearRecorridoAproximado(
+    int idViaje,
+    decimal latitudOrigen,
+    decimal longitudOrigen,
+    decimal latitudDestino,
+    decimal longitudDestino)
+{
+    var distanciaKm =
+        CalcularDistanciaDirectaKm(
+            (double)latitudOrigen,
+            (double)longitudOrigen,
+            (double)latitudDestino,
+            (double)longitudDestino);
+
+    return new RutaResponse
+    {
+        IdViaje = idViaje,
+
+        Origen = new PuntoRuta
+        {
+            Latitud = (double)latitudOrigen,
+            Longitud = (double)longitudOrigen
+        },
+
+        Destino = new PuntoRuta
+        {
+            Latitud = (double)latitudDestino,
+            Longitud = (double)longitudDestino
+        },
+
+        DistanciaKm =
+            Math.Round((decimal)distanciaKm, 2),
+
+        DuracionMinutos = 0,
+
+        EsAproximada = true,
+
+        Aviso =
+            "Servicio de rutas no disponible. Se muestra una línea directa y una distancia aproximada.",
+
+        Ruta = new List<PuntoRuta>
+        {
+            new()
+            {
+                Latitud = (double)latitudOrigen,
+                Longitud = (double)longitudOrigen
+            },
+            new()
+            {
+                Latitud = (double)latitudDestino,
+                Longitud = (double)longitudDestino
+            }
+        }
+    };
+}
+
+private static double CalcularDistanciaDirectaKm(
+    double latitudOrigen,
+    double longitudOrigen,
+    double latitudDestino,
+    double longitudDestino)
+{
+    const double radioTierraKm = 6371.0088;
+
+    var lat1 = GradosARadianes(latitudOrigen);
+    var lat2 = GradosARadianes(latitudDestino);
+    var diferenciaLatitud =
+        GradosARadianes(latitudDestino - latitudOrigen);
+    var diferenciaLongitud =
+        GradosARadianes(longitudDestino - longitudOrigen);
+
+    var a =
+        Math.Sin(diferenciaLatitud / 2) *
+        Math.Sin(diferenciaLatitud / 2) +
+        Math.Cos(lat1) *
+        Math.Cos(lat2) *
+        Math.Sin(diferenciaLongitud / 2) *
+        Math.Sin(diferenciaLongitud / 2);
+
+    var c =
+        2 * Math.Atan2(
+            Math.Sqrt(a),
+            Math.Sqrt(1 - a));
+
+    return radioTierraKm * c;
+}
+
+private static double GradosARadianes(double grados)
+{
+    return grados * Math.PI / 180;
 }
 
 // -------------------------------------------------------

@@ -207,6 +207,11 @@ function mostrarCereales()
 
                     <br>
 
+                    Categoría:
+                    ${escapar(cereal.categoria || "Sin categoría")}
+
+                    <br>
+
                     <span class="${claseEstado}">
                         ${estado}
                     </span>
@@ -281,6 +286,14 @@ function nuevoCereal()
     document
         .getElementById(
             "nombre"
+        )
+        .value =
+            "";
+
+
+    document
+        .getElementById(
+            "categoria"
         )
         .value =
             "";
@@ -365,6 +378,14 @@ async function seleccionarCereal(
             )
             .value =
                 cereal.nombre || "";
+
+
+        document
+            .getElementById(
+                "categoria"
+            )
+            .value =
+                cereal.categoria || "";
 
 
         document
@@ -481,6 +502,15 @@ async function guardarCereal()
             .trim();
 
 
+    const categoria =
+        document
+            .getElementById(
+                "categoria"
+            )
+            .value
+            .trim();
+
+
     const idCereal =
         Number(
             idTexto
@@ -527,6 +557,17 @@ async function guardarCereal()
     }
 
 
+    if (categoria.length > 40)
+    {
+        mensaje(
+            "La categoría no puede superar los 40 caracteres.",
+            true
+        );
+
+        return;
+    }
+
+
     // ---------------------------------------------------
     // ESTADO
     //
@@ -550,6 +591,9 @@ async function guardarCereal()
 
         nombre:
             nombre,
+
+        categoria:
+            categoria,
 
         habilitado:
             habilitado
@@ -709,6 +753,9 @@ async function habilitarCereal()
 
             nombre:
                 cerealSeleccionado.nombre,
+
+            categoria:
+                cerealSeleccionado.categoria || "",
 
             habilitado:
                 true

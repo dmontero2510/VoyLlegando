@@ -311,6 +311,102 @@ public class AuthController : ControllerBase
 
 
     // -------------------------------------------------------
+    // POST /api/auth/cambiar-clave
+    // -------------------------------------------------------
+
+    [Authorize]
+    [HttpPost("cambiar-clave")]
+    public async Task<IActionResult> CambiarClave(
+        CambiarClaveRequest request)
+    {
+        var idTexto =
+            User.FindFirst(
+                ClaimTypes.NameIdentifier)
+            ?.Value;
+
+
+        if (!int.TryParse(idTexto, out var idUsuario))
+            return Unauthorized();
+
+
+        var usuario =
+            await _usuarioRepository
+                .ObtenerPorIdAsync(idUsuario);
+
+
+        if (usuario == null || !usuario.Habilitado)
+            return Unauthorized();
+
+
+        if (!_passwordService.Verificar(
+                request.ClaveActual,
+                usuario.Clave))
+        {
+            return BadRequest(new
+            {
+                mensaje = "La clave actual es incorrecta."
+            });
+        }
+
+
+        var error =
+            ValidarNuevaClave(
+                request.NuevaClave,
+                request.RepetirClave);
+
+
+        if (error != null)
+            return BadRequest(new { mensaje = error });
+
+
+        if (_passwordService.Verificar(
+                request.NuevaClave,
+                usuario.Clave))
+        {
+            return BadRequest(new
+            {
+                mensaje = "La nueva clave debe ser diferente de la actual."
+            });
+        }
+
+
+        await _usuarioRepository
+            .ActualizarClaveAsync(
+                idUsuario,
+                _passwordService.GenerarHash(
+                    request.NuevaClave),
+                false);
+
+
+        return Ok(new
+        {
+            ok = true,
+            mensaje = "Clave actualizada correctamente. Ingrese nuevamente."
+        });
+    }
+
+
+    private static string? ValidarNuevaClave(
+        string nuevaClave,
+        string repetirClave)
+    {
+        if (string.IsNullOrWhiteSpace(nuevaClave))
+            return "Ingrese la nueva clave.";
+
+        if (nuevaClave.Length < 6)
+            return "La nueva clave debe tener al menos 6 caracteres.";
+
+        if (nuevaClave.Length > 72)
+            return "La nueva clave no puede superar los 72 caracteres.";
+
+        if (nuevaClave != repetirClave)
+            return "Las claves nuevas no coinciden.";
+
+        return null;
+    }
+
+
+    // -------------------------------------------------------
     // GET /api/auth/perfil
     // -------------------------------------------------------
 
@@ -391,6 +487,9 @@ public class AuthController : ControllerBase
 
             rol =
                 usuario.Rol,
+
+            debeCambiarClave =
+                usuario.DebeCambiarClave,
 
             idTranspor =
                 usuario.IdTranspor,

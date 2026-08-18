@@ -111,6 +111,7 @@ public class AuthService : IAuthService
                 Nombre = usuario.Nombre,
                 Telefono = usuario.Celular,
                 Rol = usuario.Rol,
+                DebeCambiarClave = usuario.DebeCambiarClave,
 
                 PatChasis = usuario.PatChasis,
                 PatAcoplado = usuario.PatAcopla,

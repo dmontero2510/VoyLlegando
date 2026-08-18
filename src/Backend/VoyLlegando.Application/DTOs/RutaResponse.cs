@@ -12,6 +12,10 @@ public decimal DistanciaKm { get; set; }
 
 public decimal DuracionMinutos { get; set; }
 
+public bool EsAproximada { get; set; }
+
+public string Aviso { get; set; } = "";
+
 public List<PuntoRuta> Ruta { get; set; } = new();
 
 }

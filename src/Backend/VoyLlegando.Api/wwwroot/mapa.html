@@ -251,10 +251,11 @@
         .viaje {
             border: 1px solid var(--borde, #dce2e8);
             border-radius: 9px;
-            padding: 12px;
+            padding: 10px 12px;
             margin-bottom: 10px;
             cursor: pointer;
             background: white;
+            overflow: hidden;
             transition: border-color .15s, background .15s, transform .15s;
         }
 
@@ -269,21 +270,50 @@
             background: #dff6ff;
         }
 
+        .viaje-fila {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            align-items: center;
+            gap: 12px;
+            min-height: 22px;
+        }
+
+        .viaje-fila + .viaje-fila {
+            margin-top: 2px;
+        }
+
+        .viaje-dato {
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .viaje-derecha {
+            text-align: right;
+        }
+
         .viaje-id {
-            font-weight: bold;
-            color: #0d0d27;
-            margin-bottom: 5px;
+            font-weight: 700;
+            color: #6c7280;
+            font-size: 12px;
         }
 
         .viaje-ruta {
-            font-size: 14px;
-            margin-bottom: 6px;
-            line-height: 1.4;
+            color: #0d0d27;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .viaje-equipo {
+            color: #3f4652;
+            font-size: 13px;
         }
 
         .viaje-estado {
-            font-size: 13px;
-            font-weight: bold;
+            color: #3f4652;
+            font-size: 12px;
+            font-weight: 700;
         }
 
         .estado-empresa {
@@ -693,6 +723,7 @@
     // =======================================================
 
     let viajeActualEmpresa = null;
+    let empresasSeguimiento = {};
 
 
     // =======================================================
@@ -1308,6 +1339,11 @@
                 await response.json();
 
 
+            await cargarEmpresasSeguimiento(
+                viajes
+            );
+
+
             mostrarListaViajes(
                 viajes
             );
@@ -1325,6 +1361,55 @@
                 "Error: " +
                 error.message;
         }
+    }
+
+
+    async function cargarEmpresasSeguimiento(viajes)
+    {
+        empresasSeguimiento = {};
+
+        const token =
+            obtenerToken();
+
+        const ids =
+            [
+                ...new Set(
+                    viajes
+                        .filter(viaje => viaje.idCamionero)
+                        .map(viaje => Number(viaje.idCamionero))
+                )
+            ];
+
+        await Promise.all(
+            ids.map(
+                async idEmpresa =>
+                {
+                    try
+                    {
+                        const response =
+                            await fetch(
+                                `/api/Viajes/empresa/${idEmpresa}`,
+                                {
+                                    headers:
+                                    {
+                                        "Authorization":
+                                            `Bearer ${token}`
+                                    }
+                                }
+                            );
+
+                        if (!response.ok)
+                            return;
+
+                        empresasSeguimiento[idEmpresa] =
+                            await response.json();
+                    }
+                    catch
+                    {
+                    }
+                }
+            )
+        );
     }
 
 
@@ -1371,33 +1456,9 @@
 
 
                 item.innerHTML =
-                    `
-                    <div class="viaje-id">
-                        Viaje #${viaje.idViaje}
-                    </div>
-
-                    <div class="viaje-ruta">
-
-                        ${viaje.origen}
-
-                        <br>
-
-                        ↓
-
-                        <br>
-
-                        ${viaje.destino}
-
-                    </div>
-
-                    <div class="viaje-estado">
-
-                        ${descripcionEstadoViaje(
-                            viaje.estado
-                        )}
-
-                    </div>
-                    `;
+                    crearTarjetaSeguimiento(
+                        viaje
+                    );
 
 
                 item.onclick =
@@ -1415,6 +1476,79 @@
                 );
             }
         );
+    }
+
+
+    function crearTarjetaSeguimiento(viaje)
+    {
+        const empresa =
+            empresasSeguimiento[
+                Number(viaje.idCamionero)
+            ] ||
+            {};
+
+        const chofer =
+            viaje.nombreChofer ||
+            viaje.nombreEmpresa ||
+            empresa.nombre ||
+            "Sin asignar";
+
+        const patChasis =
+            viaje.patChasis ||
+            viaje.patenteChasis ||
+            empresa.patChasis ||
+            "";
+
+        const patAcopla =
+            viaje.patAcopla ||
+            viaje.patenteAcopla ||
+            empresa.patAcopla ||
+            "";
+
+        const patentes =
+            [patChasis, patAcopla]
+                .filter(Boolean)
+                .join(" - ") ||
+            "-";
+
+        return `
+            <div class="viaje-fila">
+                <div class="viaje-dato viaje-ruta" title="${escaparMapa(viaje.origen || "-")}">
+                    ${escaparMapa(viaje.origen || "-")}
+                </div>
+                <div class="viaje-dato viaje-derecha viaje-ruta" title="${escaparMapa(viaje.destino || "-")}">
+                    ${escaparMapa(viaje.destino || "-")}
+                </div>
+            </div>
+            <div class="viaje-fila">
+                <div class="viaje-dato viaje-equipo" title="${escaparMapa(chofer)}">
+                    ${escaparMapa(chofer)}
+                </div>
+                <div class="viaje-dato viaje-derecha viaje-equipo" title="${escaparMapa(patentes)}">
+                    ${escaparMapa(patentes)}
+                </div>
+            </div>
+            <div class="viaje-fila">
+                <div class="viaje-dato viaje-id">
+                    Viaje #${viaje.idViaje}
+                </div>
+                <div class="viaje-dato viaje-derecha viaje-estado">
+                    ${escaparMapa(descripcionEstadoViaje(viaje.estado))}
+                </div>
+            </div>
+        `;
+    }
+
+
+    function escaparMapa(valor)
+    {
+        const elemento =
+            document.createElement("div");
+
+        elemento.textContent =
+            valor ?? "";
+
+        return elemento.innerHTML;
     }
 
 
@@ -1593,6 +1727,8 @@
 
             let cantidadMostrada = 0;
 
+            let cantidadAproximada = 0;
+
 
             for (
                 let i = 0;
@@ -1653,7 +1789,11 @@
                             {
                                 color: color,
                                 weight: 5,
-                                opacity: 0.85
+                                opacity: 0.85,
+                                dashArray:
+                                    recorrido.esAproximada
+                                        ? "10 8"
+                                        : null
                             }
                         )
                         .addTo(map);
@@ -1678,6 +1818,12 @@
                         <br><br>
 
                         ${recorrido.distanciaKm} km
+
+                        ${
+                            recorrido.esAproximada
+                                ? "<br><strong>Recorrido aproximado</strong>"
+                                : ""
+                        }
                         `
                     );
 
@@ -1792,6 +1938,9 @@
 
 
                     cantidadMostrada++;
+
+                    if (recorrido.esAproximada)
+                        cantidadAproximada++;
                 }
                 catch
                 {
@@ -1836,7 +1985,9 @@
 
 
             mensaje.textContent =
-                `${cantidadMostrada} recorrido(s) mostrados.`;
+                cantidadAproximada > 0
+                    ? `${cantidadMostrada} recorrido(s) mostrados. ${cantidadAproximada} aproximado(s).`
+                    : `${cantidadMostrada} recorrido(s) mostrados.`;
         }
         catch (error)
         {
@@ -2677,8 +2828,18 @@
                 );
 
 
+            if (response.status === 204)
+            {
+                limpiarCamion();
+
+                return;
+            }
+
+
             if (response.status === 404)
             {
+                detenerSeguimientoLogistica();
+
                 limpiarCamion();
 
                 return;
@@ -3056,7 +3217,10 @@
             );
 
 
-            mensaje.textContent = "";
+            mensaje.textContent =
+                datos.esAproximada
+                    ? datos.aviso
+                    : "";
         }
         catch (error)
         {
@@ -3175,7 +3339,11 @@
             L.polyline(
                 puntos,
                 {
-                    weight: 5
+                    weight: 5,
+                    dashArray:
+                        datos.esAproximada
+                            ? "10 8"
+                            : null
                 }
             )
             .addTo(map);

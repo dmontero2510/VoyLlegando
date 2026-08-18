@@ -83,7 +83,13 @@ public class JwtService : IJwtService
 
             new Claim(
                 "celular",
-                usuario.Celular)
+                usuario.Celular),
+
+            new Claim(
+                "debe_cambiar_clave",
+                usuario.DebeCambiarClave
+                    ? "true"
+                    : "false")
         };
 
         // ---------------------------------------------------

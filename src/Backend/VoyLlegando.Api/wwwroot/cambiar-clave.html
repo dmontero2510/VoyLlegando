@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VoyLlegando - Cambiar clave</title>
+    <link rel="stylesheet" href="/css/app.css">
+
+    <style>
+        body {
+            background: #f3f5f8;
+        }
+
+        .contenedor-clave {
+            max-width: 520px;
+            margin: 60px auto;
+            padding: 0 16px;
+        }
+
+        .card-clave {
+            background: white;
+            border: 1px solid var(--borde);
+            border-radius: 12px;
+            padding: 26px;
+            box-shadow: 0 5px 22px rgba(13, 13, 39, .10);
+        }
+
+        .card-clave h1 {
+            margin-top: 0;
+            color: var(--fondo-oscuro);
+        }
+
+        .form-grupo {
+            margin-bottom: 16px;
+        }
+
+        .aviso-clave {
+            margin-bottom: 18px;
+            padding: 12px;
+            border-left: 4px solid var(--azul-marca);
+            background: var(--azul-suave);
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="contenedor-clave">
+    <section class="card-clave">
+        <h1>Cambiar clave</h1>
+
+        <div id="avisoObligatorio" class="aviso-clave oculto">
+            Debe reemplazar la clave temporal antes de continuar.
+        </div>
+
+        <div class="form-grupo">
+            <label for="claveActual">Clave actual o temporal</label>
+            <input id="claveActual" class="form-control"
+                   type="password" autocomplete="current-password">
+        </div>
+
+        <div class="form-grupo">
+            <label for="nuevaClave">Nueva clave</label>
+            <input id="nuevaClave" class="form-control"
+                   type="password" minlength="6" maxlength="72"
+                   autocomplete="new-password">
+        </div>
+
+        <div class="form-grupo">
+            <label for="repetirClave">Repetir nueva clave</label>
+            <input id="repetirClave" class="form-control"
+                   type="password" minlength="6" maxlength="72"
+                   autocomplete="new-password">
+        </div>
+
+        <div id="mensaje" class="mensaje"></div>
+
+        <div class="acciones">
+            <button type="button" id="btnGuardar"
+                    class="btn btn-principal" onclick="cambiarClave()">
+                Guardar nueva clave
+            </button>
+
+            <button type="button" id="btnVolver"
+                    class="btn btn-secundario" onclick="volver()">
+                Volver
+            </button>
+        </div>
+    </section>
+</main>
+
+<script src="/js/api.js?v=4"></script>
+<script src="/js/auth.js?v=201"></script>
+
+<script>
+    let perfilActual = null;
+
+    async function iniciarCambioClave()
+    {
+        perfilActual = await validarSesion();
+
+        if (!perfilActual)
+            return;
+
+        if (perfilActual.debeCambiarClave)
+        {
+            document.getElementById("avisoObligatorio")
+                .classList.remove("oculto");
+
+            document.getElementById("btnVolver")
+                .classList.add("oculto");
+        }
+
+        document.getElementById("claveActual").focus();
+    }
+
+    function mostrarMensajeClave(texto, error = false)
+    {
+        const elemento = document.getElementById("mensaje");
+        elemento.textContent = texto || "";
+        elemento.className = error ? "mensaje error" : "mensaje";
+    }
+
+    async function cambiarClave()
+    {
+        const claveActual = document.getElementById("claveActual").value;
+        const nuevaClave = document.getElementById("nuevaClave").value;
+        const repetirClave = document.getElementById("repetirClave").value;
+
+        if (!claveActual || !nuevaClave || !repetirClave)
+        {
+            mostrarMensajeClave("Complete los tres campos.", true);
+            return;
+        }
+
+        if (nuevaClave.length < 6)
+        {
+            mostrarMensajeClave(
+                "La nueva clave debe tener al menos 6 caracteres.",
+                true
+            );
+            return;
+        }
+
+        if (nuevaClave !== repetirClave)
+        {
+            mostrarMensajeClave("Las claves nuevas no coinciden.", true);
+            return;
+        }
+
+        const boton = document.getElementById("btnGuardar");
+
+        try
+        {
+            boton.disabled = true;
+            mostrarMensajeClave("Guardando...");
+
+            const respuesta = await API.post(
+                "/api/auth/cambiar-clave",
+                { claveActual, nuevaClave, repetirClave }
+            );
+
+            API.cerrarSesion();
+            alert(respuesta.mensaje);
+            window.location.href = "/index.html";
+        }
+        catch (error)
+        {
+            mostrarMensajeClave(error.message, true);
+        }
+        finally
+        {
+            boton.disabled = false;
+        }
+    }
+
+    function volver()
+    {
+        redirigirSegunRol(perfilActual?.rol);
+    }
+
+    ["claveActual", "nuevaClave", "repetirClave"].forEach(id =>
+    {
+        document.getElementById(id).addEventListener("keydown", event =>
+        {
+            if (event.key === "Enter")
+                cambiarClave();
+        });
+    });
+
+    iniciarCambioClave();
+</script>
+
+</body>
+</html>

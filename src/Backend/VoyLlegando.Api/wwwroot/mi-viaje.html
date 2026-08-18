@@ -621,6 +621,13 @@
             color: #1b5e20;
         }
 
+        .btn-documento-quitar
+        {
+            background: #ffebee;
+            border-color: #c62828;
+            color: #b71c1c;
+        }
+
         .btn-documento:disabled
         {
             opacity: .55;
@@ -1113,12 +1120,35 @@
 
             <div class="documentacion-fila">
 
+                <input
+                    id="archivoCP"
+                    type="file"
+                    accept="application/pdf,.pdf"
+                    class="oculto"
+                    onchange="subirCP()">
+
+                <button
+                    id="btnAdjuntarCP"
+                    type="button"
+                    class="btn-documento"
+                    onclick="seleccionarCP()">
+                    ADJUNTAR CP
+                </button>
+
                 <button
                     id="btnVerCP"
                     type="button"
                     class="btn-documento btn-documento-ver oculto"
                     onclick="verCP()">
                     VER CP
+                </button>
+
+                <button
+                    id="btnQuitarCP"
+                    type="button"
+                    class="btn-documento btn-documento-quitar oculto"
+                    onclick="quitarCP()">
+                    QUITAR CP
                 </button>
 
                 <div
@@ -2824,9 +2854,19 @@
 
     function actualizarDocumentacion()
     {
+        const btnAdjuntar =
+            document.getElementById(
+                "btnAdjuntarCP"
+            );
+
         const btnVer =
             document.getElementById(
                 "btnVerCP"
+            );
+
+        const btnQuitar =
+            document.getElementById(
+                "btnQuitarCP"
             );
 
         const nombre =
@@ -2836,7 +2876,14 @@
 
         if (documentoCP)
         {
+            btnAdjuntar.textContent =
+                "REEMPLAZAR CP";
+
             btnVer.classList.remove(
+                "oculto"
+            );
+
+            btnQuitar.classList.remove(
                 "oculto"
             );
 
@@ -2846,12 +2893,145 @@
         }
         else
         {
+            btnAdjuntar.textContent =
+                "ADJUNTAR CP";
+
             btnVer.classList.add(
+                "oculto"
+            );
+
+            btnQuitar.classList.add(
                 "oculto"
             );
 
             nombre.textContent =
                 "Sin CP adjunta.";
+        }
+    }
+
+
+    function seleccionarCP()
+    {
+        if (!viajeActual)
+            return;
+
+        document
+            .getElementById(
+                "archivoCP"
+            )
+            .click();
+    }
+
+
+    async function subirCP()
+    {
+        const input =
+            document.getElementById(
+                "archivoCP"
+            );
+
+        const boton =
+            document.getElementById(
+                "btnAdjuntarCP"
+            );
+
+        const archivo =
+            input.files[0];
+
+        if (!archivo ||
+            !viajeActual)
+            return;
+
+        if (archivo.size > 2 * 1024 * 1024)
+        {
+            mensaje(
+                "La CP no puede superar los 2 MB.",
+                true
+            );
+
+            input.value = "";
+            return;
+        }
+
+        if (documentoCP &&
+            !confirm(
+                "El viaje ya tiene una CP. ¿Desea reemplazarla?"
+            ))
+        {
+            input.value = "";
+            return;
+        }
+
+        const datos =
+            new FormData();
+
+        datos.append(
+            "archivo",
+            archivo
+        );
+
+        datos.append(
+            "tipo",
+            "CP"
+        );
+
+        boton.disabled = true;
+
+        try
+        {
+            mensaje(
+                documentoCP
+                    ? "Reemplazando CP..."
+                    : "Adjuntando CP..."
+            );
+
+            const response =
+                await fetch(
+                    `/api/ViajeDocumentos/${viajeActual.idViaje}`,
+                    {
+                        method: "POST",
+                        headers:
+                        {
+                            Authorization:
+                                `Bearer ${API.obtenerToken()}`
+                        },
+                        body: datos
+                    }
+                );
+
+            if (!response.ok)
+            {
+                const texto =
+                    await response.text();
+
+                throw new Error(
+                    texto ||
+                    "No se pudo guardar la CP."
+                );
+            }
+
+            await cargarDocumentos(
+                viajeActual.idViaje
+            );
+
+            mensaje(
+                "CP guardada correctamente.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message ||
+                "No se pudo guardar la CP.",
+                true
+            );
+        }
+        finally
+        {
+            boton.disabled = false;
+            input.value = "";
         }
     }
 
@@ -2976,6 +3156,78 @@
                 "No se pudo abrir la CP.",
                 true
             );
+        }
+    }
+
+
+    async function quitarCP()
+    {
+        if (!documentoCP ||
+            !viajeActual)
+            return;
+
+        if (!confirm(
+            "¿Desea quitar la CP de este viaje?"
+        ))
+            return;
+
+        const boton =
+            document.getElementById(
+                "btnQuitarCP"
+            );
+
+        boton.disabled = true;
+
+        try
+        {
+            mensaje(
+                "Quitando CP..."
+            );
+
+            const response =
+                await fetch(
+                    `/api/ViajeDocumentos/${documentoCP.idDocumento}`,
+                    {
+                        method: "DELETE",
+                        headers:
+                        {
+                            Authorization:
+                                `Bearer ${API.obtenerToken()}`
+                        }
+                    }
+                );
+
+            if (!response.ok)
+            {
+                const texto =
+                    await response.text();
+
+                throw new Error(
+                    texto ||
+                    "No se pudo quitar la CP."
+                );
+            }
+
+            documentoCP = null;
+            actualizarDocumentacion();
+
+            mensaje(
+                "CP quitada correctamente.",
+                false,
+                true
+            );
+        }
+        catch (error)
+        {
+            mensaje(
+                error.message ||
+                "No se pudo quitar la CP.",
+                true
+            );
+        }
+        finally
+        {
+            boton.disabled = false;
         }
     }
 

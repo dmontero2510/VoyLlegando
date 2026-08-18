@@ -97,6 +97,15 @@ async function login()
         );
 
 
+        if (datos.usuario.debeCambiarClave)
+        {
+            window.location.href =
+                "/cambiar-clave.html";
+
+            return;
+        }
+
+
         redirigirSegunRol(
             datos.usuario.rol
         );
@@ -198,6 +207,19 @@ async function validarSesion(
 
 
         if (
+            perfil.debeCambiarClave &&
+            window.location.pathname !==
+                "/cambiar-clave.html"
+        )
+        {
+            window.location.href =
+                "/cambiar-clave.html";
+
+            return null;
+        }
+
+
+        if (
             rolPermitido &&
             perfil.rol !== rolPermitido
         )
@@ -258,6 +280,15 @@ function redirigirSiYaEstaLogueado()
 
     if (!usuario)
         return;
+
+
+    if (usuario.debeCambiarClave)
+    {
+        window.location.href =
+            "/cambiar-clave.html";
+
+        return;
+    }
 
 
     redirigirSegunRol(

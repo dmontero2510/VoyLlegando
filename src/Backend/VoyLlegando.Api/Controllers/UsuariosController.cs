@@ -15,9 +15,14 @@ public class UsuariosController : ControllerBase
 {
     private readonly IUsuarioRepository _repo;
 
-    public UsuariosController(IUsuarioRepository repo)
+    private readonly IPasswordService _passwordService;
+
+    public UsuariosController(
+        IUsuarioRepository repo,
+        IPasswordService passwordService)
     {
         _repo = repo;
+        _passwordService = passwordService;
     }
 
     // -------------------------------------------------------
@@ -120,6 +125,57 @@ public class UsuariosController : ControllerBase
             id
         });
     }
+
+    // -------------------------------------------------------
+    // POST /api/Usuarios/{id}/restablecer-clave
+    // -------------------------------------------------------
+
+    [Authorize(Roles = "S")]
+    [HttpPost("{id:int}/restablecer-clave")]
+    public async Task<IActionResult> RestablecerClave(
+        int id,
+        RestablecerClaveRequest request)
+    {
+        var usuario =
+            await _repo.ObtenerPorIdAsync(id);
+
+
+        if (usuario == null)
+            return NotFound();
+
+
+        if (string.IsNullOrWhiteSpace(request.ClaveTemporal))
+            return BadRequest("Ingrese la clave temporal.");
+
+
+        if (
+            request.ClaveTemporal.Length < 6 ||
+            request.ClaveTemporal.Length > 72
+        )
+        {
+            return BadRequest(
+                "La clave temporal debe tener entre 6 y 72 caracteres.");
+        }
+
+
+        if (request.ClaveTemporal != request.RepetirClave)
+            return BadRequest("Las claves temporales no coinciden.");
+
+
+        await _repo.ActualizarClaveAsync(
+            id,
+            _passwordService.GenerarHash(
+                request.ClaveTemporal),
+            true);
+
+
+        return Ok(new
+        {
+            ok = true,
+            mensaje = "Clave restablecida. El usuario deberá cambiarla en su próximo ingreso."
+        });
+    }
+
 
     // -------------------------------------------------------
     // PUT /api/Usuarios/{id}
@@ -573,6 +629,7 @@ if (rol == "S")
             Email = usuario.Email,
             Rol = usuario.Rol,
             Habilitado = usuario.Habilitado,
+            DebeCambiarClave = usuario.DebeCambiarClave,
 
             IdTranspor = usuario.IdTranspor,
             IdPlanta = usuario.IdPlanta,

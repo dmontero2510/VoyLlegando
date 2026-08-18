@@ -1146,6 +1146,14 @@ function establecerUbicacionCampo(
             longitud.toFixed(8);
 
 
+    document
+        .getElementById(
+            "nuevoCampoCoordenadas"
+        )
+        .value =
+            `${latitud.toFixed(8)}, ${longitud.toFixed(8)}`;
+
+
     if (!mapaAltaCampo)
         return;
 
@@ -1273,6 +1281,13 @@ function limpiarUbicacionCampo()
 
     document
         .getElementById(
+            "nuevoCampoCoordenadas"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
             "nuevoCampoLongitud"
         )
         .value = "";
@@ -1292,6 +1307,33 @@ function limpiarUbicacionCampo()
 
 
     encuadrarCamposReferenciaAlta();
+}
+
+
+function ubicarCoordenadasCampo()
+{
+    const coordenadas =
+        obtenerCoordenadasPegadas(
+            "nuevoCampoCoordenadas",
+            "modalCampo"
+        );
+
+
+    if (!coordenadas)
+        return;
+
+
+    establecerUbicacionCampo(
+        coordenadas.latitud,
+        coordenadas.longitud,
+        true
+    );
+
+
+    mensajeAlta(
+        "modalCampo",
+        "Ubicación seleccionada."
+    );
 }
 
 
@@ -2301,6 +2343,14 @@ function establecerUbicacionDestino(
             longitud.toFixed(8);
 
 
+    document
+        .getElementById(
+            "nuevoDestinoCoordenadas"
+        )
+        .value =
+            `${latitud.toFixed(8)}, ${longitud.toFixed(8)}`;
+
+
     if (!mapaAltaDestino)
         return;
 
@@ -2428,6 +2478,13 @@ function limpiarUbicacionDestino()
 
     document
         .getElementById(
+            "nuevoDestinoCoordenadas"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
             "nuevoDestinoLongitud"
         )
         .value = "";
@@ -2447,6 +2504,97 @@ function limpiarUbicacionDestino()
 
 
     encuadrarDestinosReferenciaAlta();
+}
+
+
+function ubicarCoordenadasDestino()
+{
+    const coordenadas =
+        obtenerCoordenadasPegadas(
+            "nuevoDestinoCoordenadas",
+            "modalDestino"
+        );
+
+
+    if (!coordenadas)
+        return;
+
+
+    establecerUbicacionDestino(
+        coordenadas.latitud,
+        coordenadas.longitud,
+        true
+    );
+
+
+    mensajeAlta(
+        "modalDestino",
+        "Ubicación seleccionada."
+    );
+}
+
+
+function obtenerCoordenadasPegadas(
+    idControl,
+    idModal
+)
+{
+    const texto =
+        document
+            .getElementById(
+                idControl
+            )
+            .value
+            .trim();
+
+
+    const coincidencia =
+        texto.match(
+            /^\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))\s*[,;]\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+))\s*$/
+        );
+
+
+    if (!coincidencia)
+    {
+        mensajeAlta(
+            idModal,
+            "Pegue las coordenadas con el formato latitud, longitud.",
+            true
+        );
+
+        return null;
+    }
+
+
+    const latitud =
+        Number(coincidencia[1]);
+
+
+    const longitud =
+        Number(coincidencia[2]);
+
+
+    if (
+        latitud < -90 ||
+        latitud > 90 ||
+        longitud < -180 ||
+        longitud > 180
+    )
+    {
+        mensajeAlta(
+            idModal,
+            "La latitud debe estar entre -90 y 90 y la longitud entre -180 y 180.",
+            true
+        );
+
+        return null;
+    }
+
+
+    return {
+        latitud,
+        longitud
+    };
 }
 
 
@@ -2660,7 +2808,9 @@ async function cargarCereales(
 
 
                     option.textContent =
-                        cereal.nombre;
+                        cereal.categoria
+                            ? `${cereal.nombre} - ${cereal.categoria}`
+                            : cereal.nombre;
 
 
                     combo.appendChild(

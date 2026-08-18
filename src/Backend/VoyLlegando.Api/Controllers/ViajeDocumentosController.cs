@@ -38,7 +38,7 @@ public class ViajeDocumentosController : ControllerBase
     // =========================================================
     // SUBIR / REEMPLAZAR DOCUMENTO
     //
-    // SOLO LOGISTICA (L)
+    // LOGISTICA (L) Y EMPRESA ASIGNADA (E, SOLO CP)
     // =========================================================
 
     [HttpPost("{idViaje:int}")]
@@ -56,10 +56,11 @@ public class ViajeDocumentosController : ControllerBase
 
 
         // -----------------------------------------------------
-        // SOLO LOGISTICA PUEDE ADJUNTAR / REEMPLAZAR
+        // LOGISTICA Y EMPRESA PUEDEN ADJUNTAR / REEMPLAZAR
         // -----------------------------------------------------
 
-        if (usuario.Rol != "L")
+        if (usuario.Rol != "L" &&
+            usuario.Rol != "E")
             return Forbid();
 
 
@@ -75,10 +76,10 @@ public class ViajeDocumentosController : ControllerBase
 
 
         // -----------------------------------------------------
-        // LA LOGISTICA SOLO PUEDE MODIFICAR SUS PROPIOS VIAJES
+        // SOLO PUEDE MODIFICAR VIAJES PROPIOS O ASIGNADOS
         // -----------------------------------------------------
 
-        if (!PuedeAdministrarViaje(
+        if (!PuedeAdjuntarDocumento(
                 usuario,
                 viaje))
         {
@@ -90,6 +91,14 @@ public class ViajeDocumentosController : ControllerBase
             (tipo ?? "")
                 .Trim()
                 .ToUpperInvariant();
+
+
+        // La Empresa de Transporte solamente puede adjuntar CP.
+        if (usuario.Rol == "E" &&
+            tipo != "CP")
+        {
+            return Forbid();
+        }
 
 
         if (string.IsNullOrWhiteSpace(tipo))
@@ -361,7 +370,7 @@ public class ViajeDocumentosController : ControllerBase
     // =========================================================
     // ELIMINAR DOCUMENTO
     //
-    // SOLO LOGISTICA (L)
+    // LOGISTICA (L) Y EMPRESA ASIGNADA (E, SOLO CP)
     // =========================================================
 
     [HttpDelete("{idDocumento:int}")]
@@ -377,10 +386,11 @@ public class ViajeDocumentosController : ControllerBase
 
 
         // -----------------------------------------------------
-        // SOLO LOGISTICA PUEDE QUITAR DOCUMENTOS
+        // LOGISTICA Y EMPRESA PUEDEN QUITAR DOCUMENTOS
         // -----------------------------------------------------
 
-        if (usuario.Rol != "L")
+        if (usuario.Rol != "L" &&
+            usuario.Rol != "E")
             return Forbid();
 
 
@@ -415,10 +425,20 @@ public class ViajeDocumentosController : ControllerBase
 
 
         // -----------------------------------------------------
-        // SOLO PUEDE ELIMINAR DOCUMENTOS DE SUS PROPIOS VIAJES
+        // EMPRESA: SOLO CP DEL VIAJE QUE TIENE ASIGNADO
         // -----------------------------------------------------
 
-        if (!PuedeAdministrarViaje(
+        if (usuario.Rol == "E" &&
+            !string.Equals(
+                documento.Tipo,
+                "CP",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return Forbid();
+        }
+
+
+        if (!PuedeAdjuntarDocumento(
                 usuario,
                 viaje))
         {
@@ -508,6 +528,24 @@ public class ViajeDocumentosController : ControllerBase
             usuario.IdTranspor.HasValue &&
             viaje.IdTranspor ==
             usuario.IdTranspor.Value;
+    }
+
+
+    private static bool PuedeAdjuntarDocumento(
+        Usuario usuario,
+        Viaje viaje)
+    {
+        if (usuario.Rol == "E")
+        {
+            return
+                viaje.IdCamionero ==
+                usuario.IdUsuario;
+        }
+
+
+        return PuedeAdministrarViaje(
+            usuario,
+            viaje);
     }
 
 

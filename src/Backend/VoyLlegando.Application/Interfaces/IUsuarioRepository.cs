@@ -18,5 +18,8 @@ public interface IUsuarioRepository
 
     Task BajaAsync(int id);
 
-    Task ActualizarClaveAsync(int idUsuario, string hash);
+    Task ActualizarClaveAsync(
+        int idUsuario,
+        string hash,
+        bool debeCambiarClave = false);
 }
