@@ -24,7 +24,15 @@ if "%MENSAJE%"=="" (
 
 echo.
 echo [1/4] Agregando cambios...
-git add .
+git add -A -- . ":(exclude)src/**/bin/**" ":(exclude)src/**/obj/**"
+
+if errorlevel 1 (
+    echo.
+    echo ERROR: No se pudieron preparar los cambios.
+    echo.
+    pause
+    exit /b 1
+)
 
 echo.
 echo [2/4] Creando commit...
