@@ -42,10 +42,10 @@ public class ViajeRepository : IViajeRepository
                 v.tipo            AS Tipo,
                 v.fecha_pedido    AS FechaPedido,
                 v.id_cereal       AS IdCereal,
-                v.id_produc       AS IdProduc,
-                v.id_origen       AS IdOrigen,
-                v.id_planta       AS IdPlanta,
-                v.id_destino      AS IdDestino,
+                v.id_planta_origen   AS IdProduc,
+                v.id_destino_origen  AS IdOrigen,
+                v.id_planta_destino  AS IdPlanta,
+                v.id_destino_destino AS IdDestino,
                 v.origen          AS Origen,
                 v.destino         AS Destino,
                 v.ctg             AS Ctg,
@@ -60,22 +60,22 @@ public class ViajeRepository : IViajeRepository
                 v.larga           AS Larga,
                 v.id_usuario      AS IdUsuario,
 
-                c.latitud         AS LatitudOrigen,
-                c.longitud        AS LongitudOrigen,
+                dor.latitud       AS LatitudOrigen,
+                dor.longitud      AS LongitudOrigen,
 
-                d.latitud         AS LatitudDestino,
-                d.longitud        AS LongitudDestino
+                dde.latitud       AS LatitudDestino,
+                dde.longitud      AS LongitudDestino
 
             FROM public.viajes v
 
             LEFT JOIN public.usuarios u
                 ON u.id_usuario = v.id_camionero
 
-            LEFT JOIN public.campos c
-                ON c.id_campo = v.id_origen
+            LEFT JOIN public.destinos dor
+                ON dor.id_destino = v.id_destino_origen
 
-            LEFT JOIN public.destinos d
-                ON d.id_destino = v.id_destino
+            LEFT JOIN public.destinos dde
+                ON dde.id_destino = v.id_destino_destino
 
             ORDER BY v.id_viaje DESC;
             """;
@@ -102,10 +102,10 @@ public class ViajeRepository : IViajeRepository
                 v.tipo            AS Tipo,
                 v.fecha_pedido    AS FechaPedido,
                 v.id_cereal       AS IdCereal,
-                v.id_produc       AS IdProduc,
-                v.id_origen       AS IdOrigen,
-                v.id_planta       AS IdPlanta,
-                v.id_destino      AS IdDestino,
+                v.id_planta_origen   AS IdProduc,
+                v.id_destino_origen  AS IdOrigen,
+                v.id_planta_destino  AS IdPlanta,
+                v.id_destino_destino AS IdDestino,
                 v.origen          AS Origen,
                 v.destino         AS Destino,
                 v.ctg             AS Ctg,
@@ -120,22 +120,22 @@ public class ViajeRepository : IViajeRepository
                 v.larga           AS Larga,
                 v.id_usuario      AS IdUsuario,
 
-                c.latitud         AS LatitudOrigen,
-                c.longitud        AS LongitudOrigen,
+                dor.latitud       AS LatitudOrigen,
+                dor.longitud      AS LongitudOrigen,
 
-                d.latitud         AS LatitudDestino,
-                d.longitud        AS LongitudDestino
+                dde.latitud       AS LatitudDestino,
+                dde.longitud      AS LongitudDestino
 
             FROM public.viajes v
 
             LEFT JOIN public.usuarios u
                 ON u.id_usuario = v.id_camionero
 
-            LEFT JOIN public.campos c
-                ON c.id_campo = v.id_origen
+            LEFT JOIN public.destinos dor
+                ON dor.id_destino = v.id_destino_origen
 
-            LEFT JOIN public.destinos d
-                ON d.id_destino = v.id_destino
+            LEFT JOIN public.destinos dde
+                ON dde.id_destino = v.id_destino_destino
 
             WHERE v.id_transpor = @IdTranspor
 
@@ -166,10 +166,10 @@ public class ViajeRepository : IViajeRepository
                 v.tipo            AS Tipo,
                 v.fecha_pedido    AS FechaPedido,
                 v.id_cereal       AS IdCereal,
-                v.id_produc       AS IdProduc,
-                v.id_origen       AS IdOrigen,
-                v.id_planta       AS IdPlanta,
-                v.id_destino      AS IdDestino,
+                v.id_planta_origen   AS IdProduc,
+                v.id_destino_origen  AS IdOrigen,
+                v.id_planta_destino  AS IdPlanta,
+                v.id_destino_destino AS IdDestino,
                 v.origen          AS Origen,
                 v.destino         AS Destino,
                 v.ctg             AS Ctg,
@@ -184,22 +184,22 @@ public class ViajeRepository : IViajeRepository
                 v.larga           AS Larga,
                 v.id_usuario      AS IdUsuario,
 
-                c.latitud         AS LatitudOrigen,
-                c.longitud        AS LongitudOrigen,
+                dor.latitud       AS LatitudOrigen,
+                dor.longitud      AS LongitudOrigen,
 
-                d.latitud         AS LatitudDestino,
-                d.longitud        AS LongitudDestino
+                dde.latitud       AS LatitudDestino,
+                dde.longitud      AS LongitudDestino
 
             FROM public.viajes v
 
             LEFT JOIN public.usuarios u
                 ON u.id_usuario = v.id_camionero
 
-            LEFT JOIN public.campos c
-                ON c.id_campo = v.id_origen
+            LEFT JOIN public.destinos dor
+                ON dor.id_destino = v.id_destino_origen
 
-            LEFT JOIN public.destinos d
-                ON d.id_destino = v.id_destino
+            LEFT JOIN public.destinos dde
+                ON dde.id_destino = v.id_destino_destino
 
             WHERE v.id_camionero = @IdCamionero
 
@@ -229,10 +229,10 @@ public class ViajeRepository : IViajeRepository
                 v.tipo            AS Tipo,
                 v.fecha_pedido    AS FechaPedido,
                 v.id_cereal       AS IdCereal,
-                v.id_produc       AS IdProduc,
-                v.id_origen       AS IdOrigen,
-                v.id_planta       AS IdPlanta,
-                v.id_destino      AS IdDestino,
+                v.id_planta_origen   AS IdProduc,
+                v.id_destino_origen  AS IdOrigen,
+                v.id_planta_destino  AS IdPlanta,
+                v.id_destino_destino AS IdDestino,
                 v.origen          AS Origen,
                 v.destino         AS Destino,
                 v.ctg             AS Ctg,
@@ -247,22 +247,22 @@ public class ViajeRepository : IViajeRepository
                 v.larga           AS Larga,
                 v.id_usuario      AS IdUsuario,
 
-                c.latitud         AS LatitudOrigen,
-                c.longitud        AS LongitudOrigen,
+                dor.latitud       AS LatitudOrigen,
+                dor.longitud      AS LongitudOrigen,
 
-                d.latitud         AS LatitudDestino,
-                d.longitud        AS LongitudDestino
+                dde.latitud       AS LatitudDestino,
+                dde.longitud      AS LongitudDestino
 
             FROM public.viajes v
 
             LEFT JOIN public.usuarios u
                 ON u.id_usuario = v.id_camionero
 
-            LEFT JOIN public.campos c
-                ON c.id_campo = v.id_origen
+            LEFT JOIN public.destinos dor
+                ON dor.id_destino = v.id_destino_origen
 
-            LEFT JOIN public.destinos d
-                ON d.id_destino = v.id_destino
+            LEFT JOIN public.destinos dde
+                ON dde.id_destino = v.id_destino_destino
 
             WHERE v.id_viaje = @IdViaje;
             """;
@@ -288,10 +288,10 @@ public class ViajeRepository : IViajeRepository
                 id_camionero,
                 tipo,
                 id_cereal,
-                id_produc,
-                id_origen,
-                id_planta,
-                id_destino,
+                id_planta_origen,
+                id_destino_origen,
+                id_planta_destino,
+                id_destino_destino,
                 origen,
                 destino,
                 ctg,
@@ -663,7 +663,9 @@ const string sqlVinculo = """
 
         const string sqlEmpresaViajando = """
             UPDATE public.usuarios
-            SET estado = 'V'
+            SET
+                estado = 'V',
+                fecha_disponibilidad = NULL
             WHERE id_usuario = @IdEmpresa
               AND estado = 'D';
             """;

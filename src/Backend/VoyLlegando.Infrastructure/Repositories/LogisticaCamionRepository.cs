@@ -251,7 +251,8 @@ public async Task<IEnumerable<Usuario>>
             u.email      AS Email,
             u.rol        AS Rol,
             u.habilitado AS Habilitado,
-            u.estado     AS Estado
+            u.estado     AS Estado,
+            u.fecha_disponibilidad AS FechaDisponibilidad
         FROM public.logiscamion lc
         INNER JOIN public.usuarios u
             ON u.id_usuario = lc.id_usuario
@@ -357,7 +358,8 @@ public async Task<IEnumerable<Usuario>>
             u.email      AS Email,
             u.rol        AS Rol,
             u.habilitado AS Habilitado,
-            u.estado     AS Estado
+            u.estado     AS Estado,
+            u.fecha_disponibilidad AS FechaDisponibilidad
         FROM public.usuarios u
         INNER JOIN public.logiscamion lc
             ON lc.id_usuario = u.id_usuario
@@ -366,7 +368,9 @@ public async Task<IEnumerable<Usuario>>
           AND u.rol = 'E'
           AND u.habilitado = TRUE
           AND u.estado = 'D'
-        ORDER BY u.nombre;
+        ORDER BY
+            u.fecha_disponibilidad ASC NULLS LAST,
+            u.id_usuario ASC;
         """;
 
 

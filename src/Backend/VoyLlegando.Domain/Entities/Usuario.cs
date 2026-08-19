@@ -49,4 +49,6 @@ public class Usuario
     public bool? Escala { get; set; }
 
     public string? Estado { get; set; }
+
+    public DateTime? FechaDisponibilidad { get; set; }
 }

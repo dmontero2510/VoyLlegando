@@ -41,6 +41,7 @@ SELECT
     larga AS Larga,
     escala AS Escala,
     estado AS Estado,
+    fecha_disponibilidad AS FechaDisponibilidad,
     latitud_actual   AS LatitudActual,
     longitud_actual  AS LongitudActual,
     fecha_ubicacion  AS FechaUbicacion
@@ -97,7 +98,8 @@ public async Task<IEnumerable<Usuario>> ObtenerTodosAsync()
             corta       AS Corta,
             larga       AS Larga,
             escala      AS Escala,
-            estado      AS Estado
+            estado      AS Estado,
+            fecha_disponibilidad AS FechaDisponibilidad
         FROM public.usuarios
         ORDER BY id_usuario;
         """;
@@ -134,6 +136,7 @@ SELECT
     larga AS Larga,
     escala AS Escala,
     estado AS Estado,
+    fecha_disponibilidad AS FechaDisponibilidad,
     latitud_actual   AS LatitudActual,
     longitud_actual  AS LongitudActual,
     fecha_ubicacion  AS FechaUbicacion
@@ -171,7 +174,8 @@ INSERT INTO usuarios
     corta,
     larga,
     escala,
-    estado
+    estado,
+    fecha_disponibilidad
 )
 VALUES
 (
@@ -193,7 +197,8 @@ VALUES
     @Corta,
     @Larga,
     @Escala,
-    @Estado
+    @Estado,
+    CASE WHEN @Estado = 'D' THEN CURRENT_TIMESTAMP ELSE NULL END
 )
 RETURNING id_usuario;
 ";
@@ -228,6 +233,13 @@ SET
     corta = @Corta,
     larga = @Larga,
     escala = @Escala,
+    fecha_disponibilidad = CASE
+        WHEN @Estado = 'D' AND estado IS DISTINCT FROM 'D'
+            THEN CURRENT_TIMESTAMP
+        WHEN @Estado IS DISTINCT FROM 'D'
+            THEN NULL
+        ELSE fecha_disponibilidad
+    END,
     estado = @Estado
 WHERE id_usuario = @IdUsuario;
 ";

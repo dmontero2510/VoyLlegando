@@ -347,6 +347,89 @@ public async Task<IActionResult> Habilitar(
 }
 
     // -------------------------------------------------------
+    // GET /api/Usuarios/mi-perfil
+    // EMPRESA DE TRANSPORTE
+    // -------------------------------------------------------
+
+    [Authorize(Roles = "E")]
+    [HttpGet("mi-perfil")]
+    public async Task<IActionResult> MiPerfil()
+    {
+        var usuario = await ObtenerUsuarioActual();
+
+        if (usuario == null)
+            return Unauthorized();
+
+        return Ok(new
+        {
+            nombre = usuario.Nombre,
+            domicilio = usuario.Domicilio,
+            cuit = usuario.Cuit,
+            celular = usuario.Celular,
+            email = usuario.Email,
+            patChasis = usuario.PatChasis,
+            patAcopla = usuario.PatAcopla,
+            batea = usuario.Batea,
+            corta = usuario.Corta,
+            larga = usuario.Larga,
+            escala = usuario.Escala,
+            estado = usuario.Estado
+        });
+    }
+
+    // -------------------------------------------------------
+    // PUT /api/Usuarios/mi-perfil
+    // EMPRESA DE TRANSPORTE
+    // -------------------------------------------------------
+
+    [Authorize(Roles = "E")]
+    [HttpPut("mi-perfil")]
+    public async Task<IActionResult> ActualizarMiPerfil(
+        MiPerfilRequest request)
+    {
+        var usuario = await ObtenerUsuarioActual();
+
+        if (usuario == null)
+            return Unauthorized();
+
+        if (!usuario.Habilitado)
+            return BadRequest("La Empresa de Transporte está deshabilitada.");
+
+        var nombre = request.Nombre?.Trim() ?? "";
+        var celular = request.Celular?.Trim() ?? "";
+        var cuit = request.Cuit?.Trim() ?? "";
+
+        if (string.IsNullOrWhiteSpace(nombre))
+            return BadRequest("Ingrese el nombre de la empresa.");
+
+        if (string.IsNullOrWhiteSpace(celular))
+            return BadRequest("Ingrese el celular.");
+
+        if (await _repo.ExisteCelularAsync(celular, usuario.IdUsuario))
+            return BadRequest("Ya existe ese celular.");
+
+        usuario.Nombre = nombre;
+        usuario.Domicilio = request.Domicilio?.Trim();
+        usuario.Cuit = cuit;
+        usuario.Celular = celular;
+        usuario.Email = request.Email?.Trim() ?? "";
+        usuario.PatChasis = request.PatChasis?.Trim();
+        usuario.PatAcopla = request.PatAcopla?.Trim();
+        usuario.Batea = request.Batea;
+        usuario.Corta = request.Corta;
+        usuario.Larga = request.Larga;
+        usuario.Escala = request.Escala;
+
+        await _repo.ActualizarAsync(usuario);
+
+        return Ok(new
+        {
+            ok = true,
+            mensaje = "Perfil actualizado correctamente."
+        });
+    }
+
+    // -------------------------------------------------------
     // POST /api/Usuarios/mi-disponibilidad
     // -------------------------------------------------------
 
@@ -646,4 +729,19 @@ if (rol == "S")
             Estado = usuario.Estado
         };
     }
+}
+
+public class MiPerfilRequest
+{
+    public string Nombre { get; set; } = "";
+    public string? Domicilio { get; set; }
+    public string Cuit { get; set; } = "";
+    public string Celular { get; set; } = "";
+    public string? Email { get; set; }
+    public string? PatChasis { get; set; }
+    public string? PatAcopla { get; set; }
+    public bool Batea { get; set; }
+    public bool Corta { get; set; }
+    public bool Larga { get; set; }
+    public bool Escala { get; set; }
 }

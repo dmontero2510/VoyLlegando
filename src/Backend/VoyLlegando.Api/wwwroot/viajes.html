@@ -287,6 +287,80 @@
             border-top: 1px solid var(--borde);
         }
 
+        .selector-empresa {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-height: 46px;
+            padding: 8px 10px 8px 13px;
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
+        .selector-empresa-nombre {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        .lista-empresas-fifo {
+            display: grid;
+            gap: 9px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .empresa-fifo {
+            display: grid;
+            grid-template-columns: 38px minmax(0, 1fr);
+            gap: 10px;
+            align-items: center;
+            width: 100%;
+            padding: 11px;
+            border: 1px solid var(--borde);
+            border-radius: 10px;
+            background: white;
+            color: var(--texto);
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .empresa-fifo:hover,
+        .empresa-fifo.seleccionada {
+            border-color: var(--azul-marca);
+            background: var(--azul-suave);
+        }
+
+        .empresa-fifo-orden {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--azul-marca);
+            color: white;
+            font-weight: 800;
+        }
+
+        .empresa-fifo-nombre {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 800;
+        }
+
+        .empresa-fifo-fecha {
+            display: block;
+            margin-top: 4px;
+            color: var(--texto-suave);
+            font-size: 12px;
+        }
+
         .oculto {
             display: none !important;
         }
@@ -732,7 +806,7 @@
                 <div class="form-grupo">
 
                     <label for="idProduc">
-                        Productor
+                        Origen
                     </label>
 
                     <div class="combo-con-alta">
@@ -751,8 +825,8 @@
                         <button
                             type="button"
                             class="btn-mas"
-                            onclick="abrirAltaProductor()"
-                            title="Nuevo productor">
+                            onclick="abrirAltaPlanta('origen')"
+                            title="Nuevo origen">
                             +
                         </button>
 
@@ -764,7 +838,7 @@
                 <div class="form-grupo">
 
                     <label for="idOrigen">
-                        Campo / Origen
+                        Denominación Origen
                     </label>
 
                     <div class="combo-con-alta">
@@ -775,7 +849,7 @@
                             disabled>
 
                             <option value="">
-                                Seleccione productor...
+                                Seleccione origen...
                             </option>
 
                         </select>
@@ -784,8 +858,8 @@
                             id="btnMasCampo"
                             type="button"
                             class="btn-mas"
-                            onclick="abrirAltaCampo()"
-                            title="Nuevo campo"
+                            onclick="abrirAltaDestino('origen')"
+                            title="Nueva denominación de origen"
                             disabled>
                             +
                         </button>
@@ -798,7 +872,7 @@
                 <div class="form-grupo">
 
                     <label for="idPlanta">
-                        Planta
+                        Destino
                     </label>
 
                     <div class="combo-con-alta">
@@ -817,8 +891,8 @@
                         <button
                             type="button"
                             class="btn-mas"
-                            onclick="abrirAltaPlanta()"
-                            title="Nueva planta">
+                            onclick="abrirAltaPlanta('destino')"
+                            title="Nuevo destino">
                             +
                         </button>
 
@@ -830,7 +904,7 @@
                 <div class="form-grupo">
 
                     <label for="idDestino">
-                        Destino
+                        Denominación Destino
                     </label>
 
                     <div class="combo-con-alta">
@@ -841,7 +915,7 @@
                             disabled>
 
                             <option value="">
-                                Seleccione planta...
+                                Seleccione destino...
                             </option>
 
                         </select>
@@ -850,8 +924,8 @@
                             id="btnMasDestino"
                             type="button"
                             class="btn-mas"
-                            onclick="abrirAltaDestino()"
-                            title="Nuevo destino"
+                            onclick="abrirAltaDestino('destino')"
+                            title="Nueva denominación de destino"
                             disabled>
                             +
                         </button>
@@ -933,13 +1007,19 @@
                         Empresa de Transporte
                     </label>
 
-                    <select
-                        id="idEmpresaCrear"
-                        class="form-control">
-                        <option value="">
+                    <input id="idEmpresaCrear" type="hidden" value="">
+
+                    <div class="selector-empresa">
+                        <div id="nombreEmpresaCrear" class="selector-empresa-nombre">
                             Sin asignar por ahora
-                        </option>
-                    </select>
+                        </div>
+                        <button
+                            type="button"
+                            class="btn btn-secundario"
+                            onclick="abrirSelectorEmpresa('crear')">
+                            Elegir
+                        </button>
+                    </div>
 
                 </div>
 
@@ -1152,13 +1232,19 @@
                         Empresa disponible
                     </label>
 
-                    <select
-                        id="idEmpresaAsignar"
-                        class="form-control">
-                        <option value="">
-                            Seleccione...
-                        </option>
-                    </select>
+                    <input id="idEmpresaAsignar" type="hidden" value="">
+
+                    <div class="selector-empresa">
+                        <div id="nombreEmpresaAsignar" class="selector-empresa-nombre">
+                            Ninguna empresa seleccionada
+                        </div>
+                        <button
+                            type="button"
+                            class="btn btn-secundario"
+                            onclick="abrirSelectorEmpresa()">
+                            Elegir
+                        </button>
+                    </div>
 
                 </div>
 
@@ -1181,6 +1267,30 @@
     </div>
 
 </main>
+
+
+<!-- =====================================================
+     MODAL EMPRESAS DISPONIBLES FIFO
+===================================================== -->
+
+<div id="modalEmpresasFIFO" class="modal-fondo oculto">
+    <div class="modal">
+        <div class="modal-cabecera">
+            <h2 class="modal-titulo">Elegir Empresa disponible</h2>
+            <button type="button" class="modal-cerrar" onclick="cerrarSelectorEmpresa()">&times;</button>
+        </div>
+        <div class="aviso">
+            Orden FIFO: primero aparece quien está disponible desde hace más tiempo.
+        </div>
+        <div id="listaEmpresasFIFO" class="lista-empresas-fifo"></div>
+        <div class="modal-acciones">
+            <button id="btnEmpresaSinAsignar" type="button" class="btn btn-secundario" onclick="seleccionarEmpresaFIFO(null)">
+                Sin asignar
+            </button>
+            <button type="button" class="btn btn-secundario" onclick="cerrarSelectorEmpresa()">Cancelar</button>
+        </div>
+    </div>
+</div>
 
 
 <!-- =====================================================
@@ -1438,7 +1548,7 @@
 
         <div class="modal-cabecera">
 
-            <h2 class="modal-titulo">
+            <h2 id="tituloModalPlanta" class="modal-titulo">
                 Nueva Planta
             </h2>
 
@@ -1551,7 +1661,7 @@
 
         <div class="modal-cabecera">
 
-            <h2 class="modal-titulo">
+            <h2 id="tituloModalDestino" class="modal-titulo">
                 Nuevo Destino
             </h2>
 
@@ -1672,7 +1782,7 @@
     crossorigin=""></script>
 <script src="/js/api.js"></script>
 <script src="/js/auth.js"></script>
-<script src="/js/viajes.js?v=5"></script>
+<script src="/js/viajes.js?v=12"></script>
 <script src="/js/viajes-documentos.js"></script>
 
 </body>

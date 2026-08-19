@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - VoyLlegando</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #f2f5f8;
+            color: #142033;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 13px 18px;
+            background: #0b1028;
+            color: white;
+        }
+        .marca { font-size: 20px; font-weight: 700; }
+        .volver, .guardar {
+            border: 0;
+            border-radius: 9px;
+            padding: 10px 16px;
+            background: #28b5df;
+            color: #07111d;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        main { width: min(720px, 100%); margin: 0 auto; padding: 20px 14px; }
+        h1 { margin: 0 0 16px; font-size: 26px; }
+        form {
+            padding: 18px;
+            border: 1px solid #d8e0e9;
+            border-radius: 14px;
+            background: white;
+            box-shadow: 0 3px 12px rgba(12, 25, 48, .07);
+        }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .completo { grid-column: 1 / -1; }
+        label { display: block; margin-bottom: 6px; font-weight: 700; }
+        input[type="text"], input[type="tel"], input[type="email"] {
+            width: 100%;
+            min-height: 44px;
+            border: 1px solid #ccd5e0;
+            border-radius: 8px;
+            padding: 9px 11px;
+            font-size: 16px;
+        }
+        .subtitulo { grid-column: 1 / -1; margin-top: 5px; padding-top: 14px; border-top: 1px solid #e2e7ed; font-size: 18px; font-weight: 700; }
+        .tipos { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 12px 22px; }
+        .opcion { display: flex; align-items: center; gap: 7px; margin: 0; font-weight: 600; }
+        .opcion input { width: 19px; height: 19px; }
+        .acciones { display: flex; justify-content: flex-end; margin-top: 18px; }
+        #mensaje { min-height: 22px; margin: 12px 0 0; color: #197046; text-align: center; font-weight: 700; }
+        #mensaje.error { color: #a52323; }
+        @media (max-width: 600px) {
+            header { padding: 10px; }
+            main { padding: 14px 10px; }
+            form { padding: 14px; }
+            .grid { grid-template-columns: 1fr; gap: 12px; }
+            .completo, .subtitulo, .tipos { grid-column: 1; }
+            .guardar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="marca">VoyLlegando</div>
+        <button type="button" class="volver" onclick="volver()">Volver</button>
+    </header>
+    <main>
+        <h1>Mi Perfil</h1>
+        <form id="formPerfil" onsubmit="guardar(event)">
+            <div class="grid">
+                <div class="completo">
+                    <label for="nombre">Empresa de Transporte</label>
+                    <input id="nombre" type="text" required>
+                </div>
+                <div>
+                    <label for="celular">Celular</label>
+                    <input id="celular" type="tel" required>
+                </div>
+                <div>
+                    <label for="cuit">CUIT</label>
+                    <input id="cuit" type="text">
+                </div>
+                <div class="completo">
+                    <label for="domicilio">Domicilio</label>
+                    <input id="domicilio" type="text">
+                </div>
+                <div class="completo">
+                    <label for="email">Correo electrónico</label>
+                    <input id="email" type="email">
+                </div>
+                <div class="subtitulo">Vehículo</div>
+                <div>
+                    <label for="patChasis">Patente chasis</label>
+                    <input id="patChasis" type="text">
+                </div>
+                <div>
+                    <label for="patAcopla">Patente acoplado</label>
+                    <input id="patAcopla" type="text">
+                </div>
+                <div class="tipos">
+                    <label class="opcion"><input id="batea" type="checkbox"> Batea</label>
+                    <label class="opcion"><input id="corta" type="checkbox"> Corta</label>
+                    <label class="opcion"><input id="larga" type="checkbox"> Larga</label>
+                    <label class="opcion"><input id="escala" type="checkbox"> Escala</label>
+                </div>
+            </div>
+            <div id="mensaje"></div>
+            <div class="acciones">
+                <button id="btnGuardar" type="submit" class="guardar">Guardar cambios</button>
+            </div>
+        </form>
+    </main>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js?v=5"></script>
+    <script>
+        const idsTexto = ["nombre", "domicilio", "cuit", "celular", "email", "patChasis", "patAcopla"];
+        const idsBooleanos = ["batea", "corta", "larga", "escala"];
+
+        async function iniciar() {
+            const perfil = await validarSesion("E");
+            if (!perfil) return;
+            try {
+                const datos = await API.get("/api/Usuarios/mi-perfil");
+                idsTexto.forEach(id => document.getElementById(id).value = datos[id] || "");
+                idsBooleanos.forEach(id => document.getElementById(id).checked = datos[id] === true);
+            } catch (error) {
+                mostrar(error.message, true);
+            }
+        }
+
+        async function guardar(evento) {
+            evento.preventDefault();
+            const boton = document.getElementById("btnGuardar");
+            boton.disabled = true;
+            mostrar("Guardando...");
+            try {
+                const datos = {};
+                idsTexto.forEach(id => datos[id] = document.getElementById(id).value.trim());
+                idsBooleanos.forEach(id => datos[id] = document.getElementById(id).checked);
+                const respuesta = await API.put("/api/Usuarios/mi-perfil", datos);
+                const sesion = API.obtenerUsuario();
+                if (sesion) {
+                    sesion.nombre = datos.nombre;
+                    API.guardarSesion(API.obtenerToken(), sesion);
+                }
+                mostrar(respuesta.mensaje || "Perfil actualizado correctamente.");
+            } catch (error) {
+                mostrar(error.message, true);
+            } finally {
+                boton.disabled = false;
+            }
+        }
+
+        function mostrar(texto, esError = false) {
+            const mensaje = document.getElementById("mensaje");
+            mensaje.textContent = texto || "";
+            mensaje.classList.toggle("error", esError);
+        }
+
+        function volver() { window.location.href = "/empresa.html"; }
+        iniciar();
+    </script>
+</body>
+</html>

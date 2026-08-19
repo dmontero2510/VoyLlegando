@@ -10,15 +10,23 @@ public class ViajeService
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IViajeEventoRepository _viajeEventoRepository;
     private readonly ILogisticaCamionRepository _logisticaCamionRepository;
+    private readonly IPlantaRepository _plantaRepository;
+    private readonly IDestinoRepository _destinoRepository;
 
     public ViajeService(
         IViajeRepository viajeRepository,
         IUsuarioRepository usuarioRepository,
-        IViajeEventoRepository viajeEventoRepository)
+        IViajeEventoRepository viajeEventoRepository,
+        ILogisticaCamionRepository logisticaCamionRepository,
+        IPlantaRepository plantaRepository,
+        IDestinoRepository destinoRepository)
     {
         _viajeRepository = viajeRepository;
         _usuarioRepository = usuarioRepository;
         _viajeEventoRepository = viajeEventoRepository;
+        _logisticaCamionRepository = logisticaCamionRepository;
+        _plantaRepository = plantaRepository;
+        _destinoRepository = destinoRepository;
     }
 
     public async Task TomarAsync(
@@ -40,6 +48,44 @@ public class ViajeService
         int idUsuario,
         int idTranspor)
     {
+        var plantaOrigen =
+            await _plantaRepository.ObtenerPorIdAsync(
+                request.IdProduc,
+                idTranspor);
+
+        var plantaDestino =
+            await _plantaRepository.ObtenerPorIdAsync(
+                request.IdPlanta,
+                idTranspor);
+
+        if (plantaOrigen == null ||
+            !plantaOrigen.Habilitado)
+            throw new InvalidOperationException(
+                "El origen no existe o está deshabilitado.");
+
+        if (plantaDestino == null ||
+            !plantaDestino.Habilitado)
+            throw new InvalidOperationException(
+                "El destino no existe o está deshabilitado.");
+
+        var denominacionOrigen =
+            await _destinoRepository.ObtenerPorIdAsync(
+                request.IdOrigen);
+
+        var denominacionDestino =
+            await _destinoRepository.ObtenerPorIdAsync(
+                request.IdDestino);
+
+        if (denominacionOrigen == null ||
+            denominacionOrigen.IdPlanta != request.IdProduc)
+            throw new InvalidOperationException(
+                "La denominación de origen no pertenece al origen seleccionado.");
+
+        if (denominacionDestino == null ||
+            denominacionDestino.IdPlanta != request.IdPlanta)
+            throw new InvalidOperationException(
+                "La denominación de destino no pertenece al destino seleccionado.");
+
         Viaje viaje = new()
         {
             IdTranspor = idTranspor,

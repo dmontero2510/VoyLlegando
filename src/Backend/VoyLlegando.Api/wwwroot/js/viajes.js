@@ -9,6 +9,9 @@ let plantas = [];
 let cereales = [];
 let tiposIva = [];
 let empresasDisponibles = [];
+let destinoSelectorEmpresa = "asignar";
+let ladoAltaPlanta = "destino";
+let ladoAltaDestino = "destino";
 
 let viajeSeleccionado = null;
 let filtroActual = "TODOS";
@@ -187,7 +190,11 @@ function mensajeAlta(
             );
 
 
-        if (botones)
+        if (
+            botones &&
+            botones.parentElement ===
+                contenido
+        )
         {
             contenido.insertBefore(
                 elemento,
@@ -221,7 +228,7 @@ function mensajeAlta(
 
 
 // =======================================================
-// PRODUCTORES
+// PLANTAS DISPONIBLES COMO ORIGEN
 // =======================================================
 
 async function cargarProductores(
@@ -232,7 +239,7 @@ async function cargarProductores(
     {
         productores =
             await API.get(
-                "/api/Productores"
+                "/api/Plantas"
             );
 
 
@@ -256,11 +263,11 @@ async function cargarProductores(
 
         productores
             .filter(
-                productor =>
-                    productor.habilitado
+                planta =>
+                    planta.habilitado
             )
             .forEach(
-                productor =>
+                planta =>
                 {
                     const option =
                         document.createElement(
@@ -269,11 +276,11 @@ async function cargarProductores(
 
 
                     option.value =
-                        productor.idProductor;
+                        planta.idPlanta;
 
 
                     option.textContent =
-                        productor.nombre;
+                        planta.nombre;
 
 
                     combo.appendChild(
@@ -294,7 +301,7 @@ async function cargarProductores(
     catch (error)
     {
         mensaje(
-            "No se pudieron cargar los productores: " +
+            "No se pudieron cargar los orígenes: " +
             error.message,
             true
         );
@@ -650,8 +657,8 @@ async function guardarNuevoProductor()
 
 
 // =======================================================
-// CAMBIO PRODUCTOR
-// CARGAR CAMPOS
+// CAMBIO ORIGEN
+// CARGAR DENOMINACIONES DE ORIGEN
 // =======================================================
 
 async function cambioProductor(
@@ -689,7 +696,7 @@ async function cambioProductor(
         combo.innerHTML =
             `
             <option value="">
-                Seleccione productor...
+                Seleccione origen...
             </option>
             `;
 
@@ -709,7 +716,7 @@ async function cambioProductor(
     {
         const campos =
             await API.get(
-                `/api/Campos/productor/${idProductor}`
+                `/api/Destinos/planta/${idProductor}`
             );
 
 
@@ -731,15 +738,15 @@ async function cambioProductor(
 
 
                 option.value =
-                    campo.idCampo;
+                    campo.idDestino;
 
 
                 option.textContent =
-                    campo.descripCampo;
+                    campo.descripDestino;
 
 
                 option.dataset.nombre =
-                    campo.descripCampo ||
+                    campo.descripDestino ||
                     "";
 
 
@@ -786,7 +793,7 @@ async function cambioProductor(
 
 
         mensaje(
-            "No se pudieron cargar los campos: " +
+            "No se pudieron cargar las denominaciones de origen: " +
             error.message,
             true
         );
@@ -1587,8 +1594,22 @@ async function cargarPlantas(
 // ALTA RAPIDA PLANTA
 // =======================================================
 
-function abrirAltaPlanta()
+function abrirAltaPlanta(
+    lado = "destino"
+)
 {
+    ladoAltaPlanta =
+        lado;
+
+    document
+        .getElementById(
+            "tituloModalPlanta"
+        )
+        .textContent =
+            lado === "origen"
+                ? "Nuevo Origen"
+                : "Nuevo Destino";
+
     mensajeAlta(
         "modalPlanta",
         ""
@@ -1822,12 +1843,22 @@ async function guardarNuevaPlanta()
             respuesta.id;
 
 
-        await cargarPlantas(
-            idPlanta
-        );
+        if (ladoAltaPlanta === "origen")
+        {
+            await cargarProductores(
+                idPlanta
+            );
 
+            await cambioProductor();
+        }
+        else
+        {
+            await cargarPlantas(
+                idPlanta
+            );
 
-        await cambioPlanta();
+            await cambioPlanta();
+        }
 
 
         mensaje(
@@ -1995,11 +2026,27 @@ async function cambioPlanta(
 // ALTA RAPIDA DESTINO
 // =======================================================
 
-async function abrirAltaDestino()
+async function abrirAltaDestino(
+    lado = "destino"
+)
 {
+    ladoAltaDestino =
+        lado;
+
+    document
+        .getElementById(
+            "tituloModalDestino"
+        )
+        .textContent =
+            lado === "origen"
+                ? "Nueva Denominación Origen"
+                : "Nueva Denominación Destino";
+
     const comboPlanta =
         document.getElementById(
-            "idPlanta"
+            lado === "origen"
+                ? "idProduc"
+                : "idPlanta"
         );
 
 
@@ -2012,7 +2059,9 @@ async function abrirAltaDestino()
     if (!idPlanta)
     {
         mensaje(
-            "Primero seleccione una planta.",
+            lado === "origen"
+                ? "Primero seleccione un origen."
+                : "Primero seleccione un destino.",
             true
         );
 
@@ -2639,7 +2688,9 @@ async function guardarNuevoDestino()
 {
     const idPlanta =
         valorEntero(
-            "idPlanta"
+            ladoAltaDestino === "origen"
+                ? "idProduc"
+                : "idPlanta"
         );
 
 
@@ -2738,9 +2789,18 @@ async function guardarNuevoDestino()
             respuesta.id;
 
 
-        await cambioPlanta(
-            idDestino
-        );
+        if (ladoAltaDestino === "origen")
+        {
+            await cambioProductor(
+                idDestino
+            );
+        }
+        else
+        {
+            await cambioPlanta(
+                idDestino
+            );
+        }
 
 
         mensaje(
@@ -2808,9 +2868,7 @@ async function cargarCereales(
 
 
                     option.textContent =
-                        cereal.categoria
-                            ? `${cereal.nombre} - ${cereal.categoria}`
-                            : cereal.nombre;
+                        cereal.nombre;
 
 
                     combo.appendChild(
@@ -2856,16 +2914,10 @@ async function cargarEmpresasDisponibles()
             );
 
 
-        llenarComboEmpresas(
-            "idEmpresaCrear",
-            true
-        );
+        actualizarSelectorEmpresa("crear");
 
 
-        llenarComboEmpresas(
-            "idEmpresaAsignar",
-            false
-        );
+        actualizarSelectorEmpresa();
     }
     catch (error)
     {
@@ -2873,16 +2925,10 @@ async function cargarEmpresasDisponibles()
             [];
 
 
-        llenarComboEmpresas(
-            "idEmpresaCrear",
-            true
-        );
+        actualizarSelectorEmpresa("crear");
 
 
-        llenarComboEmpresas(
-            "idEmpresaAsignar",
-            false
-        );
+        actualizarSelectorEmpresa();
 
 
         mensaje(
@@ -2891,6 +2937,123 @@ async function cargarEmpresasDisponibles()
             true
         );
     }
+}
+
+
+// =======================================================
+// SELECTOR VISUAL DE EMPRESAS - FIFO
+// =======================================================
+
+function actualizarSelectorEmpresa(
+    destino = "asignar"
+)
+{
+    const esCreacion = destino === "crear";
+    const campo = document.getElementById(
+        esCreacion ? "idEmpresaCrear" : "idEmpresaAsignar"
+    );
+    const nombre = document.getElementById(
+        esCreacion ? "nombreEmpresaCrear" : "nombreEmpresaAsignar"
+    );
+
+    if (!campo || !nombre)
+        return;
+
+    const seleccionada = empresasDisponibles.find(
+        empresa => Number(empresa.idUsuario) === Number(campo.value)
+    );
+
+    if (!seleccionada)
+    {
+        campo.value = "";
+        nombre.textContent = esCreacion
+            ? "Sin asignar por ahora"
+            : "Ninguna empresa seleccionada";
+        return;
+    }
+
+    nombre.textContent = seleccionada.nombre;
+}
+
+
+function abrirSelectorEmpresa(
+    destino = "asignar"
+)
+{
+    destinoSelectorEmpresa = destino;
+    const esCreacion = destino === "crear";
+    const modal = document.getElementById("modalEmpresasFIFO");
+    const lista = document.getElementById("listaEmpresasFIFO");
+    const idSeleccionado = Number(
+        document.getElementById(
+            esCreacion ? "idEmpresaCrear" : "idEmpresaAsignar"
+        ).value
+    );
+
+    document
+        .getElementById("btnEmpresaSinAsignar")
+        .classList.toggle("oculto", !esCreacion);
+
+    if (!empresasDisponibles.length)
+    {
+        lista.innerHTML = '<div class="sin-registros">No hay Empresas de Transporte disponibles.</div>';
+    }
+    else
+    {
+        lista.innerHTML = empresasDisponibles.map((empresa, indice) => `
+            <button
+                type="button"
+                class="empresa-fifo ${Number(empresa.idUsuario) === idSeleccionado ? "seleccionada" : ""}"
+                onclick="seleccionarEmpresaFIFO(${Number(empresa.idUsuario)})">
+                <span class="empresa-fifo-orden">${indice + 1}</span>
+                <span>
+                    <span class="empresa-fifo-nombre">${escapar(empresa.nombre)}</span>
+                    <span class="empresa-fifo-fecha">
+                        Disponible desde ${escapar(formatearFecha(empresa.fechaDisponibilidad))} hs
+                    </span>
+                </span>
+            </button>
+        `).join("");
+    }
+
+    modal.classList.remove("oculto");
+}
+
+
+function seleccionarEmpresaFIFO(idEmpresa)
+{
+    const esCreacion = destinoSelectorEmpresa === "crear";
+    const campo = document.getElementById(
+        esCreacion ? "idEmpresaCrear" : "idEmpresaAsignar"
+    );
+    const nombre = document.getElementById(
+        esCreacion ? "nombreEmpresaCrear" : "nombreEmpresaAsignar"
+    );
+
+    if (!idEmpresa && esCreacion)
+    {
+        campo.value = "";
+        nombre.textContent = "Sin asignar por ahora";
+        cerrarSelectorEmpresa();
+        return;
+    }
+
+    const empresa = empresasDisponibles.find(
+        item => Number(item.idUsuario) === Number(idEmpresa)
+    );
+
+    if (!empresa)
+        return;
+
+    campo.value = empresa.idUsuario;
+    nombre.textContent = empresa.nombre;
+    cerrarSelectorEmpresa();
+}
+
+
+function cerrarSelectorEmpresa()
+{
+    document.getElementById("modalEmpresasFIFO").classList.add("oculto");
 }
 
 
@@ -3522,7 +3685,7 @@ function limpiarFormulario()
     comboOrigen.innerHTML =
         `
         <option value="">
-            Seleccione productor...
+                Seleccione origen...
         </option>
         `;
 
@@ -3555,7 +3718,7 @@ function limpiarFormulario()
     comboDestino.innerHTML =
         `
         <option value="">
-            Seleccione planta...
+                Seleccione destino...
         </option>
         `;
 
@@ -3664,6 +3827,10 @@ function limpiarFormulario()
             "idEmpresaCrear"
         )
         .value = "";
+
+    actualizarSelectorEmpresa(
+        "crear"
+    );
 
 
     mensaje("");
@@ -3961,25 +4128,25 @@ function validarViaje(
 {
     if (!datos.idProduc)
     {
-        return "Seleccione un productor.";
+        return "Seleccione un origen.";
     }
 
 
     if (!datos.idOrigen)
     {
-        return "Seleccione un campo de origen.";
+        return "Seleccione una denominación de origen.";
     }
 
 
     if (!datos.idPlanta)
     {
-        return "Seleccione una planta.";
+        return "Seleccione un destino.";
     }
 
 
     if (!datos.idDestino)
     {
-        return "Seleccione un destino.";
+        return "Seleccione una denominación de destino.";
     }
 
 
@@ -4116,6 +4283,12 @@ async function seleccionarViaje(
             "P"
         )
         {
+            document
+                .getElementById(
+                    "idEmpresaAsignar"
+                )
+                .value = "";
+
             await cargarEmpresasDisponibles();
 
 

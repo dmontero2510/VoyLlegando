@@ -298,7 +298,8 @@ public async Task<IActionResult> EmpresasDisponibles()
             celular = u.Celular,
             email = u.Email,
             cuit = u.Cuit,
-            estado = u.Estado
+            estado = u.Estado,
+            fechaDisponibilidad = u.FechaDisponibilidad
         }));
 }
 
